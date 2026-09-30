@@ -1,6 +1,7 @@
 @props([
     'label',              // e.g. "Servis" — shown when nothing selected; "Semua {label}" option resets
     'options' => [],      // [value => label]
+    'icon' => null,       // optional leading Phosphor icon (e.g. "funnel")
 ])
 
 {{--
@@ -16,7 +17,7 @@
     <button type="button" @click="open = !open" :aria-expanded="open"
             :class="value ? 'bg-primary-soft border-primary text-primary' : 'bg-surface border-border text-ink-2'"
             class="flex w-full min-w-[140px] items-center justify-between gap-[10px] rounded-[9px] border px-[14px] py-[10px] text-left text-[13.5px] max-md:min-h-11">
-        <span x-text="value ? (options[value] ?? value) : @js($label)">{{ $label }}</span>
+        <span class="flex items-center gap-[9px]">@if ($icon)<i class="ph ph-{{ $icon }} text-[16px] text-muted"></i>@endif<span x-text="value ? (options[value] ?? value) : @js($label)">{{ $label }}</span></span>
         <i class="ph ph-caret-down text-[14px] text-faint transition-transform" :class="open && 'rotate-180'"></i>
     </button>
     <div x-cloak x-show="open" x-transition.origin.top

@@ -1,6 +1,7 @@
 @props([
     'label' => null,
     'size' => 20,   // 20 (chkBox, default) | 18 (table checkBox in Tempahan list)
+    'labelClass' => 'text-[13px] text-ink-2',
 ])
 
 {{--
@@ -18,6 +19,6 @@
         <i class="ph-fill ph-check text-[12px]"></i>
     </span>
     @if ($label)
-        <span class="text-[13px] text-ink-2">{{ $label }}</span>
+        <span class="{{ $labelClass }}">{{ $label }}</span>
     @endif
 </label>

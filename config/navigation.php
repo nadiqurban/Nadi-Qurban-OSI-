@@ -5,7 +5,8 @@
 | Sidebar navigation (single source of truth)
 |--------------------------------------------------------------------------
 | Order, labels and Phosphor icons exactly as design/Dashboard Operasi.dc.html.
-| `module` maps to permission "{module}.view" (enforced from Phase 1).
+| `module` maps to permission "{module}.view" (items hidden without it).
+| `always` = shown to every user; `modal` = opens a modal instead of navigating.
 | `badge` is an invokable class-string returning ?int (resolved per request;
 | kept as strings so `config:cache` works). `title` = page heading used by
 | placeholders; `section` = breadcrumb parent.
@@ -55,7 +56,7 @@ return [
             ['label' => 'Notifikasi', 'icon' => 'bell', 'route' => 'notifications.index', 'module' => 'notifications', 'badge' => null],
             ['label' => 'Pengguna', 'icon' => 'users', 'route' => 'users.index', 'active' => 'users.*', 'module' => 'users'],
             ['label' => 'Sijil', 'icon' => 'certificate', 'route' => 'certificates.editor', 'module' => 'certificates'],
-            ['label' => 'Tetapan', 'icon' => 'gear-six', 'route' => 'settings.profile', 'active' => 'settings.*', 'module' => 'settings'],
+            ['label' => 'Tetapan', 'icon' => 'gear-six', 'route' => 'settings.profile', 'active' => 'settings.*', 'module' => 'settings', 'always' => true, 'modal' => 'settings'],
         ],
     ],
 ];

@@ -6,6 +6,8 @@
     'tone' => 'primary',
     'maxWidth' => '480px',   // design max-width per modal (480 / 560 / 640 / 760 …)
     'show' => false,
+    'bodyClass' => 'px-4 py-5 md:px-6 md:py-[22px]',
+    'footerBorder' => true,  // design: settings modal has a divider; form modals use "padding:0 24px 22px"
 ])
 
 {{--
@@ -55,12 +57,16 @@
                 </div>
             @endif
 
-            <div class="flex-1 px-4 py-5 md:px-6 md:py-[22px]">
+            <div class="flex-1 {{ $bodyClass }}">
                 {{ $slot }}
             </div>
 
             @isset($footer)
-                <div class="sticky bottom-0 flex flex-wrap items-center justify-end gap-[10px] border-t border-border bg-surface px-4 pt-3 pb-safe max-md:[&>*]:flex-1 md:static md:px-6 md:py-4">
+                <div @class([
+                    'sticky bottom-0 flex flex-wrap items-center justify-end gap-[10px] border-t border-border bg-surface px-4 pt-3 pb-safe max-md:[&>*]:flex-1 md:static md:px-6',
+                    'md:py-[14px]' => $footerBorder,
+                    'md:border-t-0 md:pt-0 md:pb-[22px]' => ! $footerBorder,
+                ])>
                     {{ $footer }}
                 </div>
             @endisset

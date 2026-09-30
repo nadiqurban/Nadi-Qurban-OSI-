@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\UserStatus;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -30,7 +31,20 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+            'status' => UserStatus::Active,
+            'must_change_password' => false,
+            'failed_login_attempts' => 0,
         ];
+    }
+
+    public function suspended(): static
+    {
+        return $this->state(fn () => ['status' => UserStatus::Suspended]);
+    }
+
+    public function mustChangePassword(): static
+    {
+        return $this->state(fn () => ['must_change_password' => true]);
     }
 
     /**

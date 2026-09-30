@@ -18,6 +18,49 @@ document.addEventListener('alpine:init', () => {
         },
     });
 
+    // Password strength meter (Login.dc.html): score = length≥8, number, uppercase, symbol.
+    Alpine.data('passwordStrength', () => ({
+        pw: '',
+        confirm: '',
+        get hasLen() { return this.pw.length >= 8; },
+        get hasNum() { return /[0-9]/.test(this.pw); },
+        get hasUp() { return /[A-Z]/.test(this.pw); },
+        get hasSym() { return /[^A-Za-z0-9]/.test(this.pw); },
+        get score() { return [this.hasLen, this.hasNum, this.hasUp, this.hasSym].filter(Boolean).length; },
+        get label() {
+            if (!this.pw.length) return '—';
+            return ['Lemah', 'Lemah', 'Sederhana', 'Baik', 'Kuat'][this.score];
+        },
+        get color() {
+            if (!this.pw.length) return '#94A3AC';
+            return ['#DC2626', '#DC2626', '#D97706', '#C9A227', '#16A34A'][this.score];
+        },
+        get rules() {
+            return [
+                { ok: this.hasLen, label: 'Sekurang-kurangnya 8 aksara' },
+                { ok: this.hasUp && this.hasNum, label: 'Ada huruf besar & nombor' },
+                { ok: this.hasSym, label: 'Ada simbol (cth. ! @ #)' },
+            ];
+        },
+        get matches() { return this.pw.length > 0 && this.pw === this.confirm; },
+        get mismatch() { return this.confirm.length > 0 && !this.matches; },
+        get canSubmit() { return this.hasLen && this.hasUp && this.hasNum && this.matches; },
+    }));
+
+    // Logs the user out after `minutes` without interaction (PRD: 30 min idle).
+    Alpine.data('idleLogout', (minutes) => ({
+        timer: null,
+        init() {
+            const reset = () => {
+                clearTimeout(this.timer);
+                this.timer = setTimeout(() => this.$refs.form.submit(), minutes * 60 * 1000);
+            };
+            ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach((e) =>
+                window.addEventListener(e, reset, { passive: true }));
+            reset();
+        },
+    }));
+
     // Scales an A4/A5 preview down to fit its container on small screens.
     Alpine.data('docScale', (pageWidthPx) => ({
         scale: 1,

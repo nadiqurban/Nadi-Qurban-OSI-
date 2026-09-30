@@ -29,6 +29,14 @@
 
     <x-app.search-overlay />
 
+    @auth
+        {{-- Auto-logout after SESSION_LIFETIME idle minutes (server session expires at the same time). --}}
+        <form x-data="idleLogout({{ (int) config('session.lifetime') }})" x-ref="form" method="POST" action="{{ route('logout') }}" class="hidden">
+            @csrf
+            <input type="hidden" name="idle" value="1">
+        </form>
+    @endauth
+
     @livewireScripts
 </body>
 </html>

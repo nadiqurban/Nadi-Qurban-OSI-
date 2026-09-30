@@ -1,7 +1,7 @@
 @php
+    /** @var \App\Models\User|null $user */
     $user = auth()->user();
-    $userName = $user?->name ?? 'Tetamu';
-    $userRole = $user?->roleLabel ?? '—';
+    $groups = app(\App\Support\Navigation::class)->for($user);
 @endphp
 
 {{-- Overlay behind the mobile drawer --}}
@@ -29,38 +29,46 @@
     </div>
 
     <nav class="flex-1 overflow-y-auto px-3 py-[14px]">
-        @foreach (config('navigation') as $group)
+        @foreach ($groups as $group)
             <div class="px-[14px] pt-4 pb-2 text-[10.5px] font-bold tracking-[1.4px] text-faint">{{ $group['section'] }}</div>
             @foreach ($group['items'] as $item)
                 @php
-                    $href = Route::has($item['route']) ? route($item['route']) : '#';
-                    $active = request()->routeIs(...(array) ($item['active'] ?? $item['route']));
-                    $badgeClass = $item['badge'] ?? null;
-                    $badge = $badgeClass && class_exists($badgeClass) ? app($badgeClass)() : null;
+                    $active = $item['is_active'];
+                    $classes = \Illuminate\Support\Arr::toCssClasses([
+                        'relative my-0.5 flex w-full items-center gap-3 rounded-[9px] px-[14px] py-[10px] text-left text-[13.5px] max-lg:min-h-11',
+                        'bg-primary-soft font-bold text-nav-active hover:text-nav-active' => $active,
+                        'font-medium text-ink-3 hover:bg-bg hover:text-ink-3' => ! $active,
+                    ]);
                 @endphp
-                <a href="{{ $href }}" wire:navigate
-                   @class([
-                       'relative my-0.5 flex items-center gap-3 rounded-[9px] px-[14px] py-[10px] text-[13.5px] max-lg:min-h-11',
-                       'bg-primary-soft font-bold text-nav-active hover:text-nav-active' => $active,
-                       'font-medium text-ink-3 hover:bg-bg hover:text-ink-3' => ! $active,
-                   ])
-                   @if ($active) aria-current="page" @endif>
+                @if (isset($item['modal']))
+                    <button type="button" x-on:click="$store.ui.sidebar = false; $dispatch('open-modal', @js($item['modal']))" class="{{ $classes }}">
+                @else
+                    <a href="{{ $item['href'] }}" wire:navigate class="{{ $classes }}" @if ($active) aria-current="page" @endif>
+                @endif
                     <span @class(['absolute top-2 bottom-2 left-0 w-[3px] rounded-r-[3px]', 'bg-nav-bar' => $active, 'bg-transparent' => ! $active])></span>
                     <span @class(['flex', 'text-nav-active' => $active, 'text-faint' => ! $active])><i class="ph ph-{{ $item['icon'] }} block text-[18px] leading-none"></i></span>
                     <span class="flex-1">{{ $item['label'] }}</span>
-                    @if ($badge)
-                        <span class="rounded-[20px] bg-gold px-2 py-0.5 text-[10.5px] font-bold text-white">{{ $badge }}</span>
+                    @if ($item['badge_count'])
+                        <span class="rounded-[20px] bg-gold px-2 py-0.5 text-[10.5px] font-bold text-white">{{ $item['badge_count'] }}</span>
                     @endif
-                </a>
+                @if (isset($item['modal']))
+                    </button>
+                @else
+                    </a>
+                @endif
             @endforeach
         @endforeach
     </nav>
 
-    <div class="flex shrink-0 items-center gap-[11px] border-t border-border px-4 py-[14px] pb-safe lg:pb-[14px]">
-        <div class="flex size-[38px] shrink-0 items-center justify-center rounded-full bg-primary text-[13px] font-extrabold text-gold">{{ initials($userName) }}</div>
-        <div class="min-w-0 flex-1">
-            <div class="truncate text-[13px] font-bold text-ink">{{ $userName }}</div>
-            <div class="truncate text-[11px] text-muted">{{ $userRole }}</div>
-        </div>
-    </div>
+    @if ($user)
+        <a href="{{ route('settings.profile') }}" wire:navigate class="flex shrink-0 items-center gap-[11px] border-t border-border px-4 py-[14px] pb-safe hover:bg-bg lg:pb-[14px]">
+            <x-app.user-avatar :user="$user" :size="38" />
+            <div class="min-w-0 flex-1">
+                <div class="truncate text-[13px] font-bold text-ink">{{ $user->name }}</div>
+                <div class="truncate text-[11px] text-muted">{{ $user->role_label }}</div>
+            </div>
+        </a>
+    @endif
 </aside>
+
+<x-app.settings-modal />

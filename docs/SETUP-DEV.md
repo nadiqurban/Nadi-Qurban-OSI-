@@ -28,3 +28,9 @@ Pertama kali pada mesin baharu: `npx playwright install chromium`.
 
 ## Logo
 `node scripts/optimize-logos.mjs` menjana `public/images/*` daripada fail asal dalam `design/` (fail asal besar tidak di-commit).
+
+## Log masuk (local)
+- `php artisan migrate:fresh --seed` mencipta 6 peranan, matriks kebenaran, tetapan syarikat dan pengguna demo daripada design.
+- Pengguna demo (cth. `nurfitri@nadiqurban.com` — Super Admin) guna kata laluan `SEED_USER_PASSWORD` dalam `.env`.
+- Produksi: tetapkan `SUPERADMIN_EMAIL` / `SUPERADMIN_PASSWORD` sebelum `db:seed`; pengguna demo tidak dicipta dalam produksi.
+- Log masuk gagal tanpa ralat jelas? Biasanya MySQL (port 3307) tidak berjalan — jalankan `scripts\mysql-start.cmd`.

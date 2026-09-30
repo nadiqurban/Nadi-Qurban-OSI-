@@ -14,6 +14,12 @@
 <div style="--cols: {{ $cols }}; --tbl-min: {{ $minWidth ?? 'auto' }}"
      {{ $attributes->merge(['class' => 'overflow-hidden rounded-[12px] border border-border bg-surface']) }}
      data-table-mode="{{ $scroll ? 'scroll' : 'stack' }}">
+    @isset($toolbar)
+        {{-- Search/filter row inside the card (Pengguna & Peranan.dc.html): 14px 20px, border-bottom --}}
+        <div class="flex flex-wrap items-center gap-3 border-b border-border px-4 py-[14px] md:px-5">
+            {{ $toolbar }}
+        </div>
+    @endisset
     <div @class(['overflow-x-auto' => true, 'max-md:overflow-x-visible' => ! $scroll])>
         <div @class(['md:min-w-(--tbl-min)', 'max-md:min-w-(--tbl-min)' => $scroll])>
             @isset($head)

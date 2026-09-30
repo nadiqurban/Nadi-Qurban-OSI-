@@ -57,6 +57,31 @@ if (! function_exists('tarikh')) {
     }
 }
 
+if (! function_exists('masa_lalu')) {
+    /**
+     * Relative time as in the design: "2 minit lalu", "3 jam lalu", "Semalam", "4 hari lalu",
+     * falling back to tarikh() after a week.
+     */
+    function masa_lalu(CarbonInterface|string|null $date): string
+    {
+        if ($date === null || $date === '') {
+            return 'Belum pernah';
+        }
+
+        $date = $date instanceof CarbonInterface ? $date : Carbon::parse($date);
+        $minutes = (int) $date->diffInMinutes(now());
+
+        return match (true) {
+            $minutes < 1 => 'Baru sahaja',
+            $minutes < 60 => $minutes.' minit lalu',
+            $minutes < 60 * 24 && $date->isToday() => intdiv($minutes, 60).' jam lalu',
+            $date->isYesterday() => 'Semalam',
+            $minutes < 60 * 24 * 7 => max(2, (int) $date->copy()->startOfDay()->diffInDays(now()->startOfDay())).' hari lalu',
+            default => tarikh($date),
+        };
+    }
+}
+
 if (! function_exists('initials')) {
     /**
      * Two-letter initials for avatars: "Muhammad Nurfitkri" → "MN".

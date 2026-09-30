@@ -1,7 +1,8 @@
 @props([
     'title' => null,
-    'stats' => [],   // [['value' => '7', 'label' => 'Negara Pelaksanaan'], ...] — from DB (Phase 1)
+    'stats' => null,   // [['value' => '7', 'label' => 'Negara Pelaksanaan'], ...]; defaults to App\Support\BrandStats
 ])
+@php($stats ??= app(\App\Support\BrandStats::class)->all())
 <!DOCTYPE html>
 <html lang="ms">
 <head>
@@ -48,7 +49,7 @@
                 @endif
             </div>
 
-            <div class="relative mt-[38px] text-[12px] text-white">&copy; {{ now()->year }} Nadi Qurban Sdn. Bhd. Hak cipta terpelihara.</div>
+            <div class="relative mt-[38px] text-[12px] text-white">&copy; {{ app(\App\Support\Settings::class)->get('season.year', now()->year) }} Nadi Qurban Sdn. Bhd. Hak cipta terpelihara.</div>
         </div>
 
         {{-- Form panel --}}

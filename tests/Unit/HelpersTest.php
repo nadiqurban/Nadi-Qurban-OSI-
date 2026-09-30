@@ -51,3 +51,14 @@ it('builds initials skipping bin/binti', function (string $name, string $expecte
     ['Nurul binti Rahim', 'NR'],
     ['Aisyah', 'A'],
 ]);
+
+it('formats relative time like the design', function () {
+    $this->travelTo(Carbon::parse('2027-06-12 15:00'));
+
+    expect(masa_lalu(now()->subMinutes(2)))->toBe('2 minit lalu')
+        ->and(masa_lalu(now()->subHours(3)))->toBe('3 jam lalu')
+        ->and(masa_lalu(now()->subDay()))->toBe('Semalam')
+        ->and(masa_lalu(now()->subDays(4)))->toBe('4 hari lalu')
+        ->and(masa_lalu(now()->subDays(20)))->toBe('23 Mei 2027')
+        ->and(masa_lalu(null))->toBe('Belum pernah');
+});

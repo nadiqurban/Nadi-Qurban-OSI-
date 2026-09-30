@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; -webkit-font-smoothing: antialiased; background:#F6F8F7; }
+  input { font-family: inherit; }
+  input:focus { outline: none; }
+</style>
+</helmet>
+
+<div style="display:flex; min-height:100vh; background:#F6F8F7;">
+
+  <!-- LEFT PANEL (brand / Islamic motif) -->
+  <div style="width:44%; max-width:620px; background:#42481c; color:#fff; position:relative; overflow:hidden; display:flex; flex-direction:column; padding:48px 56px;">
+    <div style="position:relative; display:flex; align-items:center; gap:14px;">
+      <div style="width:46px; height:46px; border-radius:12px; overflow:hidden;">
+        <img src="uploads/Untitled design (2).png" alt="Nadi Qurban" style="width:100%; height:100%; object-fit:cover; display:block; transform:scale(1.22);">
+      </div>
+      <div style="line-height:1;">
+        <div style="font-size:18px; font-weight:800; letter-spacing:.3px;">NADI QURBAN</div>
+        <div style="font-size:11px; font-weight:600; letter-spacing:3px; color:#C9A227; margin-top:4px;">OSI SYSTEM</div>
+      </div>
+    </div>
+
+    <div style="position:relative; margin-top:auto;">
+      <h1 style="font-size:32px; font-weight:800; line-height:1.2; letter-spacing:-.5px;">Sistem Operasi<br>Ibadah Qurban &amp; Aqiqah</h1>
+      <p style="font-size:15px; line-height:1.6; color:#cfe0d7; margin-top:16px; max-width:440px;">Uruskan tempahan, vendor, pelaksanaan dan pensijilan Qurban, Aqiqah, Dam &amp; Nazar Haiwan merentas 7 negara &mdash; dalam satu platform yang selamat.</p>
+      <div style="display:flex; flex-direction:column; gap:11px; margin-top:22px;">
+        <div style="display:flex; align-items:center; gap:10px; font-size:13.5px; color:#e6efe9;"><i class="ph-fill ph-check-circle" style="font-size:18px; color:#C9A227;"></i> Jejak status pelaksanaan secara langsung</div>
+        <div style="display:flex; align-items:center; gap:10px; font-size:13.5px; color:#e6efe9;"><i class="ph-fill ph-check-circle" style="font-size:18px; color:#C9A227;"></i> Pensijilan &amp; laporan digital automatik</div>
+        <div style="display:flex; align-items:center; gap:10px; font-size:13.5px; color:#e6efe9;"><i class="ph-fill ph-check-circle" style="font-size:18px; color:#C9A227;"></i> Pengurusan vendor &amp; kewangan bersepadu</div>
+      </div>
+      <div style="display:flex; gap:12px; margin-top:30px;">
+        <div style="flex:1; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); border-radius:11px; padding:14px 16px;"><div style="font-size:22px; font-weight:800; color:#C9A227;">7</div><div style="font-size:12px; color:#cfe0d7; margin-top:3px;">Negara Pelaksanaan</div></div>
+        <div style="flex:1; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); border-radius:11px; padding:14px 16px;"><div style="font-size:22px; font-weight:800; color:#C9A227;">42</div><div style="font-size:12px; color:#cfe0d7; margin-top:3px;">Rakan Vendor</div></div>
+        <div style="flex:1; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); border-radius:11px; padding:14px 16px;"><div style="font-size:22px; font-weight:800; color:#C9A227;">6,540</div><div style="font-size:12px; color:#cfe0d7; margin-top:3px;">Peserta 2027</div></div>
+      </div>
+    </div>
+
+    <div style="position:relative; margin-top:38px; font-size:12px; color:#fff;">&copy; 2027 Nadi Qurban Sdn. Bhd. Hak cipta terpelihara.</div>
+  </div>
+
+  <!-- RIGHT PANEL (form) -->
+  <div style="flex:1; display:flex; align-items:center; justify-content:center; padding:40px 24px;">
+    <div style="width:100%; max-width:400px;">
+
+      <!-- LOGIN VIEW -->
+      <sc-if value="{{ isLogin }}" hint-placeholder-val="{{ true }}">
+        <div>
+          <div style="font-size:13px; font-weight:600; color:#C9A227; letter-spacing:.5px;">SELAMAT KEMBALI</div>
+          <h2 style="font-size:26px; font-weight:800; color:#1A1D21; margin-top:8px;">Log Masuk Akaun</h2>
+          <p style="font-size:14px; color:#64748B; margin-top:8px;">Masukkan kelayakan anda untuk mengakses sistem operasi.</p>
+
+          <div style="margin-top:28px;">
+            <label style="display:block; font-size:13px; font-weight:600; color:#334155; margin-bottom:7px;">Emel</label>
+            <div style="display:flex; align-items:center; gap:10px; border:1px solid #E2E8F0; border-radius:9px; padding:12px 14px; background:#fff;">
+              <i class="ph ph-envelope-simple" style="font-size:18px; color:#94A3AC;"></i>
+              <input type="email" value="nurfitri@nadiqurban.com" style="border:none; flex:1; font-size:14px; color:#1A1D21; background:transparent;">
+            </div>
+          </div>
+
+          <div style="margin-top:18px;">
+            <label style="display:block; font-size:13px; font-weight:600; color:#334155; margin-bottom:7px;">Kata Laluan</label>
+            <div style="display:flex; align-items:center; gap:10px; border:1px solid #E2E8F0; border-radius:9px; padding:12px 14px; background:#fff;">
+              <i class="ph ph-lock-key" style="font-size:18px; color:#94A3AC;"></i>
+              <input type="{{ pwType }}" value="rahsia123" style="border:none; flex:1; font-size:14px; color:#1A1D21; background:transparent;">
+              <i class="{{ pwIcon }}" onClick="{{ togglePw }}" style="font-size:18px; color:#94A3AC; cursor:pointer;"></i>
+            </div>
+          </div>
+
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-top:16px;">
+            <label style="display:flex; align-items:center; gap:8px; font-size:13.5px; color:#334155; cursor:pointer;">
+              <span onClick="{{ toggleRemember }}" style="{{ checkStyle }}"><sc-if value="{{ remember }}" hint-placeholder-val="{{ true }}"><i class="ph-fill ph-check" style="font-size:13px; color:#fff;"></i></sc-if></span>
+              Ingat saya
+            </label>
+            <span onClick="{{ goForgot }}" style="font-size:13.5px; font-weight:600; color:#42481c; cursor:pointer;">Lupa Kata Laluan?</span>
+          </div>
+
+          <button onClick="{{ doLogin }}" style="width:100%; margin-top:24px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:14px; font-size:15px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:9px; font-family:inherit;" style-hover="background:#5a6127;">
+            <i class="ph ph-sign-in" style="font-size:19px;"></i> Log Masuk
+          </button>
+
+          <div style="display:flex; align-items:center; gap:9px; margin-top:22px; padding:12px 14px; background:#F6F8F7; border:1px solid #E2E8F0; border-radius:9px;">
+            <i class="ph ph-shield-check" style="font-size:18px; color:#16A34A;"></i>
+            <span style="font-size:12.5px; color:#64748B; line-height:1.5;">Sesi disulitkan &amp; auto-logout selepas 30 minit tidak aktif. Akaun dikunci selepas 5 percubaan gagal.</span>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- FORGOT VIEW -->
+      <sc-if value="{{ isForgot }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <span onClick="{{ goLogin }}" style="display:inline-flex; align-items:center; gap:7px; font-size:13.5px; font-weight:600; color:#42481c; cursor:pointer; margin-bottom:22px;"><i class="ph ph-arrow-left" style="font-size:17px;"></i> Kembali log masuk</span>
+          <div style="width:52px; height:52px; border-radius:14px; background:#edeee0; display:flex; align-items:center; justify-content:center;"><i class="ph ph-key" style="font-size:26px; color:#42481c;"></i></div>
+          <h2 style="font-size:26px; font-weight:800; color:#1A1D21; margin-top:18px;">Lupa Kata Laluan?</h2>
+          <p style="font-size:14px; color:#64748B; margin-top:8px; line-height:1.6;">Masukkan emel akaun anda. Kami akan hantar pautan tetapan semula kata laluan.</p>
+
+          <div style="margin-top:24px;">
+            <label style="display:block; font-size:13px; font-weight:600; color:#334155; margin-bottom:7px;">Emel</label>
+            <div style="display:flex; align-items:center; gap:10px; border:1px solid #E2E8F0; border-radius:9px; padding:12px 14px; background:#fff;">
+              <i class="ph ph-envelope-simple" style="font-size:18px; color:#94A3AC;"></i>
+              <input type="email" placeholder="nama@nadiqurban.com" style="border:none; flex:1; font-size:14px; color:#1A1D21; background:transparent;">
+            </div>
+          </div>
+
+          <button onClick="{{ sendReset }}" style="width:100%; margin-top:22px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:14px; font-size:15px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:9px;" style-hover="background:#5a6127;">
+            <i class="ph ph-paper-plane-tilt" style="font-size:19px;"></i> Hantar Pautan Reset
+          </button>
+
+          <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex; align-items:flex-start; gap:10px; margin-top:20px; padding:14px; background:#EAF7EE; border:1px solid #BBE5C9; border-radius:9px;">
+              <i class="ph-fill ph-check-circle" style="font-size:20px; color:#16A34A;"></i>
+              <span style="font-size:13px; color:#15803D; line-height:1.5;">Pautan reset telah dihantar ke emel anda. Sila semak peti masuk (dan folder spam).</span>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <!-- RESET VIEW -->
+      <sc-if value="{{ isReset }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <span onClick="{{ goForgot }}" style="display:inline-flex; align-items:center; gap:7px; font-size:13.5px; font-weight:600; color:#42481c; cursor:pointer; margin-bottom:22px;"><i class="ph ph-arrow-left" style="font-size:17px;"></i> Kembali</span>
+          <div style="width:52px; height:52px; border-radius:14px; background:#edeee0; display:flex; align-items:center; justify-content:center;"><i class="ph ph-lock-key-open" style="font-size:26px; color:#42481c;"></i></div>
+          <h2 style="font-size:26px; font-weight:800; color:#1A1D21; margin-top:18px;">Tetapkan Kata Laluan Baharu</h2>
+          <p style="font-size:14px; color:#64748B; margin-top:8px; line-height:1.6;">Cipta kata laluan baharu yang selamat untuk akaun anda.</p>
+
+          <sc-if value="{{ done }}" hint-placeholder-val="{{ false }}">
+            <div style="text-align:center; margin-top:28px;">
+              <div style="width:64px; height:64px; border-radius:50%; background:#EAF7EE; display:flex; align-items:center; justify-content:center; margin:0 auto;"><i class="ph-fill ph-check-circle" style="font-size:36px; color:#16A34A;"></i></div>
+              <h3 style="font-size:19px; font-weight:800; color:#1A1D21; margin-top:18px;">Kata Laluan Ditukar!</h3>
+              <p style="font-size:13.5px; color:#64748B; margin-top:8px; line-height:1.6;">Kata laluan anda telah dikemaskini. Sila log masuk semula dengan kata laluan baharu.</p>
+              <button onClick="{{ goLogin }}" style="width:100%; margin-top:24px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:14px; font-size:15px; font-weight:700; cursor:pointer; font-family:inherit;" style-hover="background:#5a6127;">Ke Log Masuk</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ notDone }}" hint-placeholder-val="{{ true }}">
+            <div>
+              <div style="margin-top:24px;">
+                <label style="display:block; font-size:13px; font-weight:600; color:#334155; margin-bottom:7px;">Kata Laluan Baharu</label>
+                <div style="display:flex; align-items:center; gap:10px; border:1px solid #E2E8F0; border-radius:9px; padding:12px 14px; background:#fff;">
+                  <i class="ph ph-lock-key" style="font-size:18px; color:#94A3AC;"></i>
+                  <input type="{{ pwType }}" value="{{ pwValue }}" onInput="{{ onPwInput }}" placeholder="Minimum 8 aksara" style="border:none; flex:1; font-size:14px; color:#1A1D21; background:transparent;">
+                  <i class="{{ pwIcon }}" onClick="{{ togglePw }}" style="font-size:18px; color:#94A3AC; cursor:pointer;"></i>
+                </div>
+                <div style="display:flex; gap:5px; margin-top:10px;">
+                  <sc-for list="{{ strengthBars }}" as="b" hint-placeholder-count="4"><span style="{{ b }}"></span></sc-for>
+                </div>
+                <div style="font-size:11.5px; color:#94A3AC; margin-top:6px;">Kekuatan: <span style="{{ strengthLabelStyle }}">{{ strengthLabel }}</span></div>
+              </div>
+
+              <div style="margin-top:18px;">
+                <label style="display:block; font-size:13px; font-weight:600; color:#334155; margin-bottom:7px;">Sahkan Kata Laluan</label>
+                <div style="display:flex; align-items:center; gap:10px; border:1px solid {{ confirmBorder }}; border-radius:9px; padding:12px 14px; background:#fff;">
+                  <i class="ph ph-lock-key" style="font-size:18px; color:#94A3AC;"></i>
+                  <input type="{{ pwType }}" value="{{ confirmValue }}" onInput="{{ onConfirmInput }}" placeholder="Taip semula kata laluan" style="border:none; flex:1; font-size:14px; color:#1A1D21; background:transparent;">
+                </div>
+                <sc-if value="{{ showMismatch }}" hint-placeholder-val="{{ false }}"><div style="font-size:11.5px; color:#DC2626; margin-top:6px; display:flex; align-items:center; gap:5px;"><i class="ph ph-warning-circle" style="font-size:14px;"></i> Kata laluan tidak sepadan.</div></sc-if>
+              </div>
+
+              <div style="display:flex; flex-direction:column; gap:8px; margin-top:16px; padding:14px; background:#F6F8F7; border-radius:9px;">
+                <sc-for list="{{ rules }}" as="r" hint-placeholder-count="3"><div style="display:flex; align-items:center; gap:8px; font-size:12.5px; color:{{ r.color }};"><i class="{{ r.icon }}" style="font-size:15px;"></i>{{ r.label }}</div></sc-for>
+              </div>
+
+              <button onClick="{{ submitReset }}" style="{{ submitStyle }}"><i class="ph ph-check" style="font-size:18px;"></i> Tukar Kata Laluan</button>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <!-- FORCE CHANGE VIEW -->
+      <sc-if value="{{ isForce }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <div style="width:52px; height:52px; border-radius:14px; background:#FEF3E2; display:flex; align-items:center; justify-content:center;"><i class="ph ph-shield-warning" style="font-size:26px; color:#D97706;"></i></div>
+          <h2 style="font-size:26px; font-weight:800; color:#1A1D21; margin-top:18px;">Tukar Kata Laluan Diperlukan</h2>
+          <p style="font-size:14px; color:#64748B; margin-top:8px; line-height:1.6;">Atas sebab keselamatan, anda perlu menukar kata laluan sementara sebelum meneruskan.</p>
+          <div style="margin-top:24px;">
+            <label style="display:block; font-size:13px; font-weight:600; color:#334155; margin-bottom:7px;">Kata Laluan Semasa</label>
+            <div style="display:flex; align-items:center; gap:10px; border:1px solid #E2E8F0; border-radius:9px; padding:12px 14px; background:#fff;"><i class="ph ph-lock" style="font-size:18px; color:#94A3AC;"></i><input type="password" placeholder="Kata laluan sementara" style="border:none; flex:1; font-size:14px; color:#1A1D21; background:transparent;"></div>
+          </div>
+          <div style="margin-top:18px;">
+            <label style="display:block; font-size:13px; font-weight:600; color:#334155; margin-bottom:7px;">Kata Laluan Baharu</label>
+            <div style="display:flex; align-items:center; gap:10px; border:1px solid #E2E8F0; border-radius:9px; padding:12px 14px; background:#fff;"><i class="ph ph-lock-key" style="font-size:18px; color:#94A3AC;"></i><input type="password" placeholder="Minimum 8 aksara" style="border:none; flex:1; font-size:14px; color:#1A1D21; background:transparent;"></div>
+          </div>
+          <div style="margin-top:18px;">
+            <label style="display:block; font-size:13px; font-weight:600; color:#334155; margin-bottom:7px;">Sahkan Kata Laluan Baharu</label>
+            <div style="display:flex; align-items:center; gap:10px; border:1px solid #E2E8F0; border-radius:9px; padding:12px 14px; background:#fff;"><i class="ph ph-lock-key" style="font-size:18px; color:#94A3AC;"></i><input type="password" placeholder="Taip semula kata laluan" style="border:none; flex:1; font-size:14px; color:#1A1D21; background:transparent;"></div>
+          </div>
+          <button onClick="{{ goLogin }}" style="width:100%; margin-top:22px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:14px; font-size:15px; font-weight:700; cursor:pointer; font-family:inherit; display:flex; align-items:center; justify-content:center; gap:9px;" style-hover="background:#5a6127;"><i class="ph ph-check" style="font-size:18px;"></i> Tukar &amp; Teruskan</button>
+        </div>
+      </sc-if>
+
+      <!-- LOCKED VIEW -->
+      <sc-if value="{{ isLocked }}" hint-placeholder-val="{{ false }}">
+        <div style="text-align:center;">
+          <div style="width:64px; height:64px; border-radius:50%; background:#FDECEC; display:flex; align-items:center; justify-content:center; margin:0 auto;"><i class="ph-fill ph-lock-simple" style="font-size:34px; color:#DC2626;"></i></div>
+          <h2 style="font-size:24px; font-weight:800; color:#1A1D21; margin-top:18px;">Akaun Dikunci</h2>
+          <p style="font-size:14px; color:#64748B; margin-top:8px; line-height:1.6;">Akaun anda telah dikunci sementara selepas 5 percubaan log masuk yang gagal.</p>
+          <div style="margin-top:20px; padding:16px; background:#F6F8F7; border-radius:11px; display:flex; align-items:center; justify-content:center; gap:10px;"><i class="ph ph-clock-countdown" style="font-size:20px; color:#42481c;"></i><span style="font-size:14px; color:#334155;">Cuba semula dalam <b style="color:#42481c;">14:52</b></span></div>
+          <p style="font-size:12.5px; color:#94A3AC; margin-top:16px; line-height:1.6;">Perlukan akses segera? Hubungi pentadbir sistem atau tetapkan semula kata laluan anda.</p>
+          <button onClick="{{ goForgot }}" style="width:100%; margin-top:18px; background:#fff; color:#42481c; border:1px solid #42481c; border-radius:9px; padding:13px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit;">Tetapkan Semula Kata Laluan</button>
+          <span onClick="{{ goLogin }}" style="display:inline-block; margin-top:14px; font-size:13.5px; font-weight:600; color:#64748B; cursor:pointer;">Kembali ke Log Masuk</span>
+        </div>
+      </sc-if>
+
+      <!-- LOGIN HISTORY VIEW -->
+      <sc-if value="{{ isHistory }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <span onClick="{{ goLogin }}" style="display:inline-flex; align-items:center; gap:7px; font-size:13.5px; font-weight:600; color:#42481c; cursor:pointer; margin-bottom:22px;"><i class="ph ph-arrow-left" style="font-size:17px;"></i> Kembali</span>
+          <div style="width:52px; height:52px; border-radius:14px; background:#edeee0; display:flex; align-items:center; justify-content:center;"><i class="ph ph-clock-counter-clockwise" style="font-size:26px; color:#42481c;"></i></div>
+          <h2 style="font-size:26px; font-weight:800; color:#1A1D21; margin-top:18px;">Sejarah Log Masuk</h2>
+          <p style="font-size:14px; color:#64748B; margin-top:8px; line-height:1.6;">Aktiviti log masuk terkini bagi akaun anda.</p>
+          <div style="margin-top:22px; display:flex; flex-direction:column; gap:10px;">
+            <sc-for list="{{ history }}" as="h" hint-placeholder-count="4">
+              <div style="display:flex; align-items:center; gap:13px; padding:13px 15px; border:1px solid #E2E8F0; border-radius:11px;">
+                <span style="width:38px; height:38px; border-radius:10px; background:{{ h.tint }}; color:{{ h.color }}; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><i class="{{ h.icon }}" style="font-size:19px;"></i></span>
+                <div style="flex:1; min-width:0;"><div style="font-size:13px; font-weight:600; color:#1A1D21;">{{ h.device }}</div><div style="font-size:11.5px; color:#94A3AC;">{{ h.meta }}</div></div>
+                <span style="{{ h.badgeStyle }}">{{ h.status }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+    </div>
+  </div>
+</div>
+</x-dc>
+
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { view: 'login', showPw: false, remember: true, sent: false, pw: '', confirm: '', done: false };
+  renderVals() {
+    const s = this.state;
+    const set = (o) => this.setState(o);
+    const checkBase = 'width:18px; height:18px; border-radius:5px; display:flex; align-items:center; justify-content:center; flex-shrink:0;';
+
+    const pw = s.pw || '';
+    const hasLen = pw.length >= 8;
+    const hasNum = /[0-9]/.test(pw);
+    const hasUp = /[A-Z]/.test(pw);
+    const hasSym = /[^A-Za-z0-9]/.test(pw);
+    const score = [hasLen, hasNum, hasUp, hasSym].filter(Boolean).length;
+    const strengthText = pw.length === 0 ? '\u2014' : score <= 1 ? 'Lemah' : score === 2 ? 'Sederhana' : score === 3 ? 'Baik' : 'Kuat';
+    const strengthColor = pw.length === 0 ? '#94A3AC' : score <= 1 ? '#DC2626' : score === 2 ? '#D97706' : score === 3 ? '#C9A227' : '#16A34A';
+    const strengthBars = [0, 1, 2, 3].map(k => 'flex:1; height:6px; border-radius:20px; background:' + (k < score && pw.length ? strengthColor : '#E2E8F0') + ';');
+    const rule = (ok, label) => ({ ok, label, icon: ok ? 'ph-fill ph-check-circle' : 'ph ph-circle', color: ok ? '#16A34A' : '#94A3AC' });
+    const rules = [rule(hasLen, 'Sekurang-kurangnya 8 aksara'), rule(hasUp && hasNum, 'Ada huruf besar & nombor'), rule(hasSym, 'Ada simbol (cth. ! @ #)')];
+    const match = pw.length > 0 && pw === (s.confirm || '');
+    const showMismatch = (s.confirm || '').length > 0 && !match;
+    const canSubmit = hasLen && match;
+
+    return {
+      isLogin: s.view === 'login',
+      isForgot: s.view === 'forgot',
+      isReset: s.view === 'reset',
+      isForce: s.view === 'force',
+      isLocked: s.view === 'locked',
+      isHistory: s.view === 'history',
+      demoLinks: [['login', 'Log Masuk'], ['forgot', 'Lupa'], ['reset', 'Reset'], ['force', 'Tukar Wajib'], ['locked', 'Dikunci'], ['history', 'Sejarah']].map(([v, label]) => ({
+        label, onClick: () => set({ view: v, sent: false, done: false, pw: '', confirm: '' }),
+        style: 'font-size:11.5px; font-weight:600; border-radius:20px; padding:5px 11px; cursor:pointer;' + (s.view === v ? 'background:#42481c; color:#fff;' : 'background:#F6F8F7; color:#64748B; border:1px solid #E2E8F0;'),
+      })),
+      history: [
+        { device: 'Chrome · Windows 11', meta: 'Kuala Lumpur, MY · 202.184.x.x · Hari ini, 09:14', status: 'Sesi Semasa', icon: 'ph ph-desktop', tint: '#EAF7EE', color: '#16A34A', badgeStyle: 'font-size:10.5px; font-weight:700; border-radius:20px; padding:4px 10px; background:#EAF7EE; color:#16A34A;' },
+        { device: 'Safari · iPhone', meta: 'Shah Alam, MY · 115.132.x.x · Semalam, 21:03', status: 'Berjaya', icon: 'ph ph-device-mobile', tint: '#E8F0FB', color: '#2563EB', badgeStyle: 'font-size:10.5px; font-weight:700; border-radius:20px; padding:4px 10px; background:#F6F8F7; color:#64748B;' },
+        { device: 'Chrome · Android', meta: 'Johor Bahru, MY · 60.51.x.x · 18 Jul, 14:22', status: 'Berjaya', icon: 'ph ph-device-mobile', tint: '#E8F0FB', color: '#2563EB', badgeStyle: 'font-size:10.5px; font-weight:700; border-radius:20px; padding:4px 10px; background:#F6F8F7; color:#64748B;' },
+        { device: 'Firefox · Windows', meta: 'Lokasi tidak dikenali · 45.121.x.x · 17 Jul, 03:48', status: 'Gagal', icon: 'ph ph-warning', tint: '#FDECEC', color: '#DC2626', badgeStyle: 'font-size:10.5px; font-weight:700; border-radius:20px; padding:4px 10px; background:#FDECEC; color:#DC2626;' },
+      ],
+      pwType: s.showPw ? 'text' : 'password',
+      pwIcon: s.showPw ? 'ph ph-eye-slash' : 'ph ph-eye',
+      togglePw: () => set({ showPw: !s.showPw }),
+      remember: s.remember,
+      checkStyle: checkBase + (s.remember ? 'background:#42481c; border:1px solid #42481c;' : 'background:#fff; border:1px solid #CBD5D0;'),
+      toggleRemember: () => set({ remember: !s.remember }),
+      goForgot: () => set({ view: 'forgot', sent: false }),
+      doLogin: () => { try { location.href = (function(p){try{var u=new URL(p,location.href);new URLSearchParams(location.search).forEach(function(v,k){if(!u.searchParams.has(k))u.searchParams.set(k,v);});return u.href;}catch(e){return p;}})('Dashboard Operasi.dc.html'); } catch (e) {} },
+      goLogin: () => set({ view: 'login', done: false, pw: '', confirm: '' }),
+      sendReset: () => set({ view: 'reset', sent: false, done: false, pw: '', confirm: '' }),
+      sent: s.sent,
+      done: s.done, notDone: !s.done,
+      pwValue: s.pw, confirmValue: s.confirm,
+      onPwInput: (e) => set({ pw: e.target.value }),
+      onConfirmInput: (e) => set({ confirm: e.target.value }),
+      strengthBars, strengthLabel: strengthText,
+      strengthLabelStyle: 'font-weight:700; color:' + strengthColor + ';',
+      rules, showMismatch, confirmBorder: showMismatch ? '#F3C9C9' : '#E2E8F0',
+      submitReset: () => { if (canSubmit) set({ done: true }); },
+      submitStyle: 'width:100%; margin-top:20px; border:none; border-radius:9px; padding:14px; font-size:15px; font-weight:700; font-family:inherit; display:flex; align-items:center; justify-content:center; gap:9px; ' + (canSubmit ? 'background:#42481c; color:#fff; cursor:pointer;' : 'background:#CBD5D0; color:#fff; cursor:not-allowed;'),
+    };
+  }
+}
+</script>
+</body>
+</html>

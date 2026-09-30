@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; background:#F6F8F7; color:#1A1D21; -webkit-font-smoothing: antialiased; }
+  a { color:#42481c; text-decoration:none; } a:hover { color:#5a6127; }
+  ::-webkit-scrollbar { width:10px; height:10px; }
+  ::-webkit-scrollbar-thumb { background:#b3b79a; border-radius:6px; border:2px solid transparent; background-clip:padding-box; }
+</style>
+</helmet>
+
+<div style="display:flex; min-height:100vh; background:#F6F8F7;">
+
+  <!-- SIDEBAR -->
+  <aside style="width:260px; flex-shrink:0; background:#fff; border-right:1px solid #E2E8F0; display:flex; flex-direction:column; position:sticky; top:0; height:100vh;">
+    <div style="height:72px; display:flex; align-items:center; gap:12px; padding:0 22px; border-bottom:1px solid #E2E8F0; flex-shrink:0;">
+      <div style="width:38px; height:38px; border-radius:10px; overflow:hidden;"><img src="uploads/Untitled design (2).png" alt="Nadi Qurban" style="width:100%; height:100%; object-fit:cover; display:block; transform:scale(1.22);"></div>
+      <div style="line-height:1;"><div style="font-size:15px; font-weight:800; letter-spacing:.3px; color:#42481c;">NADI QURBAN</div><div style="font-size:10.5px; font-weight:600; letter-spacing:2px; color:#94A3AC; margin-top:3px;">OSI SYSTEM</div></div>
+    </div>
+    <nav style="flex:1; overflow-y:auto; padding:14px 12px;">
+      <sc-for list="{{ nav }}" as="item" hint-placeholder-count="12">
+        <sc-if value="{{ item.isSection }}" hint-placeholder-val="{{ false }}"><div style="font-size:10.5px; font-weight:700; letter-spacing:1.4px; color:#94A3AC; padding:16px 14px 8px;">{{ item.label }}</div></sc-if>
+        <sc-if value="{{ item.isItem }}" hint-placeholder-val="{{ true }}">
+          <div style="{{ item.rowStyle }}" onClick="{{ item.onClick }}">
+            <span style="position:absolute; left:0; top:8px; bottom:8px; width:3px; border-radius:0 3px 3px 0; background:{{ item.bar }};"></span>
+            <i class="{{ item.icon }}" style="font-size:19px; color:{{ item.iconColor }};"></i>
+            <span style="flex:1;">{{ item.label }}</span>
+            <sc-if value="{{ item.badge }}" hint-placeholder-val="{{ false }}"><span style="background:#C9A227; color:#fff; font-size:10.5px; font-weight:700; border-radius:20px; padding:2px 8px;">{{ item.badge }}</span></sc-if>
+          </div>
+        </sc-if>
+      </sc-for>
+    </nav>
+    <div style="padding:14px 16px; display:flex; align-items:center; gap:11px; border-top:1px solid #E2E8F0;">
+      <div style="width:38px; height:38px; border-radius:50%; background:#42481c; color:#C9A227; font-weight:800; font-size:13px; display:flex; align-items:center; justify-content:center;">RS</div>
+      <div style="min-width:0; flex:1;"><div style="font-size:13px; font-weight:700; color:#1A1D21;">Rahim Salleh</div><div style="font-size:11px; color:#64748B;">Sales Executive</div></div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div style="flex:1; min-width:0; display:flex; flex-direction:column;">
+    <header style="height:72px; background:#fff; border-bottom:1px solid #E2E8F0; display:flex; align-items:center; padding:0 32px; gap:24px; position:sticky; top:0; z-index:20;">
+      <div style="flex:1; max-width:520px; margin:0 auto; display:flex; align-items:center; gap:11px; background:#F6F8F7; border:1px solid #E2E8F0; border-radius:10px; padding:10px 15px;">
+        <i class="ph ph-magnifying-glass" style="font-size:18px; color:#94A3AC;"></i>
+        <span style="font-size:13.5px; color:#94A3AC;">Cari lead, syarikat, no. telefon&hellip;</span>
+        <span style="margin-left:auto; font-size:11px; color:#94A3AC; border:1px solid #E2E8F0; border-radius:5px; padding:2px 7px; background:#fff;">&#8984;K</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <div style="position:relative; width:40px; height:40px; border-radius:10px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; color:#475569;"><i class="ph ph-bell" style="font-size:20px;"></i><span style="position:absolute; top:-4px; right:-4px; background:#DC2626; color:#fff; font-size:10px; font-weight:700; border-radius:20px; min-width:18px; height:18px; display:flex; align-items:center; justify-content:center; padding:0 4px; border:2px solid #fff;">7</span></div>
+        <div style="width:1px; height:30px; background:#E2E8F0; margin:0 4px;"></div>
+        <div style="width:40px; height:40px; border-radius:50%; background:#42481c; color:#C9A227; font-weight:800; font-size:13px; display:flex; align-items:center; justify-content:center;">RS</div>
+      </div>
+    </header>
+
+    <main style="flex:1; padding:28px 32px 56px; overflow-y:auto;">
+
+      <!-- ===== PIPELINE VIEW ===== -->
+      <sc-if value="{{ isList }}" hint-placeholder-val="{{ true }}">
+        <div>
+          <div style="display:flex; align-items:flex-end; gap:16px; margin-bottom:24px; flex-wrap:wrap;">
+            <div style="margin-right:auto;">
+              <div style="display:flex; align-items:center; gap:8px; font-size:12.5px; color:#94A3AC; margin-bottom:6px;"><span>Jualan &amp; Kewangan</span><i class="ph ph-caret-right" style="font-size:12px;"></i><span style="color:#42481c; font-weight:600;">Sales CRM</span></div>
+              <h1 style="font-size:23px; font-weight:700;">Saluran Jualan</h1>
+            </div>
+            <div style="display:flex; align-items:center; background:#fff; border:1px solid #E2E8F0; border-radius:9px; overflow:hidden;">
+              <sc-for list="{{ viewTabs }}" as="vt" hint-placeholder-count="2"><span onClick="{{ vt.onClick }}" style="{{ vt.style }}"><i class="{{ vt.icon }}" style="font-size:16px;"></i> {{ vt.label }}</span></sc-for>
+            </div>
+            <button onClick="{{ openNewLead }}" style="display:flex; align-items:center; gap:8px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;" style-hover="background:#5a6127;"><i class="ph ph-plus" style="font-size:17px;"></i> Lead Baharu</button>
+          </div>
+
+          <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:18px; margin-bottom:22px;">
+            <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+              <div style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; padding:18px 20px; display:flex; align-items:center; gap:14px;">
+                <div style="width:44px; height:44px; border-radius:11px; background:{{ k.tint }}; color:{{ k.color }}; display:flex; align-items:center; justify-content:center;"><i class="{{ k.icon }}" style="font-size:22px;"></i></div>
+                <div><div style="font-size:22px; font-weight:700; line-height:1;">{{ k.value }}</div><div style="font-size:12.5px; color:#64748B; margin-top:5px;">{{ k.label }}</div></div>
+              </div>
+            </sc-for>
+          </div>
+
+          <!-- KANBAN -->
+          <sc-if value="{{ isKanban }}" hint-placeholder-val="{{ true }}">
+          <div style="display:grid; grid-template-columns:repeat(5,minmax(240px,1fr)); gap:14px; overflow-x:auto; padding-bottom:8px;">
+            <sc-for list="{{ columns }}" as="col" hint-placeholder-count="5">
+              <div style="background:#eef0e6; border:1px solid #E2E8F0; border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:10px; min-height:200px;" onDragOver="{{ col.onDragOver }}" onDrop="{{ col.onDrop }}">
+                <div style="display:flex; align-items:center; justify-content:space-between; padding:2px 4px;">
+                  <div style="display:flex; align-items:center; gap:8px;"><span style="width:9px; height:9px; border-radius:50%; background:{{ col.dot }};"></span><span style="font-size:13px; font-weight:700; color:#334155;">{{ col.title }}</span><span style="font-size:11px; font-weight:700; color:#64748B; background:#fff; border-radius:20px; padding:1px 8px;">{{ col.count }}</span></div>
+                  <i class="ph ph-plus" style="font-size:15px; color:#94A3AC; cursor:pointer;"></i>
+                </div>
+                <div style="font-size:11.5px; font-weight:600; color:#94A3AC; padding:0 4px;">{{ col.value }}</div>
+                <sc-for list="{{ col.cards }}" as="c" hint-placeholder-count="3">
+                  <div draggable="{{ c.draggable }}" onDragStart="{{ c.onDragStart }}" onClick="{{ c.onView }}" style="background:#fff; border:1px solid #E2E8F0; border-radius:10px; padding:13px; cursor:grab; display:flex; flex-direction:column; gap:9px;">
+                    <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:8px;"><span style="font-size:13.5px; font-weight:700; color:#1A1D21; line-height:1.3;">{{ c.name }}</span><span style="{{ c.tagStyle }}">{{ c.service }}</span></div>
+                    <div style="font-size:12px; color:#64748B; display:flex; align-items:center; gap:5px;"><i class="ph ph-buildings" style="font-size:14px;"></i>{{ c.company }}</div>
+                    <div style="display:flex; align-items:center; justify-content:space-between; padding-top:9px; border-top:1px solid #F1F5F4;">
+                      <span style="font-size:13px; font-weight:700; color:#42481c;">{{ c.value }}</span>
+                      <div style="display:flex; align-items:center; gap:5px;"><span style="width:22px; height:22px; border-radius:50%; background:{{ c.avTint }}; color:{{ c.avColor }}; font-size:10px; font-weight:700; display:flex; align-items:center; justify-content:center;">{{ c.owner }}</span><span style="font-size:11px; color:#94A3AC;">{{ c.days }}</span></div>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-for>
+          </div>
+          </sc-if>
+
+          <!-- SENARAI (TABLE) -->
+          <sc-if value="{{ isTable }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; overflow:hidden;">
+            <div style="overflow-x:auto;"><div style="min-width:960px;">
+              <div style="display:grid; grid-template-columns:1.5fr 1.3fr 1fr 1fr 1.1fr 0.9fr 0.6fr; padding:13px 20px; background:#F6F8F7; border-bottom:1px solid #E2E8F0; font-size:11px; font-weight:700; letter-spacing:.4px; color:#94A3AC; text-transform:uppercase;">
+                <span>Lead</span><span>Syarikat</span><span>Servis</span><span style="text-align:right;">Nilai</span><span>Peringkat</span><span>Owner</span><span style="text-align:right;">Lihat</span>
+              </div>
+              <sc-for list="{{ rows }}" as="r" hint-placeholder-count="9">
+                <div style="display:grid; grid-template-columns:1.5fr 1.3fr 1fr 1fr 1.1fr 0.9fr 0.6fr; padding:14px 20px; align-items:center; border-bottom:1px solid #F1F5F4;">
+                  <span style="font-size:13px; font-weight:600; color:#1A1D21;">{{ r.name }}</span>
+                  <span style="font-size:12.5px; color:#64748B;">{{ r.company }}</span>
+                  <span><span style="{{ r.tagStyle }}">{{ r.service }}</span></span>
+                  <span style="text-align:right; font-size:13px; font-weight:700; color:#42481c; font-variant-numeric:tabular-nums;">{{ r.value }}</span>
+                  <span style="display:flex; align-items:center; gap:6px;"><span style="width:8px; height:8px; border-radius:50%; background:{{ r.dot }};"></span><span style="font-size:12.5px; color:#334155;">{{ r.stage }}</span></span>
+                  <span style="display:flex; align-items:center; gap:7px;"><span style="width:24px; height:24px; border-radius:50%; background:{{ r.avTint }}; color:{{ r.avColor }}; font-size:10px; font-weight:700; display:flex; align-items:center; justify-content:center;">{{ r.owner }}</span><span style="font-size:12px; color:#94A3AC;">{{ r.days }}</span></span>
+                  <span style="display:flex; justify-content:flex-end;"><span onClick="{{ r.onView }}" style="width:30px; height:30px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#42481c;"><i class="ph ph-eye" style="font-size:16px;"></i></span></span>
+                </div>
+              </sc-for>
+            </div></div>
+          </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <!-- ===== LEAD DETAIL ===== -->
+      <sc-if value="{{ isDetail }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <span onClick="{{ goList }}" style="display:inline-flex; align-items:center; gap:7px; font-size:13.5px; font-weight:600; color:#42481c; cursor:pointer; margin-bottom:18px;"><i class="ph ph-arrow-left" style="font-size:17px;"></i> Kembali ke saluran</span>
+
+          <div style="background:#fff; border:1px solid #E2E8F0; border-radius:14px; padding:24px; display:flex; align-items:center; gap:20px; margin-bottom:20px; flex-wrap:wrap;">
+            <div style="width:64px; height:64px; border-radius:16px; background:{{ cur.avTint }}; color:{{ cur.avColor }}; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:22px;">{{ cur.initials }}</div>
+            <div style="min-width:0; flex:1;">
+              <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;"><h1 style="font-size:22px; font-weight:700;">{{ cur.name }}</h1><span style="{{ cur.stageBadge }}">{{ cur.stage }}</span></div>
+              <div style="display:flex; align-items:center; gap:16px; margin-top:8px; font-size:13px; color:#64748B; flex-wrap:wrap;">
+                <span style="display:flex; align-items:center; gap:5px;"><i class="ph ph-buildings" style="font-size:15px;"></i>{{ cur.company }}</span>
+                <span style="display:flex; align-items:center; gap:5px;"><i class="ph ph-phone" style="font-size:15px;"></i>{{ cur.phone }}</span>
+                <span style="display:flex; align-items:center; gap:5px;"><i class="ph ph-envelope-simple" style="font-size:15px;"></i>{{ cur.email }}</span>
+              </div>
+            </div>
+            <div style="text-align:right;"><div style="font-size:24px; font-weight:800; color:#42481c;">{{ cur.value }}</div><div style="font-size:12px; color:#94A3AC; margin-top:2px;">Anggaran nilai</div></div>
+            <button onClick="{{ markLeadDone }}" style="display:flex; align-items:center; gap:8px; background:{{ leadDoneBg }}; color:#fff; border:none; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="{{ leadDoneIcon }}" style="font-size:16px;"></i> {{ leadDoneLabel }}</button>
+          </div>
+
+          <div style="display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.5fr); gap:20px; align-items:start;">
+            <div style="display:flex; flex-direction:column; gap:20px;">
+              <section style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; padding:22px 24px;">
+                <h2 style="font-size:15px; font-weight:700; margin-bottom:18px;">Maklumat Lead</h2>
+                <div style="display:flex; flex-direction:column; gap:15px;">
+                  <sc-for list="{{ leadInfo }}" as="d" hint-placeholder-count="6"><div><div style="font-size:11.5px; color:#94A3AC; text-transform:uppercase; letter-spacing:.4px;">{{ d.k }}</div><div style="font-size:14px; font-weight:600; margin-top:4px;">{{ d.v }}</div></div></sc-for>
+                  <div><div style="font-size:11.5px; color:#94A3AC; text-transform:uppercase; letter-spacing:.4px; margin-bottom:6px;">Catatan</div><textarea value="{{ leadNoteVal }}" onInput="{{ onLeadNoteVal }}" rows="3" placeholder="Tulis catatan mengenai lead ini..." style="width:100%; resize:vertical; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></textarea></div>
+                </div>
+              </section>
+              <section style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; padding:22px 24px;">
+                <h2 style="font-size:15px; font-weight:700; margin-bottom:16px;">Kemajuan Peringkat</h2>
+                <div style="display:flex; flex-direction:column; gap:12px;">
+                  <sc-for list="{{ stages }}" as="st" hint-placeholder-count="5">
+                    <div style="display:flex; align-items:center; gap:11px;"><span style="{{ st.dotStyle }}"><i class="{{ st.icon }}" style="font-size:13px;"></i></span><span style="{{ st.labelStyle }}">{{ st.label }}</span></div>
+                  </sc-for>
+                </div>
+              </section>
+            </div>
+
+            <section style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; padding:22px 24px;">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:18px;"><h2 style="font-size:15px; font-weight:700;">Aktiviti &amp; Nota</h2><span onClick="{{ toggleNote }}" style="font-size:12.5px; font-weight:600; color:#42481c; cursor:pointer;">+ Tambah Nota</span></div>
+              <sc-if value="{{ noteOpen }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-bottom:16px; display:flex; flex-direction:column; gap:10px;">
+                  <textarea value="{{ noteText }}" onInput="{{ onNoteText }}" rows="3" placeholder="Tulis nota atau aktiviti&hellip;" style="width:100%; resize:vertical; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></textarea>
+                  <div style="display:flex; gap:8px; justify-content:flex-end;">
+                    <button onClick="{{ toggleNote }}" style="background:#fff; color:#334155; border:1px solid #E2E8F0; border-radius:8px; padding:8px 14px; font-size:12.5px; font-weight:600; cursor:pointer; font-family:inherit;">Batal</button>
+                    <button onClick="{{ saveNote }}" style="display:inline-flex; align-items:center; gap:6px; background:#42481c; color:#fff; border:none; border-radius:8px; padding:8px 14px; font-size:12.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-check" style="font-size:14px;"></i> Simpan</button>
+                  </div>
+                </div>
+              </sc-if>
+              <div style="display:flex; flex-direction:column;">
+                <sc-for list="{{ activities }}" as="a" hint-placeholder-count="5">
+                  <div style="display:flex; gap:13px;">
+                    <div style="display:flex; flex-direction:column; align-items:center;"><span style="width:32px; height:32px; border-radius:9px; background:{{ a.tint }}; color:{{ a.color }}; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><i class="{{ a.icon }}" style="font-size:16px;"></i></span><span style="{{ a.lineStyle }}"></span></div>
+                    <div style="padding-bottom:18px; flex:1;"><div style="font-size:13.5px; font-weight:600;">{{ a.title }}</div><div style="font-size:12.5px; color:#64748B; margin-top:3px; line-height:1.5;">{{ a.desc }}</div><div style="font-size:11.5px; color:#94A3AC; margin-top:4px;">{{ a.who }} &middot; {{ a.time }}</div></div>
+                  </div>
+                </sc-for>
+              </div>
+            </section>
+          </div>
+        </div>
+      </sc-if>
+
+    </main>
+  </div>
+
+  <sc-if value="{{ showNewLead }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; inset:0; z-index:100; background:rgba(20,24,20,.55); display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; padding:32px 16px;">
+      <div style="width:100%; max-width:520px; background:#fff; border-radius:14px; box-shadow:0 24px 60px rgba(0,0,0,.3); overflow:hidden;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 24px; border-bottom:1px solid #E2E8F0;">
+          <div style="display:flex; align-items:center; gap:11px;"><span style="width:36px; height:36px; border-radius:10px; background:#edeee0; color:#42481c; display:flex; align-items:center; justify-content:center;"><i class="ph ph-user-plus" style="font-size:19px;"></i></span><div><h2 style="font-size:16px; font-weight:700;">Lead Baharu</h2><p style="font-size:12px; color:#94A3AC; margin-top:2px;">Tambah prospek jualan baharu</p></div></div>
+          <span onClick="{{ closeNewLead }}" style="width:32px; height:32px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#64748B;"><i class="ph ph-x" style="font-size:16px;"></i></span>
+        </div>
+        <div style="padding:22px 24px; display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+          <div style="grid-column:1 / -1;"><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Nama Prospek</label><input value="{{ nlName }}" onInput="{{ onNlName }}" placeholder="Nama penuh / syarikat" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">No. Telefon</label><input value="{{ nlPhone }}" onInput="{{ onNlPhone }}" placeholder="01X-XXXXXXX" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Emel</label><input value="{{ nlEmail }}" onInput="{{ onNlEmail }}" type="email" placeholder="emel@contoh.com" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Syarikat</label><input value="{{ nlCompany }}" onInput="{{ onNlCompany }}" placeholder="Individu / nama syarikat" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Jenis Servis</label><select value="{{ nlService }}" onChange="{{ onNlService }}" style="width:100%; font-family:inherit; font-size:13px; color:#334155; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none; background:#fff;"><option>Qurban</option><option>Aqiqah</option><option>Dam</option><option>Nazar Haiwan</option><option>Korporat</option></select></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Jenis Pakej</label><select style="width:100%; font-family:inherit; font-size:13px; color:#334155; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none; background:#fff;"><option>Delima</option><option>Zamrud</option><option>Topaz</option><option>Nilam</option><option>Mutiara</option></select></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Nilai (RM)</label><input value="{{ nlValue }}" onInput="{{ onNlValue }}" placeholder="cth. 2450" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+          <div style="grid-column:1 / -1;"><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Catatan Nota</label><textarea rows="3" placeholder="Catatan tambahan mengenai lead ini..." style="width:100%; resize:vertical; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></textarea></div>
+        </div>
+        <div style="padding:0 24px 22px; display:flex; gap:10px; justify-content:flex-end;">
+          <button onClick="{{ closeNewLead }}" style="background:#fff; color:#334155; border:1px solid #E2E8F0; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;">Batal</button>
+          <button onClick="{{ saveLead }}" style="display:inline-flex; align-items:center; gap:7px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-check" style="font-size:16px;"></i> Simpan Lead</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { view: 'list', mode: 'Kanban', cur: 0, showNewLead: false, cardCol: {}, dragCard: null };
+  renderVals() {
+    const s = this.state;
+    const set = (o) => this.setState(o);
+
+    const navItem = (icon, label, active, badge) => ({
+      isItem: true, isSection: false, label, badge: badge || '',
+      icon, iconColor: active ? '#42481c' : '#94A3AC', bar: active ? '#42481c' : 'transparent',
+      onClick: () => { const m = { 'Dashboard': 'Dashboard Operasi.dc.html', 'Bayaran Ansuran': 'Bayaran Ansuran.dc.html', 'Tempahan & Pelanggan': 'Tempahan & Pelanggan.dc.html', 'Pengesahan Bayaran': 'Tempahan & Pelanggan.dc.html', 'Lafaz Akad': 'Lafaz Akad.dc.html', 'Agihan Negara': 'Agihan Negara.dc.html', 'Pelaksanaan & Laporan': 'Pelaksanaan & Laporan.dc.html', 'AWB & Postage': 'AWB & Postage.dc.html', 'Tempahan Selesai': 'Tempahan Selesai.dc.html', 'Vendor': 'Vendor.dc.html', 'Produk': 'Produk.dc.html', 'Dokumen': 'Dokumen.dc.html', 'Sales CRM': 'Sales CRM.dc.html', 'Kod Promosi': 'Kod Promosi.dc.html', 'Kewangan': 'Kewangan.dc.html', 'Pusat Laporan': 'Pusat Laporan.dc.html', 'Audit Log': 'Audit Log.dc.html', 'Notifikasi': 'Notifikasi.dc.html', 'Pengguna': 'Pengguna & Peranan.dc.html', 'Sijil': 'Tempahan & Pelanggan.dc.html', 'Tetapan': 'Tempahan & Pelanggan.dc.html' }; if (m[label] && !active) { try { location.href = (function(p){try{var u=new URL(p,location.href);new URLSearchParams(location.search).forEach(function(v,k){if(!u.searchParams.has(k))u.searchParams.set(k,v);});return u.href;}catch(e){return p;}})(m[label]); } catch (e) {} } },
+      rowStyle: 'position:relative; display:flex; align-items:center; gap:12px; padding:10px 14px; margin:2px 0; border-radius:9px; font-size:13.5px; cursor:pointer;' + (active ? 'background:#edeee0; color:#42481c; font-weight:700;' : 'color:#475569; font-weight:500;'),
+    });
+    const sec = (label) => ({ isSection: true, isItem: false, label });
+    const nav = [
+      sec('UTAMA'), navItem('ph ph-squares-four', 'Dashboard', false),
+      sec('OPERASI'), navItem('ph ph-calendar-check', 'Bayaran Ansuran', false), navItem('ph ph-shopping-cart-simple', 'Tempahan & Pelanggan', false, '34'), navItem('ph ph-seal-check', 'Pengesahan Bayaran', false, '5'), navItem('ph ph-hand-heart', 'Lafaz Akad', false), navItem('ph ph-globe-hemisphere-west', 'Agihan Negara', false), navItem('ph ph-shopping-bag', 'Pelaksanaan & Laporan', false), navItem('ph ph-package', 'AWB & Postage', false), navItem('ph ph-check-square-offset', 'Tempahan Selesai', false), navItem('ph ph-truck', 'Vendor', false), navItem('ph ph-cow', 'Produk', false), navItem('ph ph-folders', 'Dokumen', false),
+      sec('JUALAN & KEWANGAN'), navItem('ph ph-users-three', 'Sales CRM', true), navItem('ph ph-ticket', 'Kod Promosi', false), navItem('ph ph-wallet', 'Kewangan', false, '87'),
+      sec('LAPORAN'), navItem('ph ph-chart-bar', 'Pusat Laporan', false), navItem('ph ph-clock-counter-clockwise', 'Audit Log', false),
+      sec('SISTEM'), navItem('ph ph-bell', 'Notifikasi', false, '7'), navItem('ph ph-users', 'Pengguna', false), navItem('ph ph-certificate', 'Sijil', false), navItem('ph ph-gear-six', 'Tetapan', false),
+    ];
+
+    const viewTabs = [['Kanban', 'ph ph-kanban'], ['Senarai', 'ph ph-list-bullets']].map(([label, icon]) => {
+      const on = s.mode === label;
+      return { label, icon, onClick: () => set({ mode: label }),
+        style: 'display:flex; align-items:center; gap:7px; font-size:13px; font-weight:600; padding:9px 15px; cursor:pointer;' + (on ? 'background:#42481c; color:#fff;' : 'color:#64748B;') };
+    });
+
+    const kpis = [
+      { icon: 'ph ph-funnel', tint: '#edeee0', color: '#42481c', value: '68', label: 'Lead Aktif' },
+      { icon: 'ph ph-currency-circle-dollar', tint: '#FBF3DC', color: '#C9A227', value: 'RM 284k', label: 'Nilai Saluran' },
+      { icon: 'ph ph-trophy', tint: '#EAF7EE', color: '#16A34A', value: '32%', label: 'Kadar Tukar' },
+      { icon: 'ph ph-handshake', tint: '#E8F0FB', color: '#2563EB', value: '21', label: 'Ditutup (Bulan)' },
+    ];
+
+    const avPairs = [['#edeee0','#42481c'],['#FBF3DC','#C9A227'],['#E8F0FB','#2563EB'],['#EAF7EE','#16A34A'],['#F3ECFB','#7C3AED']];
+    const tag = (bg, col) => 'font-size:10.5px; font-weight:700; border-radius:6px; padding:3px 7px; background:' + bg + '; color:' + col + '; white-space:nowrap;';
+    const svcTag = { 'Qurban': tag('#edeee0','#42481c'), 'Aqiqah': tag('#FBF3DC','#9a7d16'), 'Dam': tag('#E8F0FB','#2563EB'), 'Korporat': tag('#F3ECFB','#7C3AED') };
+
+    let gid = 0;
+    const moves = s.cardCol || {};
+    const card = (name, company, service, value, owner, ov, days) => {
+      const av = avPairs[gid % avPairs.length];
+      const initials = name.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase();
+      const idx = gid++;
+      return { name, company, service, tagStyle: svcTag[service] || tag('#F1F5F4','#64748B'), value, owner, avTint: ov[0], avColor: ov[1], days: days + 'h', initials,
+        draggable: true, onDragStart: (e) => { try { e.dataTransfer.setData('text/plain', name); } catch (er) {} this.setState({ dragCard: name }); },
+        onView: () => set({ view: 'detail', cur: idx }) };
+    };
+
+    const columns = [
+      { title: 'Lead Baru', dot: '#94A3AC', count: '18', value: 'RM 72k', cards: (s.savedLeads || []).map(l => card(l.name, l.company, l.service, l.value, 'MN', avPairs[1], 0)).concat([
+        card('Masjid Al-Hidayah', 'Jawatankuasa Masjid', 'Korporat', 'RM 28,000', 'RS', avPairs[0], 2),
+        card('Ahmad Zaki bin Hassan', 'Individu', 'Qurban', 'RM 2,450', 'RS', avPairs[1], 1),
+        card('Syarikat Berkat Sdn Bhd', 'Berkat Group', 'Korporat', 'RM 15,000', 'NA', avPairs[2], 3),
+      ])},
+      { title: 'Dihubungi', dot: '#2563EB', count: '14', value: 'RM 58k', cards: [
+        card('Nurul Aina binti Rahim', 'Individu', 'Aqiqah', 'RM 1,700', 'RS', avPairs[3], 4),
+        card('Koperasi Guru Selangor', 'KGS Berhad', 'Korporat', 'RM 22,000', 'NA', avPairs[4], 5),
+      ]},
+      { title: 'Rundingan', dot: '#C9A227', count: '11', value: 'RM 64k', cards: [
+        card('Mohd Firdaus bin Omar', 'Individu', 'Dam', 'RM 5,200', 'RS', avPairs[0], 6),
+        card('Surau An-Nur', 'JK Surau', 'Korporat', 'RM 18,500', 'RS', avPairs[1], 3),
+      ]},
+      { title: 'Cadangan', dot: '#7C3AED', count: '9', value: 'RM 48k', cards: [
+        card('Yayasan Ikhlas', 'NGO', 'Korporat', 'RM 32,000', 'NA', avPairs[2], 7),
+        card('Siti Khadijah bt Yusof', 'Individu', 'Qurban', 'RM 4,200', 'RS', avPairs[3], 2),
+      ]},
+      { title: 'Ditutup', dot: '#16A34A', count: '21', value: 'RM 96k', cards: [
+        card('Zulhilmi bin Abdullah', 'Individu', 'Qurban', 'RM 3,900', 'RS', avPairs[4], 1),
+        card('Persatuan Belia Damai', 'PBD', 'Korporat', 'RM 26,000', 'NA', avPairs[0], 4),
+      ]},
+    ];
+
+    // Flatten cards to allow detail lookup by index; capture each card's column stage
+    const colByTitle = {}; columns.forEach(c => { colByTitle[c.title] = c; });
+    columns.forEach(c => { c._orig = c.cards; c.cards = []; });
+    columns.forEach(c => { c._orig.forEach(cc => { const dest = moves[cc.name] && colByTitle[moves[cc.name]] ? colByTitle[moves[cc.name]] : c; dest.cards.push(cc); }); });
+    columns.forEach(c => { delete c._orig; c.onDragOver = (e) => { e.preventDefault(); }; c.onDrop = ((title) => (e) => { e.preventDefault(); const nm = (this.state.dragCard) || (function () { try { return e.dataTransfer.getData('text/plain'); } catch (er) { return ''; } })(); if (nm) this.setState({ cardCol: Object.assign({}, this.state.cardCol, { [nm]: title }), dragCard: null }); })(c.title); });
+    const flat = [];
+    const rows = [];
+    let ridx = 0;
+    columns.forEach(c => c.cards.forEach(cc => {
+      flat.push(cc);
+      rows.push({ name: cc.name, company: cc.company, service: cc.service, tagStyle: cc.tagStyle, value: cc.value,
+        stage: c.title, dot: c.dot, owner: cc.owner, avTint: cc.avTint, avColor: cc.avColor, days: cc.days,
+        onView: (function (i) { return () => set({ view: 'detail', cur: i }); })(ridx++) });
+    }));
+    const cur = flat[s.cur] || flat[0];
+    const stageBadge = { 'Qurban': 'display:inline-block; font-size:11.5px; font-weight:600; border-radius:20px; padding:4px 12px; background:#edeee0; color:#42481c;' };
+    const curOut = {
+      ...cur,
+      stage: 'Rundingan',
+      stageBadge: 'display:inline-block; font-size:11.5px; font-weight:600; border-radius:20px; padding:4px 12px; background:#FBF3DC; color:#9a7d16;',
+      phone: '012-3456789', email: 'lead@email.com',
+    };
+
+    const leadInfo = [
+      { k: 'Lead ID', v: 'LEAD-' + (5040 + s.cur) }, { k: 'Sumber', v: 'WhatsApp Campaign' },
+      { k: 'Servis Diminati', v: cur.service }, { k: 'Anggaran Peserta', v: '12 orang' },
+      { k: 'Sales Owner', v: 'Rahim Salleh' }, { k: 'Tarikh Masuk', v: '08 Jun 2027' },
+    ];
+    const stageDefs = [['Lead Baru', true], ['Dihubungi', true], ['Rundingan', 'cur'], ['Cadangan', false], ['Ditutup', false]];
+    const stages = stageDefs.map(([label, st]) => {
+      const done = st === true, isCur = st === 'cur';
+      return { label,
+        icon: done ? 'ph-fill ph-check' : isCur ? 'ph ph-dot-outline' : 'ph ph-circle',
+        dotStyle: 'width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; background:' + (done ? '#42481c' : isCur ? '#C9A227' : '#F1F5F4') + '; color:' + ((done || isCur) ? '#fff' : '#94A3AC') + ';',
+        labelStyle: 'font-size:13.5px; font-weight:600; color:' + (done ? '#1A1D21' : isCur ? '#9a7d16' : '#94A3AC') + ';' };
+    });
+
+    const act = (icon, tint, color, title, desc, who, time, last) => ({
+      icon, tint, color, title, desc, who, time,
+      lineStyle: 'flex:1; width:2px; background:' + (last ? 'transparent' : '#E2E8F0') + '; margin:3px 0; min-height:12px;',
+    });
+    const activities = [
+      act('ph ph-phone-call', '#edeee0', '#42481c', 'Panggilan susulan', 'Berbincang pakej Qurban Lembu untuk 12 peserta. Prospek berminat pakej premium.', 'Rahim Salleh', '2 jam lalu'),
+      act('ph ph-envelope-simple', '#E8F0FB', '#2563EB', 'Sebut harga dihantar', 'Emel sebut harga RM 5,200 termasuk sijil & video pelaksanaan.', 'Rahim Salleh', 'Semalam'),
+      act('ph ph-chat-circle-text', '#FBF3DC', '#C9A227', 'Mesej WhatsApp', 'Prospek bertanya tentang tarikh pelaksanaan di Arab Saudi.', 'Auto-CRM', '2 hari lalu'),
+      act('ph ph-user-plus', '#F3ECFB', '#7C3AED', 'Lead dicipta', 'Lead masuk melalui kempen WhatsApp musim Qurban 2027.', 'Sistem', '08 Jun 2027', true),
+    ];
+    const userNotes = (s.notes || []).map(n => act('ph ph-note-pencil', '#edeee0', '#42481c', 'Nota ditambah', n, 'Muhammad Nurfitkri', 'Baru sahaja'));
+    const allActivities = userNotes.concat(activities);
+
+    return {
+      nav, viewTabs, kpis, columns, rows,
+      noteOpen: s.noteOpen === true,
+      noteText: s.noteText || '',
+      onNoteText: (e) => set({ noteText: e.target.value }),
+      toggleNote: () => set({ noteOpen: !s.noteOpen, noteText: '' }),
+      saveNote: () => { const t = (s.noteText || '').trim(); if (!t) { set({ noteOpen: false }); return; } set({ notes: [t].concat(s.notes || []), noteOpen: false, noteText: '' }); },
+      showNewLead: s.showNewLead === true,
+      openNewLead: () => set({ showNewLead: true }),
+      closeNewLead: () => set({ showNewLead: false }),
+      nlName: s.nlName || '', onNlName: (e) => set({ nlName: e.target.value }),
+      nlPhone: s.nlPhone || '', onNlPhone: (e) => set({ nlPhone: e.target.value }),
+      nlEmail: s.nlEmail || '', onNlEmail: (e) => set({ nlEmail: e.target.value }),
+      nlCompany: s.nlCompany || '', onNlCompany: (e) => set({ nlCompany: e.target.value }),
+      nlService: s.nlService || 'Qurban', onNlService: (e) => set({ nlService: e.target.value }),
+      nlValue: s.nlValue || '', onNlValue: (e) => set({ nlValue: e.target.value }),
+      saveLead: () => {
+        const v = String(s.nlValue || '').replace(/[^0-9]/g, '');
+        const lead = { name: s.nlName || 'Lead Baharu', company: s.nlCompany || 'Individu', service: s.nlService || 'Qurban', value: v ? ('RM ' + Number(v).toLocaleString('en-US')) : 'RM 0' };
+        set({ savedLeads: [lead].concat(s.savedLeads || []), showNewLead: false, nlName: '', nlPhone: '', nlEmail: '', nlCompany: '', nlService: 'Qurban', nlValue: '' });
+      },
+      isKanban: s.mode === 'Kanban', isTable: s.mode === 'Senarai',
+      isList: s.view === 'list', isDetail: s.view === 'detail', goList: () => set({ view: 'list' }),
+      cur: curOut, leadInfo, stages, activities: allActivities,
+      leadNoteVal: s.leadNoteVal || '', onLeadNoteVal: (e) => set({ leadNoteVal: e.target.value }),
+      leadDoneBg: s.leadDone ? '#42481c' : '#16A34A',
+      leadDoneIcon: s.leadDone ? 'ph-fill ph-check-circle' : 'ph ph-check-circle',
+      leadDoneLabel: s.leadDone ? 'Lead Selesai' : 'Tandakan Selesai',
+      markLeadDone: () => set({ leadDone: !s.leadDone }),
+    };
+  }
+}
+</script>
+</body>
+</html>

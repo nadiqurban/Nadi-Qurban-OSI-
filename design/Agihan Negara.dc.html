@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; background:#F6F8F7; color:#1A1D21; -webkit-font-smoothing: antialiased; }
+  a { color:#42481c; text-decoration:none; } a:hover { color:#5a6127; }
+  ::-webkit-scrollbar { width:10px; height:10px; }
+  ::-webkit-scrollbar-thumb { background:#b3b79a; border-radius:6px; border:2px solid transparent; background-clip:padding-box; }
+  @media print {
+    @page { size: A4; margin: 0; }
+    body * { visibility: hidden !important; }
+    #groups-preview, #groups-preview * { visibility: visible !important; }
+    #groups-preview { position: absolute !important; inset: 0 !important; box-shadow: none !important; border: none !important; }
+    #groups-preview .no-print { display: none !important; }
+  }
+</style>
+</helmet>
+
+<div style="display:flex; min-height:100vh; background:#F6F8F7;">
+
+  <!-- SIDEBAR -->
+  <aside style="width:260px; flex-shrink:0; background:#fff; border-right:1px solid #E2E8F0; display:flex; flex-direction:column; position:sticky; top:0; height:100vh;">
+    <div style="height:72px; display:flex; align-items:center; gap:12px; padding:0 22px; border-bottom:1px solid #E2E8F0; flex-shrink:0;">
+      <div style="width:38px; height:38px; border-radius:10px; overflow:hidden;"><img src="uploads/Untitled design (2).png" alt="Nadi Qurban" style="width:100%; height:100%; object-fit:cover; display:block; transform:scale(1.22);"></div>
+      <div style="line-height:1;"><div style="font-size:15px; font-weight:800; letter-spacing:.3px; color:#42481c;">NADI QURBAN</div><div style="font-size:10.5px; font-weight:600; letter-spacing:2px; color:#94A3AC; margin-top:3px;">OSI SYSTEM</div></div>
+    </div>
+    <nav style="flex:1; overflow-y:auto; padding:14px 12px;">
+      <sc-for list="{{ nav }}" as="item" hint-placeholder-count="12">
+        <sc-if value="{{ item.isSection }}" hint-placeholder-val="{{ false }}"><div style="font-size:10.5px; font-weight:700; letter-spacing:1.4px; color:#94A3AC; padding:16px 14px 8px;">{{ item.label }}</div></sc-if>
+        <sc-if value="{{ item.isItem }}" hint-placeholder-val="{{ true }}">
+          <div style="{{ item.rowStyle }}" onClick="{{ item.onClick }}">
+            <span style="position:absolute; left:0; top:8px; bottom:8px; width:3px; border-radius:0 3px 3px 0; background:{{ item.bar }};"></span>
+            <i class="{{ item.icon }}" style="font-size:19px; color:{{ item.iconColor }};"></i>
+            <span style="flex:1;">{{ item.label }}</span>
+            <sc-if value="{{ item.badge }}" hint-placeholder-val="{{ false }}"><span style="background:#C9A227; color:#fff; font-size:10.5px; font-weight:700; border-radius:20px; padding:2px 8px;">{{ item.badge }}</span></sc-if>
+          </div>
+        </sc-if>
+      </sc-for>
+    </nav>
+    <div style="padding:14px 16px; display:flex; align-items:center; gap:11px; border-top:1px solid #E2E8F0;">
+      <div style="width:38px; height:38px; border-radius:50%; background:#42481c; color:#C9A227; font-weight:800; font-size:13px; display:flex; align-items:center; justify-content:center;">MN</div>
+      <div style="min-width:0; flex:1;"><div style="font-size:13px; font-weight:700; color:#1A1D21;">Muhammad Nurfitkri</div><div style="font-size:11px; color:#64748B;">Superadmin</div></div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div style="flex:1; min-width:0; display:flex; flex-direction:column;">
+    <header style="height:72px; background:#fff; border-bottom:1px solid #E2E8F0; display:flex; align-items:center; padding:0 32px; gap:24px; position:sticky; top:0; z-index:20;">
+      <div style="flex:1; max-width:520px; margin:0 auto; display:flex; align-items:center; gap:11px; background:#F6F8F7; border:1px solid #E2E8F0; border-radius:10px; padding:10px 15px;">
+        <i class="ph ph-magnifying-glass" style="font-size:18px; color:#94A3AC;"></i>
+        <span style="font-size:13.5px; color:#94A3AC;">Cari tempahan, negara&hellip;</span>
+        <span style="margin-left:auto; font-size:11px; color:#94A3AC; border:1px solid #E2E8F0; border-radius:5px; padding:2px 7px; background:#fff;">&#8984;K</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <div style="position:relative; width:40px; height:40px; border-radius:10px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; color:#475569;"><i class="ph ph-bell" style="font-size:20px;"></i><span style="position:absolute; top:-4px; right:-4px; background:#DC2626; color:#fff; font-size:10px; font-weight:700; border-radius:20px; min-width:18px; height:18px; display:flex; align-items:center; justify-content:center; padding:0 4px; border:2px solid #fff;">7</span></div>
+        <div style="width:1px; height:30px; background:#E2E8F0; margin:0 4px;"></div>
+        <div style="width:40px; height:40px; border-radius:50%; background:#42481c; color:#C9A227; font-weight:800; font-size:13px; display:flex; align-items:center; justify-content:center;">MN</div>
+      </div>
+    </header>
+
+    <main style="flex:1; padding:28px 32px 56px; overflow-y:auto;">
+      <div style="display:flex; align-items:flex-end; gap:16px; margin-bottom:24px; flex-wrap:wrap;">
+        <div style="margin-right:auto;">
+          <div style="display:flex; align-items:center; gap:8px; font-size:12.5px; color:#94A3AC; margin-bottom:6px;"><span>Operasi</span><i class="ph ph-caret-right" style="font-size:12px;"></i><span style="color:#42481c; font-weight:600;">Agihan Negara</span></div>
+          <h1 style="font-size:23px; font-weight:700;">Agihan Negara Pelaksanaan</h1>
+          <p style="font-size:13.5px; color:#64748B; margin-top:4px;">Tetapkan negara pelaksanaan &amp; vendor bagi tempahan yang telah disahkan.</p>
+        </div>
+      </div>
+
+      <!-- country summary -->
+      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:22px;">
+        <sc-for list="{{ countrySummary }}" as="c" hint-placeholder-count="4">
+          <div style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; padding:16px 18px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;"><span style="font-size:16px; font-weight:700; color:#1A1D21;">{{ c.name }}</span><span style="font-size:11px; font-weight:700; color:{{ c.color }}; background:{{ c.tint }}; border-radius:20px; padding:3px 10px; white-space:nowrap;">{{ c.pct }}</span></div>
+            <div style="font-size:30px; font-weight:800; margin-top:12px; line-height:1;">{{ c.count }}</div>
+            <div style="font-size:12px; color:#94A3AC; margin-top:5px;">tempahan</div>
+            <div style="height:6px; background:#F1F5F4; border-radius:20px; margin-top:10px; overflow:hidden;"><div style="height:100%; width:{{ c.pct }}; background:{{ c.color }}; border-radius:20px;"></div></div>
+          </div>
+        </sc-for>
+      </div>
+
+      <!-- tabs -->
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
+        <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="2"><span onClick="{{ t.onClick }}" style="{{ t.style }}">{{ t.label }} <span style="{{ t.countStyle }}">{{ t.count }}</span></span></sc-for>
+        <sc-if value="{{ hasSelection }}" hint-placeholder-val="{{ false }}"><button onClick="{{ openBulk }}" style="margin-left:auto; display:inline-flex; align-items:center; gap:7px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:9px 15px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-stack" style="font-size:16px;"></i> Agih Pukal ({{ selCount }})</button></sc-if>
+        <button onClick="{{ exportExcel }}" style="display:inline-flex; align-items:center; gap:7px; background:#16A34A; color:#fff; border:none; border-radius:9px; padding:9px 15px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-microsoft-excel-logo" style="font-size:16px;"></i> Eksport Excel</button>
+        <button onClick="{{ openGroups }}" style="{{ groupsBtnStyle }} display:inline-flex; align-items:center; gap:7px; background:#C9A227; color:#fff; border:none; border-radius:9px; padding:9px 15px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-users-three" style="font-size:16px;"></i> Jana Senarai Peserta</button>
+        <sc-if value="{{ showGroupToggle }}" hint-placeholder-val="{{ false }}"><button onClick="{{ toggleGroup }}" style="{{ groupBtnStyle }}"><i class="ph ph-users-three" style="font-size:16px;"></i> Kumpul ikut Vendor</button></sc-if>
+      </div>
+
+      <!-- filters -->
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px; flex-wrap:wrap;">
+        <div style="display:inline-flex; align-items:center; gap:7px; background:#fff; border:1px solid #E2E8F0; border-radius:8px; padding:7px 11px;"><i class="ph ph-magnifying-glass" style="font-size:15px; color:#94A3AC;"></i><input value="{{ fSearch }}" onInput="{{ onFSearch }}" placeholder="Cari No. Tempahan…" style="font-family:inherit; font-size:12.5px; color:#1A1D21; border:none; outline:none; background:transparent; width:170px;"></div>
+        <span style="font-size:12px; font-weight:600; color:#94A3AC; display:inline-flex; align-items:center; gap:6px;"><i class="ph ph-funnel" style="font-size:15px;"></i> Tapis:</span>
+        <select value="{{ fIbadah }}" onChange="{{ onFIbadah }}" style="font-family:inherit; font-size:12.5px; color:#334155; border:1px solid #E2E8F0; border-radius:8px; padding:8px 11px; outline:none; background:#fff; cursor:pointer;"><sc-for list="{{ ibadahFilterOpts }}" as="o" hint-placeholder-count="3"><option>{{ o }}</option></sc-for></select>
+        <select value="{{ fService }}" onChange="{{ onFService }}" style="font-family:inherit; font-size:12.5px; color:#334155; border:1px solid #E2E8F0; border-radius:8px; padding:8px 11px; outline:none; background:#fff; cursor:pointer;"><sc-for list="{{ serviceFilterOpts }}" as="o" hint-placeholder-count="3"><option>{{ o }}</option></sc-for></select>
+        <select value="{{ fCountry }}" onChange="{{ onFCountry }}" style="font-family:inherit; font-size:12.5px; color:#334155; border:1px solid #E2E8F0; border-radius:8px; padding:8px 11px; outline:none; background:#fff; cursor:pointer;"><sc-for list="{{ countryFilterOpts }}" as="o" hint-placeholder-count="3"><option>{{ o }}</option></sc-for></select>
+        <select value="{{ fVendor }}" onChange="{{ onFVendor }}" style="font-family:inherit; font-size:12.5px; color:#334155; border:1px solid #E2E8F0; border-radius:8px; padding:8px 11px; outline:none; background:#fff; cursor:pointer;"><sc-for list="{{ vendorFilterOpts }}" as="o" hint-placeholder-count="3"><option>{{ o }}</option></sc-for></select>
+        <sc-if value="{{ hasFilter }}" hint-placeholder-val="{{ false }}"><span onClick="{{ clearFilter }}" style="display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:600; color:#DC2626; cursor:pointer;"><i class="ph ph-x" style="font-size:13px;"></i> Reset</span></sc-if>
+      </div>
+
+      <!-- grouped by vendor -->
+      <sc-if value="{{ grouped }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          <sc-for list="{{ vendorGroups }}" as="g" hint-placeholder-count="3">
+            <section style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; overflow:hidden;">
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 20px; background:#F6F8F7; border-bottom:1px solid #E2E8F0;">
+                <div style="display:flex; align-items:center; gap:11px;"><span style="width:34px; height:34px; border-radius:9px; background:#edeee0; color:#42481c; display:flex; align-items:center; justify-content:center;"><i class="ph ph-truck" style="font-size:17px;"></i></span><div><div style="font-size:14px; font-weight:700; color:#42481c;">{{ g.vendor }}</div><div style="font-size:11.5px; color:#94A3AC;">{{ g.country }}</div></div></div>
+                <span style="font-size:12px; font-weight:700; color:#16A34A; background:#EAF7EE; border-radius:20px; padding:4px 12px;">{{ g.count }} tempahan</span>
+              </div>
+              <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="3">
+                <div style="display:grid; grid-template-columns:1.3fr 1.6fr 1.2fr; gap:14px; padding:13px 20px; border-bottom:1px solid #F1F5F4; align-items:center; font-size:13px;">
+                  <span style="font-weight:600; color:#42481c;">{{ it.no }}</span>
+                  <span style="min-width:0;"><span style="display:block; font-weight:600; color:#1A1D21;">{{ it.name }}</span><span style="font-size:11.5px; color:#94A3AC;">{{ it.phone }}</span></span>
+                  <span style="color:#475569;">{{ it.ibadah }}</span>
+                </div>
+              </sc-for>
+            </section>
+          </sc-for>
+          <sc-if value="{{ noGroups }}" hint-placeholder-val="{{ false }}">
+            <div style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; padding:44px 24px; text-align:center;"><div style="width:52px; height:52px; border-radius:13px; background:#F1F5F4; color:#94A3AC; display:flex; align-items:center; justify-content:center; margin:0 auto 12px;"><i class="ph ph-truck" style="font-size:26px;"></i></div><div style="font-size:14px; font-weight:600; color:#334155;">Belum ada tempahan yang diagihkan.</div></div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <!-- table -->
+      <sc-if value="{{ showTable }}" hint-placeholder-val="{{ true }}">
+      <section style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; overflow:hidden;">
+        <div style="display:grid; grid-template-columns:32px 1.3fr 1.4fr 1.1fr 0.7fr 1fr 1.2fr 1.2fr 1fr; gap:14px; padding:13px 20px; background:#F6F8F7; border-bottom:1px solid #E2E8F0; font-size:11px; font-weight:700; letter-spacing:.4px; color:#94A3AC; text-transform:uppercase;">
+          <span onClick="{{ toggleAll }}" style="{{ allCheckStyle }}"><sc-if value="{{ allChecked }}" hint-placeholder-val="{{ false }}"><i class="ph-fill ph-check" style="font-size:12px; color:#fff;"></i></sc-if></span><span>No. Tempahan</span><span>Pelanggan</span><span>Ibadah</span><span style="text-align:center;">Kuantiti</span><span>Pakej</span><span>Negara</span><span>Vendor</span><span style="text-align:center;">Status</span>
+        </div>
+        <sc-for list="{{ rows }}" as="r" hint-placeholder-count="6">
+          <div style="display:grid; grid-template-columns:32px 1.3fr 1.4fr 1.1fr 0.7fr 1fr 1.2fr 1.2fr 1fr; gap:14px; padding:14px 20px; border-bottom:1px solid #F1F5F4; align-items:center; font-size:13px;">
+            <span onClick="{{ r.onCheck }}" style="{{ r.checkStyle }}"><sc-if value="{{ r.checked }}" hint-placeholder-val="{{ false }}"><i class="ph-fill ph-check" style="font-size:12px; color:#fff;"></i></sc-if></span>
+            <span style="font-weight:600; color:#42481c;">{{ r.no }}</span>
+            <span style="min-width:0;"><span style="display:block; font-weight:600; color:#1A1D21; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ r.name }}</span><span style="font-size:11.5px; color:#94A3AC;">{{ r.phone }}</span></span>
+            <span style="color:#475569;">{{ r.ibadah }}</span>
+            <span style="text-align:center; font-weight:600; color:#1A1D21;">{{ r.qty }}</span>
+            <span style="color:#475569;">{{ r.pkg }}</span>
+            <span><sc-if value="{{ r.locked }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600; color:#1A1D21;"><i class="ph ph-lock-simple" style="font-size:13px; color:#94A3AC;"></i> {{ r.countryLabel }}</span></sc-if><sc-if value="{{ r.editable }}" hint-placeholder-val="{{ true }}"><select value="{{ r.country }}" onChange="{{ r.onCountry }}" style="width:100%; font-family:inherit; font-size:12.5px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:8px; padding:8px 9px; outline:none; background:#fff; cursor:pointer;"><sc-for list="{{ countryOpts }}" as="co" hint-placeholder-count="4"><option value="{{ co.val }}">{{ co.label }}</option></sc-for></select></sc-if></span>
+            <span><sc-if value="{{ r.locked }}" hint-placeholder-val="{{ false }}"><span style="font-size:12.5px; font-weight:600; color:#1A1D21;">{{ r.vendor }}</span></sc-if><sc-if value="{{ r.editable }}" hint-placeholder-val="{{ true }}"><select value="{{ r.vendor }}" onChange="{{ r.onVendor }}" style="width:100%; font-family:inherit; font-size:12.5px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:8px; padding:8px 9px; outline:none; background:#fff; cursor:pointer;"><sc-for list="{{ r.vendorOpts }}" as="vo" hint-placeholder-count="4"><option>{{ vo }}</option></sc-for></select><sc-if value="{{ r.noVendor }}" hint-placeholder-val="{{ false }}"><span style="display:block; font-size:10.5px; color:#D97706; margin-top:3px;">Tiada vendor berdaftar untuk negara ini</span></sc-if></sc-if></span>
+            <span style="text-align:center;">
+              <sc-if value="{{ r.canSend }}" hint-placeholder-val="{{ false }}"><button onClick="{{ r.onSend }}" style="display:inline-flex; align-items:center; gap:6px; background:#42481c; color:#fff; border:none; border-radius:8px; padding:7px 13px; font-size:12.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-paper-plane-tilt" style="font-size:15px;"></i> Hantar</button></sc-if>
+              <sc-if value="{{ r.sent }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex; align-items:center; gap:6px;"><span onClick="{{ r.onDetail }}" style="display:inline-flex; align-items:center; gap:6px; background:#EAF7EE; color:#16A34A; border:none; border-radius:8px; padding:7px 11px; font-size:12.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-eye" style="font-size:15px;"></i> Butiran</span><span onClick="{{ r.onCancel }}" style="display:inline-flex; align-items:center; gap:6px; background:#FDECEC; color:#DC2626; border:none; border-radius:8px; padding:7px 11px; font-size:12.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-x-circle" style="font-size:15px;"></i> Batal</span></span></sc-if>
+              <sc-if value="{{ r.showBadge }}" hint-placeholder-val="{{ true }}"><span style="{{ r.badgeStyle }}">{{ r.statusLabel }}</span></sc-if>
+            </span>
+          </div>
+        </sc-for>
+        <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:44px 24px; text-align:center;">
+            <div style="width:52px; height:52px; border-radius:13px; background:#F1F5F4; color:#94A3AC; display:flex; align-items:center; justify-content:center; margin:0 auto 12px;"><i class="ph ph-globe-hemisphere-west" style="font-size:26px;"></i></div>
+            <div style="font-size:14px; font-weight:600; color:#334155;">{{ emptyText }}</div>
+            <p style="font-size:12.5px; color:#94A3AC; margin-top:5px;">Tempahan yang bayarannya disahkan akan muncul di sini untuk diagihkan.</p>
+          </div>
+        </sc-if>
+      </section>
+      </sc-if>
+    </main>
+  </div>
+
+  <!-- ===== PARTICIPANT GROUPS MODAL ===== -->
+  <sc-if value="{{ showGroups }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; inset:0; z-index:100; background:rgba(20,24,20,.55); display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; padding:32px 16px;">
+      <div style="width:100%; max-width:720px; background:#fff; border-radius:14px; box-shadow:0 24px 60px rgba(0,0,0,.3); overflow:hidden;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 24px; border-bottom:1px solid #E2E8F0;">
+          <div><h2 style="font-size:16px; font-weight:700;">Senarai Peserta Mengikut Kumpulan</h2><p style="font-size:12px; color:#94A3AC; margin-top:3px;">Lembu 7 nama/kumpulan &middot; Unta 7 nama/kumpulan &middot; Kambing 1 nama/kumpulan</p></div>
+          <span onClick="{{ closeGroups }}" style="width:32px; height:32px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#64748B;"><i class="ph ph-x" style="font-size:16px;"></i></span>
+        </div>
+        <div style="padding:22px 24px; max-height:70vh; overflow-y:auto; display:flex; flex-direction:column; gap:16px;">
+          <sc-for list="{{ groups }}" as="g" hint-placeholder-count="3">
+            <div style="border:1px solid #E2E8F0; border-radius:11px; overflow:hidden;">
+              <div style="display:flex; align-items:center; gap:10px; padding:12px 16px; background:#F6F8F7; border-bottom:1px solid #E2E8F0;">
+                <span style="width:30px; height:30px; border-radius:8px; background:#edeee0; color:#42481c; display:flex; align-items:center; justify-content:center;"><i class="ph ph-users-three" style="font-size:17px;"></i></span>
+                <div style="flex:1;"><div style="font-size:13.5px; font-weight:700; color:#1A1D21;">{{ g.title }}</div><div style="font-size:11.5px; color:#94A3AC;">{{ g.meta }}</div></div>
+                <span style="{{ g.fillStyle }}">{{ g.fillLabel }}</span>
+              </div>
+              <div style="padding:12px 16px; display:grid; grid-template-columns:1fr 1fr; gap:7px 18px;">
+                <sc-for list="{{ g.names }}" as="p" hint-placeholder-count="4"><div style="display:flex; align-items:center; gap:9px; font-size:12.5px; color:#334155;"><span style="width:20px; height:20px; border-radius:6px; background:#F6F8F7; color:#42481c; font-size:10.5px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0;">{{ p.n }}</span>{{ p.name }}</div></sc-for>
+              </div>
+            </div>
+          </sc-for>
+          <sc-if value="{{ groupsEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:24px; text-align:center; font-size:13px; color:#94A3AC;">Tiada tempahan untuk dijana. Agihkan tempahan dahulu.</div></sc-if>
+        </div>
+        <div style="padding:16px 24px; border-top:1px solid #E2E8F0; display:flex; justify-content:flex-end; gap:10px;">
+          <button onClick="{{ closeGroups }}" style="background:#fff; color:#334155; border:1px solid #E2E8F0; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;">Tutup</button>
+          <button onClick="{{ previewGroups }}" style="display:inline-flex; align-items:center; gap:7px; background:#fff; color:#42481c; border:1px solid #42481c; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-file-pdf" style="font-size:16px;"></i> Preview PDF A4</button>
+          <button onClick="{{ downloadGroups }}" style="display:inline-flex; align-items:center; gap:7px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-download-simple" style="font-size:16px;"></i> Muat Turun Senarai</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ===== GROUPS A4 PREVIEW ===== -->
+  <sc-if value="{{ showGroupsPreview }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; inset:0; z-index:110; background:rgba(20,24,20,.6); display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; padding:32px 16px;">
+      <div id="groups-preview" style="width:100%; max-width:794px; background:#fff; border-radius:14px; box-shadow:0 24px 60px rgba(0,0,0,.3); overflow:hidden;">
+        <div class="no-print" style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 22px; background:#F6F8F7; border-bottom:1px solid #E2E8F0;">
+          <span style="font-size:13px; font-weight:700; color:#334155;">Pratonton PDF A4 — Senarai Peserta</span>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <button onClick="{{ doPrint }}" style="display:inline-flex; align-items:center; gap:7px; background:#42481c; color:#fff; border:none; border-radius:8px; padding:9px 15px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-printer" style="font-size:16px;"></i> Cetak / PDF</button>
+            <button onClick="{{ downloadGroups }}" style="display:inline-flex; align-items:center; gap:7px; background:#C9A227; color:#fff; border:none; border-radius:8px; padding:9px 15px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-download-simple" style="font-size:16px;"></i> Muat Turun</button>
+            <button onClick="{{ closePreview }}" style="display:inline-flex; align-items:center; gap:7px; background:#fff; color:#334155; border:1px solid #E2E8F0; border-radius:8px; padding:9px 13px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-x" style="font-size:15px;"></i> Tutup</button>
+          </div>
+        </div>
+        <div style="padding:48px 56px; min-height:1000px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:20px; padding-bottom:22px; border-bottom:2px solid #42481c;">
+            <div style="display:flex; align-items:center; gap:16px;">
+              <div style="width:88px; height:88px; border-radius:16px; overflow:hidden; flex-shrink:0;"><img src="uploads/Untitled design (2).png" alt="Nadi Qurban" style="width:100%; height:100%; object-fit:cover; display:block;"></div>
+              <div><div style="font-size:26px; font-weight:800; letter-spacing:1px; color:#42481c;">NADI QURBAN</div><div style="font-size:11px; font-weight:600; letter-spacing:2px; color:#94A3AC; margin-top:4px;">SENARAI PESERTA IBADAH</div></div>
+            </div>
+            <div style="text-align:right;"><div style="font-size:16px; font-weight:700; color:#42481c;">#SENARAIPESERTA</div><sc-if value="{{ hasGroups }}" hint-placeholder-val="{{ true }}"><div style="font-size:20px; font-weight:700; color:#1A1D21; margin-top:6px;">{{ headServis }}</div><div style="font-size:22px; font-weight:700; color:#64748B; margin-top:2px;">{{ headDate }}</div></sc-if></div>
+          </div>
+          <div style="margin-top:14px; display:flex; flex-direction:column; gap:14px;">
+            <sc-for list="{{ groups }}" as="g" hint-placeholder-count="3">
+              <div style="border:1px solid #E2E8F0; border-radius:10px; overflow:hidden;">
+                <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:#F6F8F7; border-bottom:1px solid #E2E8F0;"><span style="font-size:20px; font-weight:700; color:#42481c;">{{ g.title }} &middot; {{ g.country }}</span><span style="font-size:11px; color:#64748B;">{{ g.meta }}</span></div>
+                <div style="padding:14px 18px; display:flex; flex-direction:column; gap:8px;">
+                  <sc-for list="{{ g.names }}" as="p" hint-placeholder-count="7"><div style="font-size:40px; font-weight:700; color:#1A1D21;">{{ p.n }}. {{ p.name }}</div></sc-for>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="margin-top:34px; padding-top:16px; border-top:2px solid #42481c; text-align:center;">
+            <div style="font-size:14px; font-weight:800; color:#42481c; letter-spacing:.5px;">www.nadiqurban.com</div>
+            <div style="font-size:11px; color:#94A3AC; margin-top:6px;">Dijana oleh Nadi Qurban Sdn Bhd</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ===== VENDOR DETAIL MODAL ===== -->
+  <sc-if value="{{ showDetail }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; inset:0; z-index:100; background:rgba(20,24,20,.55); display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; padding:32px 16px;">
+      <div style="width:100%; max-width:460px; background:#fff; border-radius:14px; box-shadow:0 24px 60px rgba(0,0,0,.3); overflow:hidden;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 24px; border-bottom:1px solid #E2E8F0;">
+          <div style="display:flex; align-items:center; gap:11px;"><span style="width:36px; height:36px; border-radius:10px; background:#EAF7EE; color:#16A34A; display:flex; align-items:center; justify-content:center;"><i class="ph-fill ph-check-circle" style="font-size:19px;"></i></span><div><h2 style="font-size:16px; font-weight:700;">Butiran Agihan</h2><p style="font-size:12px; color:#94A3AC; margin-top:2px;">{{ dNo }}</p></div></div>
+          <span onClick="{{ closeDetail }}" style="width:32px; height:32px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#64748B;"><i class="ph ph-x" style="font-size:16px;"></i></span>
+        </div>
+        <div style="padding:20px 24px; display:flex; flex-direction:column; gap:2px;">
+          <sc-for list="{{ detailRows }}" as="d" hint-placeholder-count="5">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:11px 0; border-bottom:1px solid #F1F5F4;"><span style="font-size:12.5px; color:#94A3AC;">{{ d.k }}</span><span style="font-size:13px; font-weight:600; color:#1A1D21; text-align:right;">{{ d.v }}</span></div>
+          </sc-for>
+        </div>
+        <div style="padding:0 24px 22px; display:flex; justify-content:flex-end;">
+          <button onClick="{{ closeDetail }}" style="background:#42481c; color:#fff; border:none; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;">Tutup</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ===== BULK ASSIGN MODAL ===== -->
+  <sc-if value="{{ showBulk }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; inset:0; z-index:100; background:rgba(20,24,20,.55); display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; padding:32px 16px;">
+      <div style="width:100%; max-width:460px; background:#fff; border-radius:14px; box-shadow:0 24px 60px rgba(0,0,0,.3); overflow:hidden;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 24px; border-bottom:1px solid #E2E8F0;">
+          <div style="display:flex; align-items:center; gap:11px;"><span style="width:36px; height:36px; border-radius:10px; background:#edeee0; color:#42481c; display:flex; align-items:center; justify-content:center;"><i class="ph ph-stack" style="font-size:19px;"></i></span><div><h2 style="font-size:16px; font-weight:700;">Agih Pukal Terpilih</h2><p style="font-size:12px; color:#94A3AC; margin-top:2px;">{{ bulkTargetCount }} tempahan terpilih</p></div></div>
+          <span onClick="{{ closeBulk }}" style="width:32px; height:32px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#64748B;"><i class="ph ph-x" style="font-size:16px;"></i></span>
+        </div>
+        <div style="padding:22px 24px; display:flex; flex-direction:column; gap:16px;">
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Negara Pelaksanaan</label><select value="{{ bulkCountry }}" onChange="{{ onBulkCountry }}" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none; background:#fff; cursor:pointer;"><sc-for list="{{ countryOpts }}" as="co" hint-placeholder-count="4"><option value="{{ co.val }}">{{ co.label }}</option></sc-for></select></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Vendor</label><select value="{{ bulkVendor }}" onChange="{{ onBulkVendor }}" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none; background:#fff; cursor:pointer;"><sc-for list="{{ bulkVendorOpts }}" as="vo" hint-placeholder-count="3"><option>{{ vo }}</option></sc-for></select></div>
+          <p style="font-size:12px; color:#64748B; line-height:1.5; background:#F6F8F7; border-radius:9px; padding:10px 12px;"><i class="ph ph-info" style="font-size:14px; vertical-align:-2px; color:#42481c;"></i> {{ bulkTargetCount }} tempahan terpilih akan ditetapkan ke negara &amp; vendor di atas dan terus dihantar.</p>
+        </div>
+        <div style="padding:0 24px 22px; display:flex; gap:10px; justify-content:flex-end;">
+          <button onClick="{{ closeBulk }}" style="background:#fff; color:#334155; border:1px solid #E2E8F0; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;">Batal</button>
+          <button onClick="{{ applyBulk }}" style="display:inline-flex; align-items:center; gap:7px; background:{{ bulkApplyBg }}; color:#fff; border:none; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:{{ bulkApplyCursor }}; font-family:inherit;"><i class="ph ph-check-circle" style="font-size:16px;"></i> Agihkan Semua</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: 'unassigned', assign: {}, showBulk: false, bulkCountry: '', bulkVendor: '', groupBy: false };
+  renderVals() {
+    const s = this.state;
+    const set = (o) => this.setState(o);
+
+    const navItem = (icon, label, active, badge) => ({
+      isItem: true, isSection: false, label, badge: badge || '',
+      icon, iconColor: active ? '#42481c' : '#94A3AC', bar: active ? '#42481c' : 'transparent',
+      onClick: () => { const m = { 'Dashboard': 'Dashboard Operasi.dc.html', 'Bayaran Ansuran': 'Bayaran Ansuran.dc.html', 'Tempahan & Pelanggan': 'Tempahan & Pelanggan.dc.html', 'Pengesahan Bayaran': 'Tempahan & Pelanggan.dc.html', 'Lafaz Akad': 'Lafaz Akad.dc.html', 'Agihan Negara': 'Agihan Negara.dc.html', 'Pelaksanaan & Laporan': 'Pelaksanaan & Laporan.dc.html', 'AWB & Postage': 'AWB & Postage.dc.html', 'Tempahan Selesai': 'Tempahan Selesai.dc.html', 'Vendor': 'Vendor.dc.html', 'Produk': 'Produk.dc.html', 'Dokumen': 'Dokumen.dc.html', 'Sales CRM': 'Sales CRM.dc.html', 'Kod Promosi': 'Kod Promosi.dc.html', 'Kewangan': 'Kewangan.dc.html', 'Pusat Laporan': 'Pusat Laporan.dc.html', 'Audit Log': 'Audit Log.dc.html', 'Notifikasi': 'Notifikasi.dc.html', 'Pengguna': 'Pengguna & Peranan.dc.html', 'Sijil': 'Tempahan & Pelanggan.dc.html', 'Tetapan': 'Tempahan & Pelanggan.dc.html' }; if (m[label] && !active) { try { location.href = (function(p){try{var u=new URL(p,location.href);new URLSearchParams(location.search).forEach(function(v,k){if(!u.searchParams.has(k))u.searchParams.set(k,v);});return u.href;}catch(e){return p;}})(m[label]); } catch (e) {} } },
+      rowStyle: 'position:relative; display:flex; align-items:center; gap:12px; padding:10px 14px; margin:2px 0; border-radius:9px; font-size:13.5px; cursor:pointer;' + (active ? 'background:#edeee0; color:#42481c; font-weight:700;' : 'color:#475569; font-weight:500;'),
+    });
+    const sec = (label) => ({ isSection: true, isItem: false, label });
+    const nav = [
+      sec('UTAMA'), navItem('ph ph-squares-four', 'Dashboard', false),
+      sec('OPERASI'), navItem('ph ph-calendar-check', 'Bayaran Ansuran', false), navItem('ph ph-shopping-cart-simple', 'Tempahan & Pelanggan', false, '34'), navItem('ph ph-seal-check', 'Pengesahan Bayaran', false, '5'), navItem('ph ph-hand-heart', 'Lafaz Akad', false), navItem('ph ph-globe-hemisphere-west', 'Agihan Negara', true), navItem('ph ph-shopping-bag', 'Pelaksanaan & Laporan', false), navItem('ph ph-package', 'AWB & Postage', false), navItem('ph ph-check-square-offset', 'Tempahan Selesai', false), navItem('ph ph-truck', 'Vendor', false), navItem('ph ph-cow', 'Produk', false), navItem('ph ph-folders', 'Dokumen', false),
+      sec('JUALAN & KEWANGAN'), navItem('ph ph-users-three', 'Sales CRM', false), navItem('ph ph-ticket', 'Kod Promosi', false), navItem('ph ph-wallet', 'Kewangan', false, '87'),
+      sec('LAPORAN'), navItem('ph ph-chart-bar', 'Pusat Laporan', false), navItem('ph ph-clock-counter-clockwise', 'Audit Log', false),
+      sec('SISTEM'), navItem('ph ph-bell', 'Notifikasi', false, '7'), navItem('ph ph-users', 'Pengguna', false), navItem('ph ph-certificate', 'Sijil', false), navItem('ph ph-gear-six', 'Tetapan', false),
+    ];
+
+    const fallbackDir = {
+      'Uganda': ['Al-Barakah Livestock — SP001', 'Kampala Qurban Co. — SP007'],
+      'Nigeria': ['Sokoto Cattle Ltd — SP008', 'Kano Agro Vendor — SP009'],
+      'Somalia': ['Mogadishu Livestock — SP010', 'Horn Qurban Services — SP011'],
+      'Bangladesh': ['Dhaka Agro Farm — SP012', 'Chittagong Cattle — SP013'],
+      'Palestin': ['Gaza Relief Vendor — SP014', 'Al-Quds Qurban — SP015'],
+      'Kemboja': ['Phnom Penh Livestock — SP016'],
+    };
+    let vendorByCountry = fallbackDir;
+    let vendorAll = [];
+    try {
+      const dir = JSON.parse(localStorage.getItem('nq_vendor_dir') || 'null');
+      if (dir && Object.keys(dir).length) vendorByCountry = dir;
+      vendorAll = JSON.parse(localStorage.getItem('nq_vendor_all') || '[]');
+    } catch (e) {}
+    if (!vendorAll.length) { const set2 = {}; Object.values(vendorByCountry).forEach(arr => arr.forEach(v => set2[v] = 1)); vendorAll = Object.keys(set2); }
+    const vendorsFor = (country) => (vendorByCountry[country] || []);
+    const flags = { 'Arab Saudi (Makkah)': '🇸🇦', 'Malaysia': '🇲🇾', 'Indonesia': '🇮🇩', 'Thailand': '🇹🇭', 'India': '🇮🇳', 'Nigeria': '🇳🇬', 'Burkina Faso': '🇧🇫', 'Uganda': '🇺🇬', 'Chad': '🇹🇩', 'Bangladesh': '🇧🇩', 'Somalia': '🇸🇴', 'Palestin': '🇵🇸', 'Kemboja': '🇰🇭' };
+    const countryList = ['Arab Saudi (Makkah)', 'Malaysia', 'Indonesia', 'Thailand', 'India', 'Nigeria', 'Burkina Faso', 'Uganda', 'Chad', 'Bangladesh'];
+    const countryOpts = [{ val: '__none__', label: '— Pilih Negara —' }].concat(countryList.map(c => ({ val: c, label: c })));
+
+    const demo = [
+      ['NQ-QB-LE-001243', 'Ahmad Zaki bin Hassan', '012-3345 671', 'Qurban — Lembu', 'Uganda', 'Delima', 7],
+      ['NQ-QB-KA-001244', 'Nurul Ain binti Rahman', '013-9921 044', 'Qurban — Kambing', 'Nigeria', 'Zamrud', 1],
+      ['NQ-QB-LE-001245', 'Syed Farid Aljunied', '019-6650 128', 'Qurban — Lembu', '', 'Topaz', 4],
+      ['NQ-QB-UN-001246', 'Tan Abdullah', '017-3320 990', 'Qurban — Unta', 'Somalia', 'Nilam', 7],
+      ['NQ-QB-KA-001247', 'Faridah binti Omar', '011-2245 778', 'Qurban — Kambing', '', 'Mutiara', 2],
+      ['NQ-QB-LE-001248', 'Iskandar bin Yusof', '014-8890 213', 'Qurban — Lembu', 'Palestin', 'Delima', 3],
+    ];
+    let confirmed = [];
+    try {
+      const store = JSON.parse(localStorage.getItem('nq_akad_orders') || '{}');
+      confirmed = Object.values(store).sort((a, b) => (b.at || 0) - (a.at || 0))
+        .map(o => [o.no, o.name, o.phone || '-', o.ibadah || 'Qurban', o.country || '', o.pkg || '-']);
+    } catch (e) {}
+    const seen = {};
+    const source = confirmed.concat(demo).filter(d => { if (seen[d[0]]) return false; seen[d[0]] = 1; return true; });
+
+    const assign = s.assign || {};
+    const all = source.map(d => {
+      const a = assign[d[0]] || {};
+      const country = a.country != null ? a.country : (d[4] || '');
+      const vendor = a.vendor != null ? a.vendor : '';
+      const ready = !!country && !!vendor;
+      const sent = !!a.sent;
+      return { no: d[0], name: d[1], phone: d[2], ibadah: d[3], pkg: d[5] || '-', qty: d[6] || 1, country, vendor, ready, sent };
+    });
+    const svcOf = (ib) => { const t = (ib || '').toLowerCase(); return t.includes('lembu') ? 'Lembu' : t.includes('unta') ? 'Unta' : t.includes('kambing') ? 'Kambing' : 'Lain'; };
+    const ibadahOf = (ib) => { const t = (ib || '').toLowerCase(); return t.includes('aqiqah') ? 'Aqiqah' : 'Qurban'; };
+    const fIbadah = s.fIbadah || 'Semua Ibadah';
+    const fService = s.fService || 'Semua Servis';
+    const fCountry = s.fCountry || 'Semua Negara';
+    const fVendor = s.fVendor || 'Semua Vendor';
+    const fSearch = (s.fSearch || '').trim().toLowerCase();
+    const passFilter = (o) => (!fSearch || String(o.no).toLowerCase().includes(fSearch))
+      && (fIbadah === 'Semua Ibadah' || ibadahOf(o.ibadah) === fIbadah)
+      && (fService === 'Semua Servis' || svcOf(o.ibadah) === fService)
+      && (fCountry === 'Semua Negara' || o.country === fCountry)
+      && (fVendor === 'Semua Vendor' || o.vendor === fVendor);
+    const unassigned = all.filter(o => !o.sent).filter(passFilter);
+    const assigned = all.filter(o => o.sent).filter(passFilter).sort((a, b) => (a.vendor || '').localeCompare(b.vendor || '') || (a.country || '').localeCompare(b.country || ''));
+    const shown = s.tab === 'unassigned' ? unassigned : assigned;
+    const uniq = (arr) => arr.filter((v, i) => v && arr.indexOf(v) === i).sort();
+    const ibadahFilterOpts = ['Semua Ibadah'].concat(uniq(all.map(o => ibadahOf(o.ibadah))));
+    const serviceFilterOpts = ['Semua Servis'].concat(uniq(all.map(o => svcOf(o.ibadah))));
+    const countryFilterOpts = ['Semua Negara'].concat(uniq(all.map(o => o.country)));
+    const vendorFilterOpts = ['Semua Vendor'].concat(uniq(all.map(o => o.vendor)));
+
+    const badge = (bg, col) => 'display:inline-block; font-size:11.5px; font-weight:600; border-radius:20px; padding:4px 12px; background:' + bg + '; color:' + col + ';';
+    const checked = s.checked || {};
+    const chkBox = (on) => 'width:20px; height:20px; border-radius:6px; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;' + (on ? 'background:#42481c; border:1px solid #42481c;' : 'border:1.5px solid #CBD5E1;');
+    const rows = shown.map(o => ({
+      checked: !!checked[o.no],
+      checkStyle: chkBox(!!checked[o.no]),
+      onCheck: () => set({ checked: { ...(s.checked || {}), [o.no]: !checked[o.no] } }),
+      no: o.no, name: o.name, phone: o.phone, ibadah: o.ibadah, qty: String(o.qty || 1), pkg: o.pkg,
+      country: o.country || '__none__', vendor: o.vendor || '— Pilih Vendor —',
+      vendorOpts: ['— Pilih Vendor —'].concat(vendorsFor(o.country)),
+      noVendor: !!o.country && vendorsFor(o.country).length === 0,
+      canSend: o.ready && !o.sent,
+      sent: o.sent,
+      locked: o.sent,
+      editable: !o.sent,
+      countryLabel: o.country ? o.country : '-',
+      showBadge: !o.sent && !o.ready,
+      statusLabel: o.country ? 'Perlu Vendor' : 'Belum Agih',
+      badgeStyle: o.country ? badge('#FEF3E2', '#D97706') : badge('#F1F5F4', '#64748B'),
+      onDetail: () => set({ detail: { no: o.no, name: o.name, phone: o.phone, ibadah: o.ibadah, country: o.country, vendor: o.vendor } }),
+      onCancel: () => set({ assign: { ...(s.assign || {}), [o.no]: { country: '', vendor: '', sent: false } }, tab: 'unassigned' }),
+      onCountry: (e) => {
+        const v = e.target.value === '__none__' ? '' : e.target.value;
+        set({ assign: { ...(s.assign || {}), [o.no]: { ...(s.assign || {})[o.no], country: v, vendor: '', sent: false } } });
+      },
+      onVendor: (e) => {
+        const v = e.target.value === '— Pilih Vendor —' ? '' : e.target.value;
+        set({ assign: { ...(s.assign || {}), [o.no]: { ...(s.assign || {})[o.no], country: o.country, vendor: v } } });
+      },
+      onSend: () => {
+        try { const p = JSON.parse(localStorage.getItem('nq_pipeline') || '{}'); if ((p[o.no] || 0) < 3) { p[o.no] = 3; localStorage.setItem('nq_pipeline', JSON.stringify(p)); } } catch (e) {}
+        try { const a = JSON.parse(localStorage.getItem('nq_assigned') || '{}'); a[o.no] = { no: o.no, name: o.name, phone: o.phone, ibadah: o.ibadah, pkg: o.pkg, qty: o.qty, country: o.country, vendor: o.vendor, at: Date.now() }; localStorage.setItem('nq_assigned', JSON.stringify(a)); } catch (e) {}
+        set({ assign: { ...(s.assign || {}), [o.no]: { country: o.country, vendor: o.vendor, sent: true } }, tab: 'assigned' });
+      },
+    }));
+
+    const tabs = [['unassigned', 'Belum Diagih', unassigned.length], ['assigned', 'Telah Diagih', assigned.length]].map(([k, label, count]) => {
+      const on = s.tab === k;
+      return { label, count: String(count), onClick: () => set({ tab: k }),
+        style: 'display:inline-flex; align-items:center; gap:8px; font-size:13px; font-weight:600; border-radius:9px; padding:9px 15px; cursor:pointer;' + (on ? 'background:#42481c; color:#fff;' : 'background:#fff; border:1px solid #E2E8F0; color:#475569;'),
+        countStyle: 'font-size:11px; font-weight:700; border-radius:20px; padding:1px 8px;' + (on ? 'background:rgba(255,255,255,.22); color:#fff;' : 'background:#F1F5F4; color:#64748B;') };
+    });
+
+    const counts = {};
+    all.forEach(o => { if (o.country) counts[o.country] = (counts[o.country] || 0) + 1; });
+    const total = all.length || 1;
+    const palette = [['#42481c', '#edeee0'], ['#2563EB', '#E8F0FB'], ['#D97706', '#FEF3E2'], ['#16A34A', '#EAF7EE']];
+    const countrySummary = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 4).map(([name, count], i) => ({
+      name, count: String(count), flag: flags[name] || '🌍', pct: Math.round(count / total * 100) + '%',
+      color: palette[i % 4][0], tint: palette[i % 4][1],
+    }));
+
+    const bulkVendorOpts = ['— Pilih Vendor —'].concat(vendorsFor(s.bulkCountry));
+    const bulkReady = !!s.bulkCountry && !!s.bulkVendor;
+    const grouped = s.tab === 'assigned' && s.groupBy === true;
+    const gmap = {};
+    assigned.forEach(o => { const k = o.vendor || '—'; (gmap[k] = gmap[k] || { vendor: k, country: o.country, items: [] }).items.push({ no: o.no, name: o.name, phone: o.phone, ibadah: o.ibadah }); });
+    const vendorGroups = Object.values(gmap).map(g => ({ vendor: g.vendor, country: g.country, count: String(g.items.length), items: g.items }));
+
+    // ---- participant groups ----
+    const capacityOf = (a) => { const t = (a || '').toLowerCase(); return t.includes('lembu') || t.includes('unta') ? 7 : 1; };
+    const animalOf = (ib) => { const t = (ib || '').toLowerCase(); return t.includes('lembu') ? 'Lembu' : t.includes('unta') ? 'Unta' : t.includes('kambing') ? 'Kambing' : (ib || 'Qurban'); };
+    const dummyNames = ['Ahmad bin Ismail', 'Siti Fatimah binti Ali', 'Mohd Hafiz bin Razak', 'Nur Aisyah binti Kamal', 'Zainal bin Abidin', 'Rohana binti Yusof', 'Faizal bin Sulaiman', 'Halimah binti Daud', 'Ibrahim bin Osman', 'Aminah binti Salleh', 'Khairul bin Anuar', 'Mariam binti Hassan', 'Zulkifli bin Manap', 'Noraini binti Bakar'];
+    const _selChk = s.checked || {};
+    const _selList = all.filter(o => _selChk[o.no]);
+    const grpSource = _selList.length ? _selList : (assigned.length ? assigned : all);
+    const groups = [];
+    grpSource.forEach(o => {
+      const cap = capacityOf(o.ibadah);
+      const qn = Math.max(1, Number(o.qty) || 1);
+      const names = (o.names && o.names.length ? o.names.slice(0, qn) : [String(o.name)]).map(n => String(n).toUpperCase());
+      while (names.length < qn) names.push(String(o.name).toUpperCase());
+      const full = names.length === cap;
+      groups.push({
+        title: animalOf(o.ibadah) + ' — ' + o.no,
+        country: o.country || '-',
+        servis: ibadahOf(o.ibadah).toUpperCase(),
+        date: '18 Jun 2027',
+        meta: names.length + ' / ' + cap + ' nama' + (cap === 7 ? ' (1 ekor = 7 bahagian)' : ''),
+        names: names.map((nm, ni) => ({ n: ni + 1, name: nm + ' (1)' })),
+        fillLabel: full ? 'Lengkap' : 'Belum penuh',
+        fillStyle: 'font-size:10.5px; font-weight:700; border-radius:20px; padding:3px 10px; ' + (full ? 'background:#EAF7EE; color:#16A34A;' : 'background:#FEF3E2; color:#D97706;'),
+      });
+    });
+
+    const allChecked = shown.length > 0 && shown.every(o => checked[o.no]);
+    const headServis = groups.length ? groups[0].servis : '';
+    const headDate = groups.length ? groups[0].date : '';
+    const dt = s.detail || null;
+    return {
+      nav, rows, tabs, countrySummary, countryOpts,
+      allChecked,
+      allCheckStyle: chkBox(allChecked),
+      toggleAll: () => { const nc = { ...(s.checked || {}) }; if (allChecked) { shown.forEach(o => delete nc[o.no]); } else { shown.forEach(o => nc[o.no] = true); } set({ checked: nc }); },
+      ibadahFilterOpts, serviceFilterOpts, countryFilterOpts, vendorFilterOpts,
+      fSearch: s.fSearch || '', onFSearch: (e) => set({ fSearch: e.target.value }),
+      fIbadah, fService, fCountry, fVendor,
+      onFIbadah: (e) => set({ fIbadah: e.target.value }),
+      onFService: (e) => set({ fService: e.target.value }),
+      onFCountry: (e) => set({ fCountry: e.target.value }),
+      onFVendor: (e) => set({ fVendor: e.target.value }),
+      hasFilter: !!fSearch || fIbadah !== 'Semua Ibadah' || fService !== 'Semua Servis' || fCountry !== 'Semua Negara' || fVendor !== 'Semua Vendor',
+      clearFilter: () => set({ fSearch: '', fIbadah: 'Semua Ibadah', fService: 'Semua Servis', fCountry: 'Semua Negara', fVendor: 'Semua Vendor' }),
+      groups, groupsEmpty: groups.length === 0, hasGroups: groups.length > 0, headServis, headDate,
+      showGroups: s.showGroups === true,
+      showGroupsPreview: s.showGroupsPreview === true,
+      openGroups: () => set({ showGroups: true }),
+      exportExcel: () => {
+        if (typeof XLSX === 'undefined') { alert('Pustaka Excel belum dimuat. Sila cuba semula.'); return; }
+        const aoa = [['No. Tempahan', 'Pelanggan', 'Telefon', 'Ibadah', 'Kuantiti', 'Pakej', 'Negara', 'Vendor', 'Status']];
+        shown.forEach(o => aoa.push([o.no, o.name, o.phone, o.ibadah, o.qty || 1, o.pkg, o.country || '-', o.vendor || '-', o.sent ? 'Diagihkan' : (o.country ? 'Perlu Vendor' : 'Belum Agih')]));
+        const ws = XLSX.utils.aoa_to_sheet(aoa);
+        ws['!cols'] = [{ wch: 20 }, { wch: 24 }, { wch: 15 }, { wch: 18 }, { wch: 9 }, { wch: 12 }, { wch: 16 }, { wch: 22 }, { wch: 14 }];
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Agihan Negara');
+        XLSX.writeFile(wb, 'Agihan-Negara-Nadi-Qurban.xlsx');
+      },
+      closeGroups: () => set({ showGroups: false }),
+      previewGroups: () => set({ showGroups: false, showGroupsPreview: true }),
+      closePreview: () => set({ showGroupsPreview: false, showGroups: true }),
+      doPrint: () => { window.print(); },
+      downloadGroups: () => {
+        const esc = (t) => String(t == null ? '' : t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        const body = groups.map(g => '<div style="border:1px solid #E2E8F0;border-radius:10px;overflow:hidden;margin-bottom:12px;"><div style="display:flex;justify-content:space-between;align-items:center;padding:9px 13px;background:#F6F8F7;border-bottom:1px solid #E2E8F0;"><span style="font-size:13px;font-weight:700;color:#42481c;">' + esc(g.title) + ' &middot; ' + esc(g.country) + '</span><span style="font-size:11px;color:#64748B;">' + esc(g.meta) + '</span></div><div style="padding:11px 15px;display:grid;grid-template-columns:1fr 1fr;gap:6px 18px;">' + g.names.map(p => '<div style="font-size:12.5px;color:#1A1D21;">' + esc(p.n) + '. ' + esc(p.name) + '</div>').join('') + '</div></div>').join('');
+        const headLine = groups.length ? ('<div style="font-size:13px;font-weight:600;color:#1A1D21;margin-top:6px;">' + esc(groups[0].servis) + '</div><div style="font-size:12px;color:#64748B;margin-top:2px;">' + esc(groups[0].date) + '</div>') : '';
+        const html = '<div style="width:210mm;min-height:297mm;box-sizing:border-box;padding:18mm 16mm;font-family:Inter,Arial,sans-serif;color:#1A1D21;background:#fff;">'
+          + '<div style="display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid #42481c;padding-bottom:16px;margin-bottom:18px;"><div style="display:flex;align-items:center;gap:12px;"><img src="uploads/Untitled design (2).png" style="width:52px;height:52px;border-radius:11px;object-fit:cover;"><div><div style="font-size:18px;font-weight:800;color:#42481c;">NADI QURBAN</div><div style="font-size:10px;font-weight:600;letter-spacing:2px;color:#94A3AC;">SENARAI PESERTA IBADAH</div></div></div><div style="text-align:right;font-size:14px;font-weight:700;color:#42481c;">#SENARAIPESERTA' + headLine + '</div></div>'
+          + body
+          + '<div style="margin-top:20px;padding-top:12px;border-top:2px solid #42481c;text-align:center;"><div style="font-size:13px;font-weight:800;color:#42481c;">www.nadiqurban.com</div><div style="font-size:10.5px;color:#94A3AC;margin-top:4px;">Dijana oleh Nadi Qurban Sdn Bhd</div></div>'
+          + '</div>';
+        const wrap = document.createElement('div');
+        wrap.style.cssText = 'position:fixed;left:-9999px;top:0;background:#fff;';
+        wrap.innerHTML = html;
+        document.body.appendChild(wrap);
+        const opt = { margin: 0, filename: 'Senarai-Peserta-Nadi-Qurban.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
+        setTimeout(() => {
+          if (typeof html2pdf === 'undefined') {
+            const blob = new Blob(['<!doctype html><meta charset="utf-8">' + html], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = 'Senarai-Peserta.html';
+            document.body.appendChild(a); a.click(); a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 1500); wrap.remove(); return;
+          }
+          html2pdf().set(opt).from(wrap.firstChild).save().then(() => wrap.remove()).catch(() => wrap.remove());
+        }, 50);
+      },
+      grouped, vendorGroups, noGroups: vendorGroups.length === 0,
+      showTable: !grouped,
+      showGroupToggle: s.tab === 'assigned',
+      toggleGroup: () => set({ groupBy: !s.groupBy }),
+      groupBtnStyle: 'display:inline-flex; align-items:center; gap:7px; border-radius:9px; padding:9px 15px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit; margin-right:10px;' + (s.groupBy ? 'background:#2f331a; color:#fff; border:1px solid #2f331a;' : 'background:#42481c; color:#fff; border:1px solid #42481c;'),
+      bulkBtnStyle: s.tab === 'assigned' ? '' : 'margin-left:auto;',
+      showDetail: !!dt,
+      dNo: dt ? dt.no : '',
+      detailRows: dt ? [
+        { k: 'Pelanggan', v: dt.name }, { k: 'No. Telefon', v: dt.phone },
+        { k: 'Ibadah', v: dt.ibadah }, { k: 'Negara Pelaksanaan', v: dt.country },
+        { k: 'Vendor', v: dt.vendor }, { k: 'Status', v: 'Diagihkan' },
+      ] : [],
+      closeDetail: () => set({ detail: null }),
+      empty: shown.length === 0,
+      emptyText: s.tab === 'unassigned' ? 'Semua tempahan telah diagihkan.' : 'Belum ada tempahan yang diagihkan.',
+      hasSelection: shown.some(o => checked[o.no] && !o.sent),
+      selCount: String(shown.filter(o => checked[o.no] && !o.sent).length),
+      groupsBtnStyle: shown.some(o => checked[o.no] && !o.sent) ? '' : 'margin-left:auto;',
+      showBulk: s.showBulk === true,
+      bulkTargetCount: String(shown.filter(o => checked[o.no] && !o.sent).length),
+      bulkCountry: s.bulkCountry || '__none__',
+      bulkVendor: s.bulkVendor || '— Pilih Vendor —',
+      bulkVendorOpts,
+      bulkApplyBg: bulkReady ? '#16A34A' : '#9CA3AF',
+      bulkApplyCursor: bulkReady ? 'pointer' : 'not-allowed',
+      openBulk: () => set({ showBulk: true, bulkCountry: '', bulkVendor: '' }),
+      closeBulk: () => set({ showBulk: false }),
+      onBulkCountry: (e) => set({ bulkCountry: e.target.value === '__none__' ? '' : e.target.value, bulkVendor: '' }),
+      onBulkVendor: (e) => set({ bulkVendor: e.target.value === '— Pilih Vendor —' ? '' : e.target.value }),
+      applyBulk: () => {
+        if (!bulkReady) return;
+        const na = { ...(s.assign || {}) };
+        try { const p = JSON.parse(localStorage.getItem('nq_pipeline') || '{}'); shown.forEach(o => { if (checked[o.no] && !o.sent && (p[o.no] || 0) < 3) p[o.no] = 3; }); localStorage.setItem('nq_pipeline', JSON.stringify(p)); } catch (e) {}
+        try { const a = JSON.parse(localStorage.getItem('nq_assigned') || '{}'); shown.forEach(o => { if (checked[o.no] && !o.sent) a[o.no] = { no: o.no, name: o.name, phone: o.phone, ibadah: o.ibadah, pkg: o.pkg, qty: o.qty, country: s.bulkCountry, vendor: s.bulkVendor, at: Date.now() }; }); localStorage.setItem('nq_assigned', JSON.stringify(a)); } catch (e) {}
+        shown.forEach(o => { if (checked[o.no] && !o.sent) na[o.no] = { country: s.bulkCountry, vendor: s.bulkVendor, sent: true }; });
+        set({ assign: na, showBulk: false, tab: 'assigned', checked: {} });
+      },
+    };
+  }
+}
+</script>
+</body>
+</html>

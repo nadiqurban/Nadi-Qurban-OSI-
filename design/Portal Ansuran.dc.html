@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; background:#EEF1EC; color:#1A1D21; -webkit-font-smoothing: antialiased; }
+  a { color:#42481c; text-decoration:none; }
+  @keyframes sp { to { transform: rotate(360deg); } }
+  @media print {
+    @page { size: A5; margin: 0; }
+    body * { visibility: hidden !important; }
+    #ans-rcpt, #ans-rcpt * { visibility: visible !important; }
+    #ans-rcpt { position: absolute !important; inset: 0 !important; padding: 14mm !important; }
+  }
+</style>
+</helmet>
+
+<div style="min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:24px 16px 48px;">
+
+  <!-- top brand bar -->
+  <div style="width:100%; max-width:520px; display:flex; align-items:center; gap:11px; margin-bottom:18px;">
+    <div style="width:40px; height:40px; border-radius:10px; overflow:hidden;"><img src="uploads/Untitled design.png" alt="Nadi Qurban" style="width:100%; height:100%; object-fit:cover; display:block;"></div>
+    <div style="line-height:1;"><div style="font-size:15px; font-weight:800; letter-spacing:.3px; color:#42481c;">NADI QURBAN</div><div style="font-size:10px; font-weight:600; letter-spacing:2px; color:#94A3AC; margin-top:3px;">PORTAL BAYARAN ANSURAN</div></div>
+    <span style="margin-left:auto; display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; color:#16A34A; background:#EAF7EE; border-radius:20px; padding:5px 11px;"><i class="ph-fill ph-shield-check" style="font-size:14px;"></i> Selamat</span>
+  </div>
+
+  <!-- summary card -->
+  <div style="width:100%; max-width:520px; background:#42481c; color:#fff; border-radius:16px; padding:22px 24px; margin-bottom:16px;">
+    <div style="font-size:12px; color:#c9cbb4; letter-spacing:.3px;">No. Tempahan</div>
+    <div style="font-size:16px; font-weight:700; margin-top:2px;">{{ orderNo }}</div>
+    <div style="display:flex; align-items:flex-end; justify-content:space-between; margin-top:16px;">
+      <div><div style="font-size:12px; color:#c9cbb4;">Baki Perlu Dibayar</div><div style="font-size:30px; font-weight:800; line-height:1.1; margin-top:3px;">{{ balance }}</div></div>
+      <div style="text-align:right;"><div style="font-size:12px; color:#c9cbb4;">Jumlah Pelan</div><div style="font-size:15px; font-weight:700; margin-top:3px;">{{ total }}</div></div>
+    </div>
+    <div style="height:8px; border-radius:20px; background:rgba(255,255,255,.18); overflow:hidden; margin-top:16px;"><div style="width:{{ pct }}; height:100%; background:#C9A227;"></div></div>
+    <div style="display:flex; justify-content:space-between; font-size:11.5px; color:#c9cbb4; margin-top:7px;"><span>{{ paidLabel }} dibayar</span><span>{{ pct }} selesai</span></div>
+  </div>
+
+  <!-- customer + package -->
+  <div style="width:100%; max-width:520px; background:#fff; border:1px solid #E2E8F0; border-radius:14px; padding:18px 20px; margin-bottom:16px; display:grid; grid-template-columns:1fr 1fr; gap:14px 18px;">
+    <div><div style="font-size:11px; color:#94A3AC;">Pelanggan</div><div style="font-size:13.5px; font-weight:600; margin-top:2px;">{{ name }}</div></div>
+    <div><div style="font-size:11px; color:#94A3AC;">Pakej</div><div style="font-size:13.5px; font-weight:600; margin-top:2px;">{{ pkg }}</div></div>
+    <div><div style="font-size:11px; color:#94A3AC;">Ansuran Bulanan</div><div style="font-size:13.5px; font-weight:600; margin-top:2px;">{{ monthly }}</div></div>
+    <div><div style="font-size:11px; color:#94A3AC;">Bayaran Seterusnya</div><div style="font-size:13.5px; font-weight:600; margin-top:2px; color:#D97706;">{{ nextDue }}</div></div>
+  </div>
+
+  <!-- schedule -->
+  <div style="width:100%; max-width:520px; background:#fff; border:1px solid #E2E8F0; border-radius:14px; overflow:hidden; margin-bottom:16px;">
+    <div style="padding:14px 20px; border-bottom:1px solid #F1F5F4; font-size:13.5px; font-weight:700;">Jadual Ansuran</div>
+    <sc-for list="{{ schedule }}" as="m" hint-placeholder-count="6">
+      <div style="display:flex; align-items:center; gap:13px; padding:13px 20px; border-bottom:1px solid #F1F5F4;">
+        <span onClick="{{ m.onToggle }}" style="{{ m.checkStyle }}"><sc-if value="{{ m.checked }}" hint-placeholder-val="{{ false }}"><i class="ph-fill ph-check" style="font-size:12px; color:#fff;"></i></sc-if></span>
+        <span style="width:34px; height:34px; border-radius:9px; background:{{ m.tint }}; color:{{ m.color }}; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><i class="{{ m.icon }}" style="font-size:17px;"></i></span>
+        <div style="flex:1; min-width:0;"><div style="font-size:13px; font-weight:600; color:#1A1D21;">{{ m.label }}</div><div style="font-size:11.5px; color:#94A3AC;">{{ m.date }}</div></div>
+        <span style="font-size:13px; font-weight:700; color:#1A1D21;">{{ m.amount }}</span>
+        <span style="{{ m.badgeStyle }}">{{ m.status }}</span>
+      </div>
+    </sc-for>
+  </div>
+
+  <!-- pay method -->
+  <div style="width:100%; max-width:520px; background:#fff; border:1px solid #E2E8F0; border-radius:14px; padding:18px 20px; margin-bottom:16px;">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;"><span style="font-size:13.5px; font-weight:700;">Pilih Kaedah Bayaran</span><span style="display:inline-flex; align-items:center; gap:5px; font-size:10.5px; font-weight:600; color:#16A34A; background:#EAF7EE; border-radius:20px; padding:3px 9px;"><i class="ph ph-shield-check" style="font-size:12px;"></i> Dikuasakan CHIP IN</span></div>
+    <div style="display:flex; flex-direction:column; gap:9px;">
+      <sc-for list="{{ methods }}" as="pm" hint-placeholder-count="4">
+        <div onClick="{{ pm.onSelect }}" style="{{ pm.rowStyle }}">
+          <span style="width:36px; height:36px; border-radius:9px; background:{{ pm.tint }}; color:{{ pm.color }}; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><i class="{{ pm.icon }}" style="font-size:19px;"></i></span>
+          <span style="flex:1; font-size:13.5px; font-weight:600; color:#1A1D21;">{{ pm.label }}</span>
+          <span style="{{ pm.dotStyle }}"><sc-if value="{{ pm.selected }}" hint-placeholder-val="{{ false }}"><i class="ph-fill ph-check" style="font-size:11px; color:#fff;"></i></sc-if></span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div style="width:100%; max-width:520px;">
+    <button onClick="{{ payNow }}" style="width:100%; background:#42481c; color:#fff; border:none; border-radius:11px; padding:15px; font-size:15px; font-weight:700; cursor:pointer; font-family:inherit; display:flex; align-items:center; justify-content:center; gap:9px;"><i class="ph ph-lock-simple-open" style="font-size:19px;"></i> Bayar {{ monthly }} Sekarang</button>
+    <p style="text-align:center; font-size:11.5px; color:#94A3AC; margin-top:12px; line-height:1.6;"><i class="ph-fill ph-shield-check" style="font-size:13px; color:#16A34A; vertical-align:-2px;"></i> Pembayaran dilindungi &amp; disulitkan. Dikuasakan oleh gerbang pembayaran FPX &middot; DuitNow.</p>
+    <div style="text-align:center; font-size:11px; color:#94A3AC; margin-top:8px;">nadiqurban.com &middot; Nadi Qurban Sdn. Bhd. (1677511-A)</div>
+  </div>
+
+  <sc-if value="{{ showPay }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; inset:0; z-index:100; background:rgba(20,24,20,.6); display:flex; align-items:center; justify-content:center; padding:24px 16px;">
+      <div style="width:100%; max-width:400px; background:#fff; border-radius:16px; box-shadow:0 24px 60px rgba(0,0,0,.3); overflow:hidden;">
+        <sc-if value="{{ paying }}" hint-placeholder-val="{{ true }}">
+          <div style="padding:40px 28px; text-align:center;">
+            <div style="width:56px; height:56px; border-radius:50%; border:4px solid #edeee0; border-top-color:#42481c; margin:0 auto; animation:sp 0.8s linear infinite;"></div>
+            <div style="font-size:15px; font-weight:700; margin-top:20px;">Mengalihkan ke CHIP IN &mdash; {{ method }}&hellip;</div>
+            <p style="font-size:12.5px; color:#94A3AC; margin-top:6px;">Sambungan selamat ke gate.chip-in.asia</p>
+          </div>
+        </sc-if>
+        <sc-if value="{{ paidDone }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:36px 28px; text-align:center;">
+            <div style="width:64px; height:64px; border-radius:50%; background:#EAF7EE; display:flex; align-items:center; justify-content:center; margin:0 auto;"><i class="ph-fill ph-check-circle" style="font-size:38px; color:#16A34A;"></i></div>
+            <div style="font-size:18px; font-weight:800; margin-top:16px;">Bayaran Berjaya!</div>
+            <p style="font-size:12.5px; color:#94A3AC; margin-top:6px;">Disahkan oleh CHIP IN</p>
+            <p style="font-size:13px; color:#64748B; margin-top:8px; line-height:1.6;">Ansuran <b>{{ monthly }}</b> anda telah diterima melalui {{ method }}. Resit dihantar ke emel anda.</p>
+            <div style="background:#F6F8F7; border-radius:10px; padding:12px 14px; margin-top:16px; text-align:left; font-size:12.5px; color:#334155;"><div style="display:flex; justify-content:space-between;"><span style="color:#94A3AC;">No. Rujukan</span><span style="font-weight:700; font-family:monospace;">{{ payRef }}</span></div><div style="display:flex; justify-content:space-between; margin-top:6px;"><span style="color:#94A3AC;">Baki Baharu</span><span style="font-weight:700;">{{ newBalance }}</span></div></div>
+            <button onClick="{{ viewReceipt }}" style="width:100%; margin-top:18px; background:#42481c; color:#fff; border:none; border-radius:10px; padding:13px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; display:flex; align-items:center; justify-content:center; gap:8px;"><i class="ph ph-receipt" style="font-size:17px;"></i> Lihat Resit</button>
+            <button onClick="{{ closePay }}" style="width:100%; margin-top:10px; background:#fff; color:#334155; border:1px solid #E2E8F0; border-radius:10px; padding:12px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;">Selesai</button>
+          </div>
+        </sc-if>
+        <sc-if value="{{ showRcpt }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:0;">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 22px; background:#F6F8F7; border-bottom:1px solid #E2E8F0;">
+              <span style="font-size:13px; font-weight:700; color:#334155;">Resit Bayaran</span>
+              <div style="display:flex; gap:8px;">
+                <button onClick="{{ printRcpt }}" style="display:inline-flex; align-items:center; gap:6px; background:#42481c; color:#fff; border:none; border-radius:8px; padding:8px 13px; font-size:12.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-printer" style="font-size:15px;"></i> Cetak</button>
+                <button onClick="{{ downloadRcpt }}" style="display:inline-flex; align-items:center; gap:6px; background:#C9A227; color:#fff; border:none; border-radius:8px; padding:8px 13px; font-size:12.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-download-simple" style="font-size:15px;"></i> Muat Turun PDF</button>
+                <button onClick="{{ closePay }}" style="display:inline-flex; align-items:center; gap:6px; background:#fff; color:#334155; border:1px solid #E2E8F0; border-radius:8px; padding:8px 11px; font-size:12.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-x" style="font-size:14px;"></i></button>
+              </div>
+            </div>
+            <div id="ans-rcpt" style="padding:28px 30px;">
+              <div style="display:flex; align-items:center; gap:12px; padding-bottom:16px; border-bottom:2px solid #42481c;">
+                <div style="width:44px; height:44px; border-radius:10px; overflow:hidden;"><img src="uploads/Untitled design.png" alt="Nadi Qurban" style="width:100%; height:100%; object-fit:cover; display:block;"></div>
+                <div style="flex:1;"><div style="font-size:14px; font-weight:800; color:#42481c;">NADI QURBAN SDN. BHD.</div><div style="font-size:10px; font-weight:600; letter-spacing:2px; color:#94A3AC;">1677511-A</div></div>
+                <div style="text-align:right;"><div style="font-size:15px; font-weight:800;">RESIT</div><div style="font-size:11.5px; font-weight:700; color:#42481c; margin-top:2px;">{{ payRef }}</div></div>
+              </div>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:11px 16px; margin-top:16px;">
+                <div><div style="font-size:11px; color:#94A3AC;">No. Tempahan</div><div style="font-size:13px; font-weight:600; margin-top:2px;">{{ orderNo }}</div></div>
+                <div><div style="font-size:11px; color:#94A3AC;">Pelanggan</div><div style="font-size:13px; font-weight:600; margin-top:2px;">{{ name }}</div></div>
+                <div><div style="font-size:11px; color:#94A3AC;">No. Telefon</div><div style="font-size:13px; font-weight:600; margin-top:2px;">{{ phone }}</div></div>
+                <div><div style="font-size:11px; color:#94A3AC;">Emel</div><div style="font-size:13px; font-weight:600; margin-top:2px;">{{ email }}</div></div>
+                <div style="grid-column:1 / -1;"><div style="font-size:11px; color:#94A3AC;">Alamat</div><div style="font-size:13px; font-weight:600; margin-top:2px;">{{ addr }}</div></div>
+                <div><div style="font-size:11px; color:#94A3AC;">Kaedah</div><div style="font-size:13px; font-weight:600; margin-top:2px;">{{ method }}</div></div>
+                <div><div style="font-size:11px; color:#94A3AC;">Pakej</div><div style="font-size:13px; font-weight:600; margin-top:2px;">{{ pkg }}</div></div>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; background:#F6F8F7; border-radius:10px; padding:14px 16px; margin-top:18px;"><span style="font-size:13px; color:#64748B;">Jumlah Dibayar</span><span style="font-size:20px; font-weight:800; color:#42481c;">{{ monthly }}</span></div>
+              <div style="display:flex; justify-content:space-between; margin-top:12px; font-size:12.5px;"><span style="color:#94A3AC;">Baki Baharu</span><span style="font-weight:700;">{{ newBalance }}</span></div>
+              <sc-if value="{{ rcMulti }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:16px;"><div style="font-size:11px; font-weight:700; letter-spacing:.4px; color:#94A3AC; text-transform:uppercase; margin-bottom:9px;">Senarai Peserta</div>
+                  <div style="display:grid; grid-template-columns:1fr 1fr; gap:7px 16px;"><sc-for list="{{ rcParticipants }}" as="pp" hint-placeholder-count="2"><div style="display:flex; align-items:center; gap:8px; font-size:12.5px; color:#1A1D21;"><span style="width:20px; height:20px; border-radius:6px; background:#edeee0; color:#42481c; font-size:10.5px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0;">{{ pp.n }}</span>{{ pp.name }}</div></sc-for></div>
+                </div>
+              </sc-if>
+              <div style="margin-top:20px; padding-top:14px; border-top:1px solid #E2E8F0; text-align:center; font-size:10.5px; color:#94A3AC;">Disahkan oleh CHIP IN &middot; nadiqurban.com &middot; Sah tanpa tandatangan basah.</div>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { method: 'FPX' };
+  renderVals() {
+    const s = this.state;
+    const set = (o) => this.setState(o);
+    let ext = null;
+    try {
+      const raw = localStorage.getItem('nq_portal_current');
+      if (raw) ext = JSON.parse(raw);
+    } catch (e) {}
+    const badge = (bg, col) => 'font-size:10.5px; font-weight:700; border-radius:20px; padding:3px 10px; white-space:nowrap; background:' + bg + '; color:' + col + ';';
+
+    const rmNum = (v) => Number(String(v == null ? '' : v).replace(/[^0-9.]/g, '')) || 0;
+    const months = (ext && Number(ext.months)) || 6;
+    const monthlyN = (ext && rmNum(ext.monthly)) || 583;
+    const basePaid = (ext && ext.paid != null) ? Number(ext.paid) : 4;
+    const totalN = (ext && rmNum(ext.total)) || (monthlyN * months);
+    const extra = s.paidExtra || {};
+    const sel = s.selected || {};
+    const isPaid = (n) => n <= basePaid || !!extra[n];
+    const mLabels = ['05 Jan', '05 Feb', '05 Mac', '05 Apr', '05 Mei', '05 Jun', '05 Jul', '05 Ogos', '05 Sep', '05 Okt', '05 Nov', '05 Dis'];
+    const schedule = Array.from({ length: months }).map((_, k) => {
+      const n = k + 1;
+      const done = isPaid(n);
+      const checked = !!sel[n];
+      return {
+        label: 'Ansuran ke-' + n, date: (mLabels[k] || ('Bulan ' + n)) + ' 2027',
+        amount: 'RM ' + monthlyN.toLocaleString('en-US'),
+        icon: done ? 'ph-fill ph-check-circle' : 'ph ph-clock',
+        tint: done ? '#EAF7EE' : '#FEF3E2',
+        color: done ? '#16A34A' : '#D97706',
+        status: done ? 'Dibayar' : 'Perlu Bayar',
+        badgeStyle: done ? badge('#EAF7EE', '#16A34A') : badge('#FEF3E2', '#D97706'),
+        checked: checked && !done,
+        checkStyle: done ? 'width:20px; flex-shrink:0;' : ('width:20px; height:20px; border-radius:6px; display:flex; align-items:center; justify-content:center; flex-shrink:0;' + (checked ? 'background:#42481c; border:1px solid #42481c; cursor:pointer;' : 'border:1.5px solid #CBD5E1; cursor:pointer;')),
+        onToggle: () => { if (done) return; set({ selected: Object.assign({}, sel, { [n]: !checked }) }); },
+      };
+    });
+    if (schedule.every(m => m.checkStyle.indexOf('#16A34A') > -1)) {}
+    const selCount = Object.keys(sel).filter(k => sel[k] && !isPaid(Number(k))).length || 1;
+    const payAmt = 'RM ' + (selCount * monthlyN).toLocaleString('en-US');
+    const paidN = schedule.filter((m, k) => isPaid(k + 1)).length;
+
+    const methodDefs = [
+      { key: 'FPX', label: 'FPX Online Banking', icon: 'ph ph-bank', tint: '#E8F0FB', color: '#2563EB' },
+      { key: 'DuitNow', label: 'DuitNow QR', icon: 'ph ph-qr-code', tint: '#FEF6F6', color: '#DC2626' },
+      { key: 'Kad', label: 'Kad Kredit / Debit', icon: 'ph ph-credit-card', tint: '#edeee0', color: '#42481c' },
+      { key: 'Ewallet', label: 'E-Wallet (TnG, GrabPay)', icon: 'ph ph-wallet', tint: '#EAF7EE', color: '#16A34A' },
+    ];
+    const methods = methodDefs.map(m => {
+      const on = s.method === m.key;
+      return { label: m.label, icon: m.icon, tint: m.tint, color: m.color, selected: on,
+        onSelect: () => set({ method: m.key }),
+        rowStyle: 'display:flex; align-items:center; gap:12px; padding:11px 13px; border-radius:10px; cursor:pointer; border:1.5px solid ' + (on ? '#42481c' : '#E2E8F0') + ';' + (on ? 'background:#F6F8F7;' : ''),
+        dotStyle: 'width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;' + (on ? 'background:#42481c;' : 'border:1.5px solid #CBD5E1;') };
+    });
+
+    return {
+      orderNo: ext ? ext.no : 'NQ-QB-LE-001243', name: ext ? ext.name : 'Ahmad Zaki bin Hassan', pkg: ext ? ext.pkg : 'Delima',
+      rcMulti: ext && Number(ext.qty) > 1,
+      rcParticipants: Array.from({ length: (ext && Number(ext.qty)) || 1 }).map((_, i) => ({ n: i + 1, name: (ext && ext.names && ext.names[i]) || (i === 0 ? (ext ? ext.name : 'Ahmad Zaki bin Hassan') : 'Peserta ' + (i + 1)) })),
+      phone: ext && ext.phone ? ext.phone : '012-3345 671',
+      email: ext && ext.email ? ext.email : 'ahmad.zaki@gmail.com',
+      addr: ext && ext.addr ? ext.addr : 'No. 12, Jln Melati 3, 40150 Shah Alam, Selangor',
+      total: ext ? ext.total : 'RM 3,500', balance: 'RM ' + ((months - paidN) * monthlyN).toLocaleString('en-US'), monthly: payAmt,
+      paidLabel: 'RM ' + (paidN * monthlyN).toLocaleString('en-US'), pct: Math.round(paidN / months * 100) + '%',
+      grandTotal: 'RM ' + totalN.toLocaleString('en-US'),
+      nextDue: '05 Mei 2027', schedule, methods,
+      history: (function () {
+        const mn = ['05 Jan', '05 Feb', '05 Mac', '05 Apr', '05 Mei', '05 Jun'];
+        const meth = ['FPX Maybank', 'FPX CIMB', 'DuitNow QR', 'Kad Kredit'];
+        return [1, 2, 3, 4, 5, 6].filter(isPaid).map((n, i) => ({
+          title: 'Ansuran ke-' + n + ' — RM 583',
+          meta: mn[n - 1] + ' 2027 · ' + meth[i % 4] + ' · CHIP IN',
+          amount: 'RM 583', ref: 'NQPAY' + (100237 + n * 13),
+        }));
+      })(),
+      noHistory: [1, 2, 3, 4, 5, 6].filter(isPaid).length === 0,
+      method: { FPX: 'FPX Online Banking', DuitNow: 'DuitNow QR', Kad: 'Kad Kredit/Debit', Ewallet: 'E-Wallet' }[s.method] || 'FPX',
+      showPay: !!s.payState,
+      paying: s.payState === 'loading',
+      paidDone: s.payState === 'done' && !s.showRcpt,
+      showRcpt: s.payState === 'done' && s.showRcpt === true,
+      viewReceipt: () => set({ showRcpt: true }),
+      printRcpt: () => { window.print(); },
+      downloadRcpt: () => {
+        const el = document.getElementById('ans-rcpt');
+        if (!el || typeof html2pdf === 'undefined') { window.print(); return; }
+        html2pdf().set({ margin: 8, filename: 'Resit-Ansuran-' + ('NQPAY' + (Date.now() % 1000000)) + '.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 3, useCORS: true }, jsPDF: { unit: 'mm', format: 'a5', orientation: 'portrait' } }).from(el).save();
+      },
+      payRef: 'NQPAY' + (Date.now() % 1000000),
+      newBalance: 'RM ' + Math.max(0, (months - paidN - selCount) * monthlyN).toLocaleString('en-US'),
+      payNow: () => {
+        set({ payState: 'loading' });
+        setTimeout(() => {
+          const ex = Object.assign({}, extra);
+          const anySel = Object.keys(sel).some(k => sel[k] && !isPaid(Number(k)));
+          if (anySel) { Object.keys(sel).forEach(k => { if (sel[k]) ex[k] = true; }); }
+          else { const nx = [1,2,3,4,5,6].find(n => !isPaid(n)); if (nx) ex[nx] = true; }
+          this.setState({ payState: 'done', paidExtra: ex });
+        }, 1800);
+      },
+      closePay: () => set({ payState: null, selected: {}, showRcpt: false }),
+    };
+  }
+}
+</script>
+</body>
+</html>

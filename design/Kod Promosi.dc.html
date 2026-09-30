@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; background:#F6F8F7; color:#1A1D21; -webkit-font-smoothing: antialiased; }
+  a { color:#42481c; text-decoration:none; } a:hover { color:#5a6127; }
+  ::-webkit-scrollbar { width:10px; height:10px; }
+  ::-webkit-scrollbar-thumb { background:#b3b79a; border-radius:6px; border:2px solid transparent; background-clip:padding-box; }
+</style>
+</helmet>
+
+<div style="display:flex; min-height:100vh; background:#F6F8F7;">
+
+  <aside style="width:260px; flex-shrink:0; background:#fff; border-right:1px solid #E2E8F0; display:flex; flex-direction:column; position:sticky; top:0; height:100vh;">
+    <div style="height:72px; display:flex; align-items:center; gap:12px; padding:0 22px; border-bottom:1px solid #E2E8F0; flex-shrink:0;">
+      <div style="width:38px; height:38px; border-radius:10px; overflow:hidden;"><img src="uploads/Untitled design.png" alt="Nadi Qurban" style="width:100%; height:100%; object-fit:cover; display:block;"></div>
+      <div style="line-height:1;"><div style="font-size:15px; font-weight:800; letter-spacing:.3px; color:#42481c;">NADI QURBAN</div><div style="font-size:10.5px; font-weight:600; letter-spacing:2px; color:#94A3AC; margin-top:3px;">OSI SYSTEM</div></div>
+    </div>
+    <nav style="flex:1; overflow-y:auto; padding:14px 12px;">
+      <sc-for list="{{ nav }}" as="item" hint-placeholder-count="18">
+        <sc-if value="{{ item.isSection }}" hint-placeholder-val="{{ false }}"><div style="font-size:10.5px; font-weight:700; letter-spacing:1.4px; color:#94A3AC; padding:16px 14px 8px;">{{ item.label }}</div></sc-if>
+        <sc-if value="{{ item.isItem }}" hint-placeholder-val="{{ true }}">
+          <div style="{{ item.rowStyle }}" onClick="{{ item.onClick }}">
+            <span style="position:absolute; left:0; top:8px; bottom:8px; width:3px; border-radius:0 3px 3px 0; background:{{ item.bar }};"></span>
+            <i class="{{ item.icon }}" style="font-size:19px; color:{{ item.iconColor }};"></i>
+            <span style="flex:1;">{{ item.label }}</span>
+            <sc-if value="{{ item.badge }}" hint-placeholder-val="{{ false }}"><span style="background:#C9A227; color:#fff; font-size:10.5px; font-weight:700; border-radius:20px; padding:2px 8px;">{{ item.badge }}</span></sc-if>
+          </div>
+        </sc-if>
+      </sc-for>
+    </nav>
+    <div style="padding:14px 16px; display:flex; align-items:center; gap:11px; border-top:1px solid #E2E8F0;">
+      <div style="width:38px; height:38px; border-radius:50%; background:#42481c; color:#C9A227; font-weight:800; font-size:13px; display:flex; align-items:center; justify-content:center;">MN</div>
+      <div style="min-width:0; flex:1;"><div style="font-size:13px; font-weight:700; color:#1A1D21;">Muhammad Nurfitkri</div><div style="font-size:11px; color:#64748B;">Superadmin</div></div>
+    </div>
+  </aside>
+
+  <div style="flex:1; min-width:0; display:flex; flex-direction:column;">
+    <header style="height:72px; background:#fff; border-bottom:1px solid #E2E8F0; display:flex; align-items:center; padding:0 32px; gap:24px; position:sticky; top:0; z-index:20;">
+      <div style="flex:1; max-width:520px; margin:0 auto; display:flex; align-items:center; gap:11px; background:#F6F8F7; border:1px solid #E2E8F0; border-radius:10px; padding:10px 15px;">
+        <i class="ph ph-magnifying-glass" style="font-size:18px; color:#94A3AC;"></i>
+        <span style="font-size:13.5px; color:#94A3AC;">Cari kod promosi&hellip;</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <div style="position:relative; width:40px; height:40px; border-radius:10px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; color:#475569;"><i class="ph ph-bell" style="font-size:20px;"></i><span style="position:absolute; top:-4px; right:-4px; background:#DC2626; color:#fff; font-size:10px; font-weight:700; border-radius:20px; min-width:18px; height:18px; display:flex; align-items:center; justify-content:center; padding:0 4px; border:2px solid #fff;">7</span></div>
+        <div style="width:1px; height:30px; background:#E2E8F0; margin:0 4px;"></div>
+        <div style="width:40px; height:40px; border-radius:50%; background:#42481c; color:#C9A227; font-weight:800; font-size:13px; display:flex; align-items:center; justify-content:center;">MN</div>
+      </div>
+    </header>
+
+    <main style="flex:1; padding:28px 32px 56px; overflow-y:auto;">
+      <div style="display:flex; align-items:flex-end; gap:16px; margin-bottom:24px; flex-wrap:wrap;">
+        <div style="margin-right:auto;">
+          <div style="display:flex; align-items:center; gap:8px; font-size:12.5px; color:#94A3AC; margin-bottom:6px;"><span>Jualan &amp; Kewangan</span><i class="ph ph-caret-right" style="font-size:12px;"></i><span style="color:#42481c; font-weight:600;">Kod Promosi</span></div>
+          <h1 style="font-size:23px; font-weight:700;">Kod Promosi</h1>
+          <p style="font-size:13.5px; color:#64748B; margin-top:4px;">Cipta &amp; urus kod diskaun untuk tempahan pelanggan.</p>
+        </div>
+        <button onClick="{{ openNew }}" style="display:flex; align-items:center; gap:8px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-plus" style="font-size:17px;"></i> Kod Baharu</button>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:22px;">
+        <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
+          <div style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; padding:16px 18px; display:flex; align-items:center; gap:14px;">
+            <div style="width:42px; height:42px; border-radius:10px; background:{{ s.tint }}; color:{{ s.color }}; display:flex; align-items:center; justify-content:center;"><i class="{{ s.icon }}" style="font-size:22px;"></i></div>
+            <div><div style="font-size:22px; font-weight:700; line-height:1;">{{ s.value }}</div><div style="font-size:12.5px; color:#64748B; margin-top:5px;">{{ s.label }}</div></div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
+        <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3"><span onClick="{{ t.onClick }}" style="{{ t.style }}">{{ t.label }} <span style="{{ t.countStyle }}">{{ t.count }}</span></span></sc-for>
+      </div>
+
+      <section style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; overflow:hidden;">
+        <div style="display:grid; grid-template-columns:1.1fr 1.6fr 0.9fr 0.9fr 1fr 0.9fr 0.9fr; gap:14px; padding:13px 20px; background:#F6F8F7; border-bottom:1px solid #E2E8F0; font-size:11px; font-weight:700; letter-spacing:.4px; color:#94A3AC; text-transform:uppercase;">
+          <span>Kod</span><span>Keterangan</span><span>Diskaun</span><span style="text-align:center;">Guna</span><span>Sah Hingga</span><span style="text-align:center;">Status</span><span style="text-align:right;">Tindakan</span>
+        </div>
+        <sc-for list="{{ rows }}" as="r" hint-placeholder-count="6">
+          <div style="display:grid; grid-template-columns:1.1fr 1.6fr 0.9fr 0.9fr 1fr 0.9fr 0.9fr; gap:14px; padding:14px 20px; border-bottom:1px solid #F1F5F4; align-items:center; font-size:13px;">
+            <span style="font-family:monospace; font-weight:700; color:#42481c; background:#edeee0; border-radius:7px; padding:5px 9px; justify-self:start;">{{ r.code }}</span>
+            <span style="color:#475569; min-width:0;">{{ r.desc }}</span>
+            <span style="font-weight:600; color:#1A1D21;">{{ r.discount }}</span>
+            <span style="text-align:center; color:#475569;">{{ r.used }}</span>
+            <span style="color:#475569;">{{ r.expiry }}</span>
+            <span style="text-align:center;"><span style="{{ r.badgeStyle }}">{{ r.status }}</span></span>
+            <span style="text-align:right;"><span style="display:inline-flex; align-items:center; gap:8px; justify-content:flex-end;"><span onClick="{{ r.onCopy }}" title="Salin kod" style="display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; border-radius:8px; border:1px solid #E2E8F0; color:#42481c; cursor:pointer;"><i class="ph ph-copy" style="font-size:15px;"></i></span><span onClick="{{ r.onEdit }}" title="Edit" style="display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; border-radius:8px; border:1px solid #E2E8F0; color:#42481c; cursor:pointer;"><i class="ph ph-pencil-simple" style="font-size:15px;"></i></span><span onClick="{{ r.onDelete }}" title="Buang" style="display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; border-radius:8px; border:1px solid #F7CFCF; color:#DC2626; cursor:pointer;"><i class="ph ph-trash" style="font-size:15px;"></i></span></span></span>
+          </div>
+        </sc-for>
+      </section>
+    </main>
+  </div>
+
+  <sc-if value="{{ showNew }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; inset:0; z-index:100; background:rgba(20,24,20,.55); display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; padding:32px 16px;">
+      <div style="width:100%; max-width:500px; background:#fff; border-radius:14px; box-shadow:0 24px 60px rgba(0,0,0,.3); overflow:hidden;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 24px; border-bottom:1px solid #E2E8F0;">
+          <div style="display:flex; align-items:center; gap:11px;"><span style="width:36px; height:36px; border-radius:10px; background:#edeee0; color:#42481c; display:flex; align-items:center; justify-content:center;"><i class="ph ph-ticket" style="font-size:19px;"></i></span><div><h2 style="font-size:16px; font-weight:700;">Kod Promosi Baharu</h2><p style="font-size:12px; color:#94A3AC; margin-top:2px;">Cipta kod diskaun baharu</p></div></div>
+          <span onClick="{{ closeNew }}" style="width:32px; height:32px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#64748B;"><i class="ph ph-x" style="font-size:16px;"></i></span>
+        </div>
+        <div style="padding:22px 24px; display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+          <div style="grid-column:1 / -1;"><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Kod</label><div style="display:flex; gap:8px;"><input value="{{ genCode }}" onInput="{{ onGenCode }}" placeholder="cth. QURBAN2027" style="flex:1; font-family:monospace; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none; text-transform:uppercase;"><button onClick="{{ autoCode }}" style="background:#edeee0; color:#42481c; border:none; border-radius:9px; padding:0 14px; font-size:12.5px; font-weight:600; cursor:pointer; font-family:inherit;">Auto</button></div></div>
+          <div style="grid-column:1 / -1;"><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Keterangan</label><input value="{{ ncDesc }}" onInput="{{ onNcDesc }}" placeholder="cth. Diskaun awal musim" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Jenis Diskaun</label><select value="{{ ncType }}" onChange="{{ onNcType }}" style="width:100%; font-family:inherit; font-size:13px; color:#334155; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none; background:#fff;"><option>Peratus (%)</option><option>Jumlah Tetap (RM)</option></select></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Nilai</label><input value="{{ ncValue }}" onInput="{{ onNcValue }}" placeholder="cth. 10" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Had Guna</label><input type="number" placeholder="cth. 100" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Sah Hingga</label><input type="date" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+        </div>
+        <div style="padding:0 24px 22px; display:flex; gap:10px; justify-content:flex-end;">
+          <button onClick="{{ closeNew }}" style="background:#fff; color:#334155; border:1px solid #E2E8F0; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;">Batal</button>
+          <button onClick="{{ saveCode }}" style="display:inline-flex; align-items:center; gap:7px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-check" style="font-size:16px;"></i> Simpan Kod</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: 'active', showNew: false, genCode: '' };
+  componentDidMount() {
+    const codes = [
+      { code: 'AWALQURBAN', discount: '10%' }, { code: 'RAYA50', discount: 'RM 50' },
+      { code: 'AQIQAH15', discount: '15%' }, { code: 'GROUP7', discount: '8%' },
+    ];
+    try { localStorage.setItem('nq_promo_codes', JSON.stringify(codes)); } catch (e) {}
+  }
+  renderVals() {
+    const s = this.state;
+    const set = (o) => this.setState(o);
+    const navItem = (icon, label, active, badge) => ({
+      isItem: true, isSection: false, label, badge: badge || '',
+      icon, iconColor: active ? '#42481c' : '#94A3AC', bar: active ? '#42481c' : 'transparent',
+      onClick: () => { const map = { 'Dashboard': 'Dashboard Operasi.dc.html', 'Bayaran Ansuran': 'Bayaran Ansuran.dc.html', 'Tempahan & Pelanggan': 'Tempahan & Pelanggan.dc.html', 'Pengesahan Bayaran': 'Tempahan & Pelanggan.dc.html', 'Lafaz Akad': 'Lafaz Akad.dc.html', 'Agihan Negara': 'Agihan Negara.dc.html', 'Pelaksanaan & Laporan': 'Pelaksanaan & Laporan.dc.html', 'AWB & Postage': 'AWB & Postage.dc.html', 'Tempahan Selesai': 'Tempahan Selesai.dc.html', 'Vendor': 'Vendor.dc.html', 'Produk': 'Produk.dc.html', 'Dokumen': 'Dokumen.dc.html', 'Sales CRM': 'Sales CRM.dc.html', 'Kod Promosi': 'Kod Promosi.dc.html', 'Kewangan': 'Kewangan.dc.html', 'Pusat Laporan': 'Pusat Laporan.dc.html', 'Audit Log': 'Audit Log.dc.html', 'Notifikasi': 'Notifikasi.dc.html', 'Pengguna': 'Pengguna & Peranan.dc.html' }; if (map[label] && !active) { try { location.href = (function(p){try{var u=new URL(p,location.href);new URLSearchParams(location.search).forEach(function(v,k){if(!u.searchParams.has(k))u.searchParams.set(k,v);});return u.href;}catch(e){return p;}})(map[label]); } catch (e) {} } },
+      rowStyle: 'position:relative; display:flex; align-items:center; gap:12px; padding:10px 14px; margin:2px 0; border-radius:9px; font-size:13.5px; cursor:pointer;' + (active ? 'background:#edeee0; color:#42481c; font-weight:700;' : 'color:#475569; font-weight:500;'),
+    });
+    const sec = (label) => ({ isSection: true, isItem: false, label });
+    const nav = [
+      sec('UTAMA'), navItem('ph ph-squares-four', 'Dashboard', false),
+      sec('OPERASI'), navItem('ph ph-calendar-check', 'Bayaran Ansuran', false), navItem('ph ph-shopping-cart-simple', 'Tempahan & Pelanggan', false, '34'), navItem('ph ph-seal-check', 'Pengesahan Bayaran', false, '5'), navItem('ph ph-hand-heart', 'Lafaz Akad', false), navItem('ph ph-globe-hemisphere-west', 'Agihan Negara', false), navItem('ph ph-shopping-bag', 'Pelaksanaan & Laporan', false), navItem('ph ph-package', 'AWB & Postage', false), navItem('ph ph-check-square-offset', 'Tempahan Selesai', false), navItem('ph ph-truck', 'Vendor', false), navItem('ph ph-cow', 'Produk', false), navItem('ph ph-folders', 'Dokumen', false),
+      sec('JUALAN & KEWANGAN'), navItem('ph ph-users-three', 'Sales CRM', false), navItem('ph ph-ticket', 'Kod Promosi', true), navItem('ph ph-wallet', 'Kewangan', false, '87'),
+      sec('LAPORAN'), navItem('ph ph-chart-bar', 'Pusat Laporan', false), navItem('ph ph-clock-counter-clockwise', 'Audit Log', false),
+      sec('SISTEM'), navItem('ph ph-bell', 'Notifikasi', false, '7'), navItem('ph ph-users', 'Pengguna', false), navItem('ph ph-certificate', 'Sijil', false), navItem('ph ph-gear-six', 'Tetapan', false),
+    ];
+
+    const stats = [
+      { icon: 'ph ph-ticket', tint: '#edeee0', color: '#42481c', value: '12', label: 'Jumlah Kod' },
+      { icon: 'ph ph-check-circle', tint: '#EAF7EE', color: '#16A34A', value: '8', label: 'Kod Aktif' },
+      { icon: 'ph ph-tag', tint: '#FEF3E2', color: '#D97706', value: '1,284', label: 'Kali Digunakan' },
+      { icon: 'ph ph-hand-coins', tint: '#E8F0FB', color: '#2563EB', value: 'RM 38K', label: 'Jumlah Diskaun' },
+    ];
+
+    const badge = (bg, col) => 'display:inline-block; font-size:11px; font-weight:600; border-radius:20px; padding:4px 11px; background:' + bg + '; color:' + col + ';';
+    const all = [
+      { code: 'AWALQURBAN', desc: 'Diskaun tempahan awal musim', discount: '10%', used: '312', expiry: '31 Mac 2027', active: true },
+      { code: 'RAYA50', desc: 'Potongan RM50 setiap lembu', discount: 'RM 50', used: '188', expiry: '30 Apr 2027', active: true },
+      { code: 'AQIQAH15', desc: 'Diskaun pakej Aqiqah', discount: '15%', used: '96', expiry: '31 Dis 2027', active: true },
+      { code: 'GROUP7', desc: 'Diskaun kumpulan 7 bahagian', discount: '8%', used: '241', expiry: '15 Mei 2027', active: true },
+      { code: 'EARLYBIRD26', desc: 'Promo musim lepas', discount: '12%', used: '420', expiry: '31 Dis 2026', active: false },
+      { code: 'STAFFNQ', desc: 'Diskaun kakitangan', discount: '20%', used: '27', expiry: '31 Dis 2026', active: false },
+    ];
+    const shown = (s.savedCodes || []).concat(all).filter(c => s.tab === 'expired' ? !c.active : c.active).filter(c => !(s.removed || {})[c.code]).filter((c, i, arr) => arr.findIndex(x => x.code === c.code) === i);
+    const rows = shown.map(c => ({
+      code: c.code, desc: c.desc, discount: c.discount, used: c.used, expiry: c.expiry,
+      status: c.active ? 'Aktif' : 'Tamat', badgeStyle: c.active ? badge('#EAF7EE', '#16A34A') : badge('#F1F5F4', '#64748B'),
+      onCopy: () => { try { navigator.clipboard.writeText(c.code); } catch (e) {} },
+      onEdit: () => set({ showNew: true, genCode: c.code, editing: c.code, ncDesc: c.desc, ncType: c.discount.indexOf('RM') === 0 ? 'Jumlah Tetap (RM)' : 'Peratus (%)', ncValue: c.discount.replace(/[^0-9]/g, '') }),
+      onDelete: () => set({ removed: Object.assign({}, s.removed, { [c.code]: true }) }),
+    }));
+
+    const tabs = [['active', 'Aktif', all.filter(c => c.active).length], ['expired', 'Tamat Tempoh', all.filter(c => !c.active).length]].map(([k, label, count]) => {
+      const on = s.tab === k;
+      return { label, count: String(count), onClick: () => set({ tab: k }),
+        style: 'display:inline-flex; align-items:center; gap:8px; font-size:13px; font-weight:600; border-radius:9px; padding:9px 15px; cursor:pointer;' + (on ? 'background:#42481c; color:#fff;' : 'background:#fff; border:1px solid #E2E8F0; color:#475569;'),
+        countStyle: 'font-size:11px; font-weight:700; border-radius:20px; padding:1px 8px;' + (on ? 'background:rgba(255,255,255,.22); color:#fff;' : 'background:#F1F5F4; color:#64748B;') };
+    });
+
+    return {
+      nav, stats, rows, tabs,
+      showNew: s.showNew === true,
+      openNew: () => set({ showNew: true, genCode: '' }),
+      closeNew: () => set({ showNew: false, editing: null }),
+      saveCode: () => {
+        const code = (s.genCode || '').trim().toUpperCase();
+        if (!code) { set({ showNew: false }); return; }
+        const disc = (s.ncType === 'Jumlah Tetap (RM)') ? ('RM ' + (s.ncValue || '0')) : ((s.ncValue || '0') + '%');
+        const nc = (s.savedCodes || []).filter(x => x.code !== code);
+        const rm = Object.assign({}, s.removed); delete rm[code];
+        nc.unshift({ code, desc: s.ncDesc || 'Kod promosi', discount: disc, used: '0', expiry: '31 Dis 2027', active: true });
+        set({ savedCodes: nc, removed: rm, showNew: false, editing: null, genCode: '', ncDesc: '', ncType: 'Peratus (%)', ncValue: '' });
+      },
+      ncDesc: s.ncDesc || '', onNcDesc: (e) => set({ ncDesc: e.target.value }),
+      ncType: s.ncType || 'Peratus (%)', onNcType: (e) => set({ ncType: e.target.value }),
+      ncValue: s.ncValue || '', onNcValue: (e) => set({ ncValue: e.target.value }),
+      genCode: s.genCode || '',
+      onGenCode: (e) => set({ genCode: e.target.value.toUpperCase() }),
+      autoCode: () => { const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let p = 'NQ'; for (let i = 0; i < 6; i++) p += c[Math.floor(Math.random() * c.length)]; set({ genCode: p }); },
+    };
+  }
+}
+</script>
+</body>
+</html>

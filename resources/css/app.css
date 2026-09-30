@@ -1,0 +1,181 @@
+@import 'tailwindcss';
+
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/inter/700.css';
+@import '@fontsource/inter/800.css';
+@import '@fontsource/amiri/400.css';
+@import '@fontsource/amiri/700.css';
+@import '@phosphor-icons/web/regular';
+@import '@phosphor-icons/web/fill';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../../config/navigation.php';
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+/*
+ * Design tokens — exact values from CLAUDE.md / design/*.dc.html.
+ * Surface/ink tokens are CSS variables so [data-theme=dark] can swap them
+ * (dark values from Dashboard Operasi.dc.html `const T = dark ? …`).
+ */
+@theme {
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --font-arabic: 'Amiri', serif;
+
+    --color-primary: #42481c;
+    --color-primary-hover: #5a6127;
+    --color-primary-soft: var(--nq-primary-soft);
+    --color-gold: #C9A227;
+    --color-gold-soft: #FBF3DC;
+    --color-gold-ink: #9a7d16;
+
+    --color-bg: var(--nq-bg);
+    --color-surface: var(--nq-surface);
+    --color-border: var(--nq-border);
+    --color-divider: var(--nq-divider);
+    --color-head: var(--nq-head);
+
+    --color-ink: var(--nq-ink);
+    --color-ink-2: var(--nq-ink-2);
+    --color-ink-3: var(--nq-ink-3);
+    --color-muted: var(--nq-muted);
+    --color-faint: var(--nq-faint);
+    --color-checkbox-border: #CBD5E1;
+    --color-nav-active: var(--nq-nav-active);
+    --color-nav-bar: var(--nq-nav-bar);
+
+    --color-success: #16A34A;
+    --color-success-soft: #EAF7EE;
+    --color-info: #2563EB;
+    --color-info-soft: #E8F0FB;
+    --color-warning: #D97706;
+    --color-warning-soft: #FEF3E2;
+    --color-danger: #DC2626;
+    --color-danger-soft: #FDECEC;
+    --color-purple: #7C3AED;
+    --color-purple-soft: #F3ECFB;
+    --color-neutral: #64748B;
+    --color-neutral-soft: #F1F5F4;
+
+    --shadow-modal: 0 24px 60px rgba(0, 0, 0, .3);
+    --shadow-pop: 0 8px 24px rgba(16, 24, 40, .12);
+
+}
+
+:root {
+    --nq-bg: #F6F8F7;
+    --nq-surface: #FFFFFF;
+    --nq-border: #E2E8F0;
+    --nq-divider: #F1F5F4;
+    --nq-head: #F6F8F7;
+    --nq-ink: #1A1D21;
+    --nq-ink-2: #334155;
+    --nq-ink-3: #475569;
+    --nq-muted: #64748B;
+    --nq-faint: #94A3AC;
+    --nq-primary-soft: #edeee0;
+    --nq-nav-active: #42481c;
+    --nq-nav-bar: #42481c;
+    --nq-overlay: rgba(20, 24, 20, .55);
+}
+
+[data-theme=dark] {
+    --nq-bg: #0E1512;
+    --nq-surface: #14201B;
+    --nq-border: #2c2e1c;
+    --nq-divider: #20220f;
+    --nq-head: #14150c;
+    --nq-ink: #E6EDEA;
+    --nq-ink-2: #C3D0CA;
+    --nq-ink-3: #9DB0A8;
+    --nq-muted: #9DB0A8;
+    --nq-faint: #7C8E86;
+    --nq-primary-soft: #26281a;
+    --nq-nav-active: #c9ce93;
+    --nq-nav-bar: #C9A227;
+}
+
+@layer base {
+    html {
+        -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+        font-family: var(--font-sans);
+        background: var(--nq-bg);
+        color: var(--nq-ink);
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+    }
+
+    a {
+        color: #5a6127;
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: #C9A227;
+    }
+
+    button {
+        font-family: inherit;
+        cursor: pointer;
+    }
+
+    [x-cloak] {
+        display: none !important;
+    }
+
+    /* Phones: inputs ≥16px so iOS does not zoom on focus. */
+    @media (max-width: 767px) {
+        input:not([type=checkbox]):not([type=radio]),
+        select,
+        textarea {
+            font-size: 16px !important;
+        }
+    }
+
+    ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #9fb3aa;
+        border-radius: 6px;
+        border: 2px solid transparent;
+        background-clip: padding-box;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+}
+
+@layer components {
+    .nq-scroll-x {
+        overflow-x: auto;
+        scroll-snap-type: x proximity;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .nq-scroll-x::-webkit-scrollbar {
+        display: none;
+    }
+
+    .nq-scroll-x > * {
+        scroll-snap-align: start;
+    }
+
+    .font-arabic {
+        font-family: var(--font-arabic);
+    }
+
+    .pb-safe {
+        padding-bottom: max(16px, env(safe-area-inset-bottom));
+    }
+}

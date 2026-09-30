@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; background:#F6F8F7; color:#1A1D21; -webkit-font-smoothing: antialiased; }
+  a { color:#42481c; text-decoration:none; } a:hover { color:#5a6127; }
+  ::-webkit-scrollbar { width:10px; height:10px; }
+  ::-webkit-scrollbar-thumb { background:#b3b79a; border-radius:6px; border:2px solid transparent; background-clip:padding-box; }
+</style>
+</helmet>
+
+<div style="display:flex; min-height:100vh; background:#F6F8F7;">
+
+  <!-- SIDEBAR -->
+  <aside style="width:260px; flex-shrink:0; background:#fff; border-right:1px solid #E2E8F0; display:flex; flex-direction:column; position:sticky; top:0; height:100vh;">
+    <div style="height:72px; display:flex; align-items:center; gap:12px; padding:0 22px; border-bottom:1px solid #E2E8F0; flex-shrink:0;">
+      <div style="width:38px; height:38px; border-radius:10px; overflow:hidden;"><img src="uploads/Untitled design (2).png" alt="Nadi Qurban" style="width:100%; height:100%; object-fit:cover; display:block; transform:scale(1.22);"></div>
+      <div style="line-height:1;"><div style="font-size:15px; font-weight:800; letter-spacing:.3px; color:#42481c;">NADI QURBAN</div><div style="font-size:10.5px; font-weight:600; letter-spacing:2px; color:#94A3AC; margin-top:3px;">OSI SYSTEM</div></div>
+    </div>
+    <nav style="flex:1; overflow-y:auto; padding:14px 12px;">
+      <sc-for list="{{ nav }}" as="item" hint-placeholder-count="17">
+        <sc-if value="{{ item.isSection }}" hint-placeholder-val="{{ false }}"><div style="font-size:10.5px; font-weight:700; letter-spacing:1.4px; color:#94A3AC; padding:16px 14px 8px;">{{ item.label }}</div></sc-if>
+        <sc-if value="{{ item.isItem }}" hint-placeholder-val="{{ true }}">
+          <div style="{{ item.rowStyle }}" onClick="{{ item.onClick }}">
+            <span style="position:absolute; left:0; top:8px; bottom:8px; width:3px; border-radius:0 3px 3px 0; background:{{ item.bar }};"></span>
+            <i class="{{ item.icon }}" style="font-size:19px; color:{{ item.iconColor }};"></i>
+            <span style="flex:1;">{{ item.label }}</span>
+            <sc-if value="{{ item.badge }}" hint-placeholder-val="{{ false }}"><span style="background:#C9A227; color:#fff; font-size:10.5px; font-weight:700; border-radius:20px; padding:2px 8px;">{{ item.badge }}</span></sc-if>
+          </div>
+        </sc-if>
+      </sc-for>
+    </nav>
+    <div style="padding:14px 16px; display:flex; align-items:center; gap:11px; border-top:1px solid #E2E8F0;">
+      <div style="width:38px; height:38px; border-radius:50%; background:#42481c; color:#C9A227; font-weight:800; font-size:13px; display:flex; align-items:center; justify-content:center;">MN</div>
+      <div style="min-width:0; flex:1;"><div style="font-size:13px; font-weight:700; color:#1A1D21;">Muhammad Nurfitkri</div><div style="font-size:11px; color:#64748B;">Superadmin</div></div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div style="flex:1; min-width:0; display:flex; flex-direction:column;">
+    <header style="height:72px; background:#fff; border-bottom:1px solid #E2E8F0; display:flex; align-items:center; padding:0 32px; gap:24px; position:sticky; top:0; z-index:20;">
+      <div style="flex:1; max-width:520px; margin:0 auto; display:flex; align-items:center; gap:11px; background:#F6F8F7; border:1px solid #E2E8F0; border-radius:10px; padding:10px 15px;">
+        <i class="ph ph-magnifying-glass" style="font-size:18px; color:#94A3AC;"></i>
+        <span style="font-size:13.5px; color:#94A3AC;">Cari tempahan selesai&hellip;</span>
+        <span style="margin-left:auto; font-size:11px; color:#94A3AC; border:1px solid #E2E8F0; border-radius:5px; padding:2px 7px; background:#fff;">&#8984;K</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <div style="position:relative; width:40px; height:40px; border-radius:10px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; color:#475569;"><i class="ph ph-bell" style="font-size:20px;"></i><span style="position:absolute; top:-4px; right:-4px; background:#DC2626; color:#fff; font-size:10px; font-weight:700; border-radius:20px; min-width:18px; height:18px; display:flex; align-items:center; justify-content:center; padding:0 4px; border:2px solid #fff;">7</span></div>
+        <div style="width:1px; height:30px; background:#E2E8F0; margin:0 4px;"></div>
+        <div style="width:40px; height:40px; border-radius:50%; background:#42481c; color:#C9A227; font-weight:800; font-size:13px; display:flex; align-items:center; justify-content:center;">MN</div>
+      </div>
+    </header>
+
+    <main style="flex:1; padding:28px 32px 56px; overflow-y:auto;">
+      <div style="display:flex; align-items:flex-end; gap:16px; margin-bottom:24px; flex-wrap:wrap;">
+        <div style="margin-right:auto;">
+          <div style="display:flex; align-items:center; gap:8px; font-size:12.5px; color:#94A3AC; margin-bottom:6px;"><span>Operasi</span><i class="ph ph-caret-right" style="font-size:12px;"></i><span style="color:#42481c; font-weight:600;">Tempahan Selesai</span></div>
+          <h1 style="font-size:23px; font-weight:700;">Tempahan Selesai</h1>
+          <p style="font-size:13.5px; color:#64748B; margin-top:4px;">Tempahan yang telah lengkap keseluruhan proses &mdash; dari bayaran hingga penghantaran sijil.</p>
+        </div>
+      </div>
+
+      <!-- stats -->
+      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:22px;">
+        <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
+          <div style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; padding:16px 18px; display:flex; align-items:center; gap:14px;">
+            <div style="width:42px; height:42px; border-radius:10px; background:{{ s.tint }}; color:{{ s.color }}; display:flex; align-items:center; justify-content:center;"><i class="{{ s.icon }}" style="font-size:22px;"></i></div>
+            <div><div style="font-size:22px; font-weight:700; line-height:1;">{{ s.value }}</div><div style="font-size:12.5px; color:#64748B; margin-top:5px;">{{ s.label }}</div></div>
+          </div>
+        </sc-for>
+      </div>
+
+      <!-- filters -->
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px; flex-wrap:wrap;">
+        <span style="font-size:12px; font-weight:600; color:#94A3AC; display:inline-flex; align-items:center; gap:6px;"><i class="ph ph-funnel" style="font-size:15px;"></i> Tapis:</span>
+        <select value="{{ fService }}" onChange="{{ onFService }}" style="font-family:inherit; font-size:12.5px; color:#334155; border:1px solid #E2E8F0; border-radius:8px; padding:8px 11px; outline:none; background:#fff; cursor:pointer;"><sc-for list="{{ serviceOpts }}" as="o" hint-placeholder-count="4"><option>{{ o }}</option></sc-for></select>
+        <select value="{{ fCountry }}" onChange="{{ onFCountry }}" style="font-family:inherit; font-size:12.5px; color:#334155; border:1px solid #E2E8F0; border-radius:8px; padding:8px 11px; outline:none; background:#fff; cursor:pointer;"><sc-for list="{{ countryOpts }}" as="o" hint-placeholder-count="4"><option>{{ o }}</option></sc-for></select>
+        <div style="display:inline-flex; align-items:center; gap:6px; background:#fff; border:1px solid #E2E8F0; border-radius:8px; padding:6px 10px;"><i class="ph ph-calendar-blank" style="font-size:15px; color:#42481c;"></i><input type="date" value="{{ fDate }}" onInput="{{ onFDate }}" style="font-family:inherit; font-size:12.5px; color:#1A1D21; border:none; outline:none; background:transparent;"></div>
+        <sc-if value="{{ hasFilter }}" hint-placeholder-val="{{ false }}"><span onClick="{{ clearFilter }}" style="display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:600; color:#DC2626; cursor:pointer;"><i class="ph ph-x" style="font-size:13px;"></i> Reset</span></sc-if>
+        <button onClick="{{ exportExcel }}" style="margin-left:auto; display:inline-flex; align-items:center; gap:7px; background:#16A34A; color:#fff; border:none; border-radius:9px; padding:9px 15px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-microsoft-excel-logo" style="font-size:16px;"></i> Eksport Excel</button>
+      </div>
+
+      <!-- table -->
+      <section style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; overflow:hidden;">
+        <div style="overflow-x:auto;">
+        <div style="min-width:1400px;">
+        <div style="display:grid; grid-template-columns:32px 1.1fr 1.2fr 1fr 1fr 0.9fr 0.55fr 0.9fr 0.9fr 1.4fr 1.8fr 0.8fr 0.8fr; gap:14px; padding:13px 20px; background:#F6F8F7; border-bottom:1px solid #E2E8F0; font-size:11px; font-weight:700; letter-spacing:.4px; color:#94A3AC; text-transform:uppercase;">
+          <span onClick="{{ toggleAll }}" style="{{ allCheckStyle }}"><sc-if value="{{ allChecked }}" hint-placeholder-val="{{ false }}"><i class="ph-fill ph-check" style="font-size:12px; color:#fff;"></i></sc-if></span><span>No. Tempahan</span><span>Pelanggan</span><span>Servis</span><span>Pakej</span><span>Negara</span><span style="text-align:center;">Kuantiti</span><span>Tarikh</span><span>Jumlah Bayaran</span><span>Emel</span><span>Alamat Penuh</span><span style="text-align:center;">Status</span><span style="text-align:right;">Tindakan</span>
+        </div>
+        <sc-for list="{{ rows }}" as="r" hint-placeholder-count="7">
+          <div style="display:grid; grid-template-columns:32px 1.1fr 1.2fr 1fr 1fr 0.9fr 0.55fr 0.9fr 0.9fr 1.4fr 1.8fr 0.8fr 0.8fr; gap:14px; padding:14px 20px; border-bottom:1px solid #F1F5F4; align-items:center; font-size:13px;">
+            <span onClick="{{ r.onCheck }}" style="{{ r.checkStyle }}"><sc-if value="{{ r.checked }}" hint-placeholder-val="{{ false }}"><i class="ph-fill ph-check" style="font-size:12px; color:#fff;"></i></sc-if></span>
+            <span style="font-weight:600; color:#42481c;">{{ r.no }}</span>
+            <span style="min-width:0;"><span style="display:block; font-weight:600; color:#1A1D21; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ r.name }}</span><span style="font-size:11.5px; color:#94A3AC;">{{ r.phone }}</span></span>
+            <span style="color:#475569;">{{ r.service }}</span>
+            <span style="color:#475569;">{{ r.pkg }}</span>
+            <span style="color:#475569;">{{ r.country }}</span>
+            <span style="text-align:center; color:#1A1D21; font-weight:600;">{{ r.qty }}</span>
+            <span style="color:#475569;">{{ r.date }}</span>
+            <span style="color:#1A1D21; font-weight:600;">{{ r.amount }}</span>
+            <span style="color:#475569; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ r.email }}</span>
+            <span style="color:#475569; min-width:0;">{{ r.addr }}</span>
+            <span style="text-align:center;"><span style="display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; border-radius:20px; padding:4px 11px; background:#EAF7EE; color:#16A34A;"><i class="ph-fill ph-check-circle" style="font-size:13px;"></i> Selesai</span></span>
+            <span style="text-align:right;"><span onClick="{{ r.onView }}" style="display:inline-flex; align-items:center; gap:6px; color:#42481c; font-size:12.5px; font-weight:600; cursor:pointer;"><i class="ph ph-eye" style="font-size:15px;"></i> Butiran</span></span>
+          </div>
+        </sc-for>
+        </div>
+        </div>
+        <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:44px 24px; text-align:center;">
+            <div style="width:52px; height:52px; border-radius:13px; background:#F1F5F4; color:#94A3AC; display:flex; align-items:center; justify-content:center; margin:0 auto 12px;"><i class="ph ph-check-square-offset" style="font-size:26px;"></i></div>
+            <div style="font-size:14px; font-weight:600; color:#334155;">Tiada tempahan selesai untuk tapisan ini.</div>
+          </div>
+        </sc-if>
+      </section>
+    </main>
+  </div>
+
+  <!-- ===== DETAIL MODAL ===== -->
+  <sc-if value="{{ showDetail }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; inset:0; z-index:100; background:rgba(20,24,20,.55); display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; padding:32px 16px;">
+      <div style="width:100%; max-width:520px; background:#fff; border-radius:14px; box-shadow:0 24px 60px rgba(0,0,0,.3); overflow:hidden;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 24px; border-bottom:1px solid #E2E8F0;">
+          <div style="display:flex; align-items:center; gap:11px;"><span style="width:36px; height:36px; border-radius:10px; background:#EAF7EE; color:#16A34A; display:flex; align-items:center; justify-content:center;"><i class="ph-fill ph-check-circle" style="font-size:19px;"></i></span><div><h2 style="font-size:16px; font-weight:700;">Tempahan Selesai</h2><p style="font-size:12px; color:#94A3AC; margin-top:2px;">{{ dNo }}</p></div></div>
+          <span onClick="{{ closeDetail }}" style="width:32px; height:32px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#64748B;"><i class="ph ph-x" style="font-size:16px;"></i></span>
+        </div>
+        <div style="padding:20px 24px;">
+          <div style="display:flex; flex-direction:column; gap:2px; margin-bottom:18px;">
+            <sc-for list="{{ detailRows }}" as="d" hint-placeholder-count="6">
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:11px 0; border-bottom:1px solid #F1F5F4;"><span style="font-size:12.5px; color:#94A3AC;">{{ d.k }}</span><span style="font-size:13px; font-weight:600; color:#1A1D21; text-align:right;">{{ d.v }}</span></div>
+            </sc-for>
+          </div>
+          <div style="font-size:11px; font-weight:700; letter-spacing:.5px; color:#94A3AC; text-transform:uppercase; margin-bottom:10px;">Garis Masa Proses</div>
+          <div style="display:flex; flex-direction:column;">
+            <sc-for list="{{ timeline }}" as="t" hint-placeholder-count="5">
+              <div style="display:flex; gap:12px;">
+                <div style="display:flex; flex-direction:column; align-items:center; flex-shrink:0;"><span style="width:26px; height:26px; border-radius:50%; background:#EAF7EE; color:#16A34A; display:flex; align-items:center; justify-content:center;"><i class="ph-fill ph-check" style="font-size:13px;"></i></span><span style="{{ t.lineStyle }}"></span></div>
+                <div style="padding-bottom:14px;"><div style="font-size:13px; font-weight:600; color:#1A1D21;">{{ t.label }}</div><div style="font-size:11.5px; color:#94A3AC; margin-top:2px;">{{ t.date }}</div></div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="padding:0 24px 22px; display:flex; justify-content:flex-end;">
+          <button onClick="{{ closeDetail }}" style="background:#42481c; color:#fff; border:none; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;">Tutup</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { fService: 'Semua Servis', fCountry: 'Semua Negara', viewNo: null };
+  renderVals() {
+    const s = this.state;
+    const set = (o) => this.setState(o);
+
+    const navItem = (icon, label, active, badge) => ({
+      isItem: true, isSection: false, label, badge: badge || '',
+      icon, iconColor: active ? '#42481c' : '#94A3AC', bar: active ? '#42481c' : 'transparent',
+      onClick: () => { const m = { 'Dashboard': 'Dashboard Operasi.dc.html', 'Bayaran Ansuran': 'Bayaran Ansuran.dc.html', 'Tempahan & Pelanggan': 'Tempahan & Pelanggan.dc.html', 'Pengesahan Bayaran': 'Tempahan & Pelanggan.dc.html', 'Lafaz Akad': 'Lafaz Akad.dc.html', 'Agihan Negara': 'Agihan Negara.dc.html', 'Pelaksanaan & Laporan': 'Pelaksanaan & Laporan.dc.html', 'AWB & Postage': 'AWB & Postage.dc.html', 'Tempahan Selesai': 'Tempahan Selesai.dc.html', 'Vendor': 'Vendor.dc.html', 'Produk': 'Produk.dc.html', 'Dokumen': 'Dokumen.dc.html', 'Sales CRM': 'Sales CRM.dc.html', 'Kod Promosi': 'Kod Promosi.dc.html', 'Kewangan': 'Kewangan.dc.html', 'Pusat Laporan': 'Pusat Laporan.dc.html', 'Audit Log': 'Audit Log.dc.html', 'Notifikasi': 'Notifikasi.dc.html', 'Pengguna': 'Pengguna & Peranan.dc.html', 'Sijil': 'Tempahan & Pelanggan.dc.html', 'Tetapan': 'Tempahan & Pelanggan.dc.html' }; if (m[label] && !active) { try { location.href = (function(p){try{var u=new URL(p,location.href);new URLSearchParams(location.search).forEach(function(v,k){if(!u.searchParams.has(k))u.searchParams.set(k,v);});return u.href;}catch(e){return p;}})(m[label]); } catch (e) {} } },
+      rowStyle: 'position:relative; display:flex; align-items:center; gap:12px; padding:10px 14px; margin:2px 0; border-radius:9px; font-size:13.5px; cursor:pointer;' + (active ? 'background:#edeee0; color:#42481c; font-weight:700;' : 'color:#475569; font-weight:500;'),
+    });
+    const sec = (label) => ({ isSection: true, isItem: false, label });
+    const nav = [
+      sec('UTAMA'), navItem('ph ph-squares-four', 'Dashboard', false),
+      sec('OPERASI'), navItem('ph ph-calendar-check', 'Bayaran Ansuran', false), navItem('ph ph-shopping-cart-simple', 'Tempahan & Pelanggan', false, '34'), navItem('ph ph-seal-check', 'Pengesahan Bayaran', false, '5'), navItem('ph ph-hand-heart', 'Lafaz Akad', false), navItem('ph ph-globe-hemisphere-west', 'Agihan Negara', false), navItem('ph ph-shopping-bag', 'Pelaksanaan & Laporan', false), navItem('ph ph-package', 'AWB & Postage', false), navItem('ph ph-check-square-offset', 'Tempahan Selesai', true), navItem('ph ph-truck', 'Vendor', false), navItem('ph ph-cow', 'Produk', false), navItem('ph ph-folders', 'Dokumen', false),
+      sec('JUALAN & KEWANGAN'), navItem('ph ph-users-three', 'Sales CRM', false), navItem('ph ph-ticket', 'Kod Promosi', false), navItem('ph ph-wallet', 'Kewangan', false, '87'),
+      sec('LAPORAN'), navItem('ph ph-chart-bar', 'Pusat Laporan', false), navItem('ph ph-clock-counter-clockwise', 'Audit Log', false),
+      sec('SISTEM'), navItem('ph ph-bell', 'Notifikasi', false, '7'), navItem('ph ph-users', 'Pengguna', false), navItem('ph ph-certificate', 'Sijil', false), navItem('ph ph-gear-six', 'Tetapan', false),
+    ];
+
+    const demo = [
+      ['NQ-QB-LE-001243', 'Ahmad Zaki bin Hassan', '012-3345 671', 'Qurban — Lembu', 'Uganda', '05 Jun 2027', '2027-06-05', 'RM 2,450', 'ahmad.zaki@gmail.com', 'No. 12, Jln Melati 3, 40150 Shah Alam, Selangor', '1', '2027', 'Delima'],
+      ['NQ-QB-KA-001244', 'Nurul Ain binti Rahman', '013-9921 044', 'Qurban — Kambing', 'Nigeria', '05 Jun 2027', '2027-06-05', 'RM 850', 'nurul.ain@gmail.com', 'No. 8, Lorong Kenanga, 43000 Kajang, Selangor', '1', '2027', 'Zamrud'],
+      ['NQ-QB-UN-001246', 'Mohd Firdaus bin Omar', '019-2345 671', 'Qurban — Unta', 'Somalia', '12 Jun 2027', '2027-06-12', 'RM 3,900', 'firdaus.omar@gmail.com', 'No. 45, Jln Damai 2, 68000 Ampang, Selangor', '7', '2027', 'Nilam'],
+      ['NQ-QB-LE-001248', 'Iskandar bin Yusof', '014-8890 213', 'Qurban — Lembu', 'Palestin', '03 Jul 2027', '2027-07-03', 'RM 2,450', 'iskandar.yusof@gmail.com', 'No. 20, Persiaran Kayangan, 40000 Shah Alam, Selangor', '1', '2027', 'Topaz'],
+      ['NQ-QB-KA-001250', 'Faridah binti Omar', '011-2245 778', 'Aqiqah — Kambing', 'Bangladesh', '18 Dis 2026', '2026-12-18', 'RM 780', 'faridah.omar@gmail.com', 'No. 3, Jln Seri Impian, 81100 Johor Bahru, Johor', '1', '2026', 'Mutiara'],
+      ['NQ-QB-LE-001252', 'Sofea binti Kamal', '017-7781 220', 'Qurban — Lembu', 'Uganda', '02 Ogos 2026', '2026-08-02', 'RM 2,450', 'sofea.kamal@gmail.com', 'No. 77, Jln Kenari 5, 47100 Puchong, Selangor', '1', '2026', 'Delima'],
+      ['NQ-QB-UN-001255', 'Hakim bin Sulaiman', '016-5540 199', 'Qurban — Unta', 'Chad', '20 Jun 2027', '2027-06-20', 'RM 3,900', 'hakim.sulaiman@gmail.com', 'No. 5, Jln Seri Kembangan, 43300 Seri Kembangan, Selangor', '7', '2027', 'Nilam'],
+    ];
+    let fromAwb = [];
+    try {
+      const store = JSON.parse(localStorage.getItem('nq_completed_orders') || '{}');
+      fromAwb = Object.values(store).sort((a, b) => (b.at || 0) - (a.at || 0))
+        .map(o => { const iso = o.at ? new Date(o.at).toISOString().slice(0, 10) : ''; return [o.no, o.name, o.phone || '-', o.service || 'Qurban', o.country || '-', o.date || '-', iso, o.amount || '-', o.email || '-', o.addr || '-', o.qty || '1', o.year || (iso ? iso.slice(0, 4) : '-'), o.pkg || '-']; });
+    } catch (e) {}
+    const seen = {};
+    const merged = fromAwb.concat(demo).filter(d => { if (seen[d[0]]) return false; seen[d[0]] = 1; return true; });
+    const all = merged.map(d => ({ no: d[0], name: d[1], phone: d[2], service: d[3], country: d[4], date: d[5], iso: d[6] || '', amount: d[7] || '-', email: d[8] || '-', addr: d[9] || '-', qty: d[10] || '1', year: d[11] || '-', pkg: d[12] || '-' }));
+
+    const fService = s.fService || 'Semua Servis';
+    const fCountry = s.fCountry || 'Semua Negara';
+    const monthNames = ['Januari', 'Februari', 'Mac', 'April', 'Mei', 'Jun', 'Julai', 'Ogos', 'September', 'Oktober', 'November', 'Disember'];
+    const fDate = s.fDate || '';
+    const fMonth = s.fMonth || 'Semua Bulan';
+    const fYear = s.fYear || 'Semua Tahun';
+    const uniq = (arr) => arr.filter((v, i) => v && arr.indexOf(v) === i).sort();
+    const serviceOpts = ['Semua Servis'].concat(uniq(all.map(o => o.service)));
+    const countryOpts = ['Semua Negara'].concat(uniq(all.map(o => o.country)));
+    const monthOpts = ['Semua Bulan'].concat(monthNames);
+    const yearOpts = ['Semua Tahun'].concat(uniq(all.map(o => (o.iso || '').slice(0, 4))));
+    const shown = all.filter(o => (fService === 'Semua Servis' || o.service === fService)
+      && (fCountry === 'Semua Negara' || o.country === fCountry)
+      && (!fDate || o.iso === fDate)
+      && (fMonth === 'Semua Bulan' || monthNames[Number((o.iso || '').slice(5, 7)) - 1] === fMonth)
+      && (fYear === 'Semua Tahun' || (o.iso || '').slice(0, 4) === fYear));
+
+    const checked = s.checked || {};
+    const chkBox = (on) => 'width:20px; height:20px; border-radius:6px; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;' + (on ? 'background:#42481c; border:1px solid #42481c;' : 'border:1.5px solid #CBD5E1;');
+    const rows = shown.map(o => ({
+      no: o.no, name: o.name, phone: o.phone, service: o.service, country: o.country, date: o.date,
+      amount: o.amount, email: o.email, addr: o.addr, qty: o.qty, year: o.year, pkg: o.pkg,
+      checked: !!checked[o.no], checkStyle: chkBox(!!checked[o.no]),
+      onCheck: () => set({ checked: { ...(s.checked || {}), [o.no]: !checked[o.no] } }),
+      onView: () => set({ viewNo: o.no }),
+    }));
+
+    const stats = [
+      { icon: 'ph ph-check-square-offset', tint: '#EAF7EE', color: '#16A34A', value: String(all.length), label: 'Jumlah Selesai' },
+      { icon: 'ph ph-cow', tint: '#edeee0', color: '#42481c', value: String(all.filter(o => /Lembu/.test(o.service)).length), label: 'Qurban Lembu' },
+      { icon: 'ph ph-certificate', tint: '#FEF3E2', color: '#D97706', value: String(all.length), label: 'Sijil Dihantar' },
+      { icon: 'ph ph-globe-hemisphere-west', tint: '#E8F0FB', color: '#2563EB', value: String(uniq(all.map(o => o.country)).length), label: 'Negara Pelaksanaan' },
+    ];
+
+    const view = s.viewNo ? all.find(o => o.no === s.viewNo) : null;
+    const tl = [
+      ['Bayaran Disahkan', 'Bayaran diterima & disahkan HQ'],
+      ['Lafaz Akad', 'Akad sempurna direkodkan'],
+      ['Agihan Negara', 'Diagihkan ke vendor pelaksana'],
+      ['Pelaksanaan & Laporan', 'Ibadah dilaksana, laporan disahkan'],
+      ['AWB & Postage', 'Sijil dihantar kepada pelanggan'],
+    ];
+
+    return {
+      nav, rows, stats,
+      allChecked: shown.length > 0 && shown.every(o => checked[o.no]),
+      allCheckStyle: chkBox(shown.length > 0 && shown.every(o => checked[o.no])),
+      toggleAll: () => { const nc = { ...(s.checked || {}) }; const ac = shown.length > 0 && shown.every(o => checked[o.no]); if (ac) { shown.forEach(o => delete nc[o.no]); } else { shown.forEach(o => nc[o.no] = true); } set({ checked: nc }); },
+      empty: shown.length === 0,
+      serviceOpts, countryOpts, monthOpts, yearOpts, fService, fCountry, fDate, fMonth, fYear,
+      onFService: (e) => set({ fService: e.target.value }),
+      onFCountry: (e) => set({ fCountry: e.target.value }),
+      onFDate: (e) => set({ fDate: e.target.value }),
+      onFMonth: (e) => set({ fMonth: e.target.value }),
+      onFYear: (e) => set({ fYear: e.target.value }),
+      hasFilter: fService !== 'Semua Servis' || fCountry !== 'Semua Negara' || !!fDate || fMonth !== 'Semua Bulan' || fYear !== 'Semua Tahun',
+      clearFilter: () => set({ fService: 'Semua Servis', fCountry: 'Semua Negara', fDate: '', fMonth: 'Semua Bulan', fYear: 'Semua Tahun' }),
+      exportExcel: () => {
+        if (typeof XLSX === 'undefined') { alert('Pustaka Excel belum dimuat. Cuba sekali lagi.'); return; }
+        const aoa = [['No. Tempahan', 'Pelanggan', 'No. Telefon', 'Servis', 'Pakej', 'Kuantiti', 'Negara Pelaksanaan', 'Tahun', 'Tarikh Selesai', 'Jumlah Bayaran', 'Emel', 'Alamat Penuh', 'Status']];
+        shown.forEach(o => aoa.push([o.no, o.name, o.phone, o.service, o.pkg, o.qty, o.country, o.year, o.date, o.amount, o.email, o.addr, 'Selesai']));
+        const ws = XLSX.utils.aoa_to_sheet(aoa);
+        ws['!cols'] = [{ wch: 18 }, { wch: 24 }, { wch: 15 }, { wch: 18 }, { wch: 12 }, { wch: 9 }, { wch: 18 }, { wch: 8 }, { wch: 15 }, { wch: 14 }, { wch: 26 }, { wch: 40 }, { wch: 10 }];
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Tempahan Selesai');
+        XLSX.writeFile(wb, 'tempahan-selesai.xlsx');
+      },
+      showDetail: !!view,
+      dNo: view ? view.no : '',
+      detailRows: view ? [
+        { k: 'Pelanggan', v: view.name }, { k: 'No. Telefon', v: view.phone },
+        { k: 'Emel', v: view.email }, { k: 'Alamat Penuh', v: view.addr },
+        { k: 'Servis', v: view.service }, { k: 'Kuantiti', v: view.qty }, { k: 'Negara Pelaksanaan', v: view.country },
+        { k: 'Tahun', v: view.year }, { k: 'Jumlah Bayaran', v: view.amount },
+        { k: 'Tarikh Selesai', v: view.date }, { k: 'Status', v: 'Selesai' },
+      ] : [],
+      timeline: tl.map((t, i) => ({ label: t[0], date: t[1], lineStyle: 'width:2px; flex:1; background:' + (i === tl.length - 1 ? 'transparent' : '#EAF7EE') + '; margin-top:2px; min-height:14px;' })),
+      closeDetail: () => set({ viewNo: null }),
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Amiri:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; background:#F6F8F7; color:#1A1D21; -webkit-font-smoothing: antialiased; }
+  a { color:#42481c; text-decoration:none; } a:hover { color:#5a6127; }
+  ::-webkit-scrollbar { width:10px; height:10px; }
+  ::-webkit-scrollbar-thumb { background:#b3b79a; border-radius:6px; border:2px solid transparent; background-clip:padding-box; }
+</style>
+</helmet>
+
+<div style="display:flex; min-height:100vh; background:#F6F8F7;">
+
+  <!-- SIDEBAR -->
+  <aside style="width:260px; flex-shrink:0; background:#fff; border-right:1px solid #E2E8F0; display:flex; flex-direction:column; position:sticky; top:0; height:100vh;">
+    <div style="height:72px; display:flex; align-items:center; gap:12px; padding:0 22px; border-bottom:1px solid #E2E8F0; flex-shrink:0;">
+      <div style="width:38px; height:38px; border-radius:10px; overflow:hidden;"><img src="uploads/Untitled design (2).png" alt="Nadi Qurban" style="width:100%; height:100%; object-fit:cover; display:block; transform:scale(1.22);"></div>
+      <div style="line-height:1;"><div style="font-size:15px; font-weight:800; letter-spacing:.3px; color:#42481c;">NADI QURBAN</div><div style="font-size:10.5px; font-weight:600; letter-spacing:2px; color:#94A3AC; margin-top:3px;">OSI SYSTEM</div></div>
+    </div>
+    <nav style="flex:1; overflow-y:auto; padding:14px 12px;">
+      <sc-for list="{{ nav }}" as="item" hint-placeholder-count="12">
+        <sc-if value="{{ item.isSection }}" hint-placeholder-val="{{ false }}"><div style="font-size:10.5px; font-weight:700; letter-spacing:1.4px; color:#94A3AC; padding:16px 14px 8px;">{{ item.label }}</div></sc-if>
+        <sc-if value="{{ item.isItem }}" hint-placeholder-val="{{ true }}">
+          <div style="{{ item.rowStyle }}" onClick="{{ item.onClick }}">
+            <span style="position:absolute; left:0; top:8px; bottom:8px; width:3px; border-radius:0 3px 3px 0; background:{{ item.bar }};"></span>
+            <i class="{{ item.icon }}" style="font-size:19px; color:{{ item.iconColor }};"></i>
+            <span style="flex:1;">{{ item.label }}</span>
+            <sc-if value="{{ item.badge }}" hint-placeholder-val="{{ false }}"><span style="background:#C9A227; color:#fff; font-size:10.5px; font-weight:700; border-radius:20px; padding:2px 8px;">{{ item.badge }}</span></sc-if>
+          </div>
+        </sc-if>
+      </sc-for>
+    </nav>
+    <div style="padding:14px 16px; display:flex; align-items:center; gap:11px; border-top:1px solid #E2E8F0;">
+      <div style="width:38px; height:38px; border-radius:50%; background:#42481c; color:#C9A227; font-weight:800; font-size:13px; display:flex; align-items:center; justify-content:center;">MN</div>
+      <div style="min-width:0; flex:1;"><div style="font-size:13px; font-weight:700; color:#1A1D21;">Muhammad Nurfitkri</div><div style="font-size:11px; color:#64748B;">Superadmin</div></div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div style="flex:1; min-width:0; display:flex; flex-direction:column;">
+    <header style="height:72px; background:#fff; border-bottom:1px solid #E2E8F0; display:flex; align-items:center; padding:0 32px; gap:24px; position:sticky; top:0; z-index:20;">
+      <div style="flex:1; max-width:520px; margin:0 auto; display:flex; align-items:center; gap:11px; background:#F6F8F7; border:1px solid #E2E8F0; border-radius:10px; padding:10px 15px;">
+        <i class="ph ph-magnifying-glass" style="font-size:18px; color:#94A3AC;"></i>
+        <span style="font-size:13.5px; color:#94A3AC;">Cari tempahan, pelanggan&hellip;</span>
+        <span style="margin-left:auto; font-size:11px; color:#94A3AC; border:1px solid #E2E8F0; border-radius:5px; padding:2px 7px; background:#fff;">&#8984;K</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <div style="position:relative; width:40px; height:40px; border-radius:10px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; color:#475569;"><i class="ph ph-bell" style="font-size:20px;"></i><span style="position:absolute; top:-4px; right:-4px; background:#DC2626; color:#fff; font-size:10px; font-weight:700; border-radius:20px; min-width:18px; height:18px; display:flex; align-items:center; justify-content:center; padding:0 4px; border:2px solid #fff;">7</span></div>
+        <div style="width:1px; height:30px; background:#E2E8F0; margin:0 4px;"></div>
+        <div style="width:40px; height:40px; border-radius:50%; background:#42481c; color:#C9A227; font-weight:800; font-size:13px; display:flex; align-items:center; justify-content:center;">MN</div>
+      </div>
+    </header>
+
+    <main style="flex:1; padding:28px 32px 56px; overflow-y:auto;">
+      <div style="display:flex; align-items:flex-end; gap:16px; margin-bottom:24px; flex-wrap:wrap;">
+        <div style="margin-right:auto;">
+          <div style="display:flex; align-items:center; gap:8px; font-size:12.5px; color:#94A3AC; margin-bottom:6px;"><span>Operasi</span><i class="ph ph-caret-right" style="font-size:12px;"></i><span style="color:#42481c; font-weight:600;">Lafaz Akad</span></div>
+          <h1 style="font-size:23px; font-weight:700;">Lafaz Akad Wakalah</h1>
+          <p style="font-size:13.5px; color:#64748B; margin-top:4px;">Rekod akad wakalah pelanggan sebelum pelaksanaan ibadah Qurban.</p>
+          <div style="display:inline-flex; align-items:center; gap:7px; margin-top:10px; background:#EAF7EE; color:#16A34A; border-radius:8px; padding:6px 12px; font-size:12px; font-weight:600;"><i class="ph-fill ph-seal-check" style="font-size:15px;"></i> Senarai ini diambil daripada tempahan yang bayarannya telah diterima &amp; disahkan.</div>
+        </div>
+      </div>
+
+      <!-- stats -->
+      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:22px;">
+        <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
+          <div style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; padding:16px 18px; display:flex; align-items:center; gap:14px;">
+            <div style="width:42px; height:42px; border-radius:10px; background:{{ s.tint }}; color:{{ s.color }}; display:flex; align-items:center; justify-content:center;"><i class="{{ s.icon }}" style="font-size:22px;"></i></div>
+            <div><div style="font-size:22px; font-weight:700; line-height:1;">{{ s.value }}</div><div style="font-size:12.5px; color:#64748B; margin-top:5px;">{{ s.label }}</div></div>
+          </div>
+        </sc-for>
+      </div>
+
+      <!-- tabs -->
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
+        <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="2"><span onClick="{{ t.onClick }}" style="{{ t.style }}">{{ t.label }} <span style="{{ t.countStyle }}">{{ t.count }}</span></span></sc-for>
+        <sc-if value="{{ hasSelection }}" hint-placeholder-val="{{ false }}"><button onClick="{{ bulkAkad }}" style="margin-left:auto; display:inline-flex; align-items:center; gap:7px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:9px 15px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-hand-heart" style="font-size:16px;"></i> Akad Pukal ({{ selCount }})</button></sc-if>
+      </div>
+
+      <!-- table -->
+      <section style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; overflow:hidden;">
+        <div style="display:grid; grid-template-columns:32px 1.3fr 1.5fr 1.1fr 1fr 0.9fr 1fr 1.1fr; gap:14px; padding:13px 20px; background:#F6F8F7; border-bottom:1px solid #E2E8F0; font-size:11px; font-weight:700; letter-spacing:.4px; color:#94A3AC; text-transform:uppercase;">
+          <span onClick="{{ toggleAll }}" style="{{ allCheckStyle }}"><sc-if value="{{ allChecked }}" hint-placeholder-val="{{ false }}"><i class="ph-fill ph-check" style="font-size:12px; color:#fff;"></i></sc-if></span><span>No. Tempahan</span><span>Pelanggan</span><span>Ibadah</span><span>Pakej</span><span style="text-align:center;">Bhg</span><span style="text-align:center;">Status Akad</span><span style="text-align:right;">Tindakan</span>
+        </div>
+        <sc-for list="{{ rows }}" as="r" hint-placeholder-count="6">
+          <div style="display:grid; grid-template-columns:32px 1.3fr 1.5fr 1.1fr 1fr 0.9fr 1fr 1.1fr; gap:14px; padding:14px 20px; border-bottom:1px solid #F1F5F4; align-items:center; font-size:13px;">
+            <span onClick="{{ r.onCheck }}" style="{{ r.checkStyle }}"><sc-if value="{{ r.checked }}" hint-placeholder-val="{{ false }}"><i class="ph-fill ph-check" style="font-size:12px; color:#fff;"></i></sc-if></span>
+            <span style="font-weight:600; color:#42481c;">{{ r.no }}</span>
+            <span style="min-width:0;"><span style="display:block; font-weight:600; color:#1A1D21; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ r.name }}</span><span style="font-size:11.5px; color:#94A3AC;">{{ r.phone }}</span></span>
+            <span style="color:#475569;">{{ r.ibadah }}</span>
+            <span style="color:#475569;">{{ r.pkg }}</span>
+            <span style="text-align:center; color:#475569;">{{ r.bhg }}</span>
+            <span style="text-align:center;"><span style="{{ r.badgeStyle }}">{{ r.statusLabel }}</span></span>
+            <span style="display:flex; align-items:center; justify-content:flex-end; gap:8px;">
+              <button onClick="{{ r.onDetail }}" style="display:inline-flex; align-items:center; gap:6px; background:#fff; color:#42481c; border:1px solid #E2E8F0; border-radius:8px; padding:8px 13px; font-size:12.5px; font-weight:600; cursor:pointer; font-family:inherit; flex-shrink:0;"><i class="ph ph-user" style="font-size:15px;"></i> Butiran</button>
+              <sc-if value="{{ r.pending }}" hint-placeholder-val="{{ true }}"><button onClick="{{ r.onAkad }}" style="display:inline-flex; align-items:center; gap:6px; background:#42481c; color:#fff; border:none; border-radius:8px; padding:8px 13px; font-size:12.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-hand-heart" style="font-size:15px;"></i> Lafaz Akad</button></sc-if>
+              <sc-if value="{{ r.done }}" hint-placeholder-val="{{ false }}"><span onClick="{{ r.onView }}" style="display:inline-flex; align-items:center; gap:6px; color:#42481c; font-size:12.5px; font-weight:600; cursor:pointer;"><i class="ph ph-file-text" style="font-size:15px;"></i> Lihat Rekod</span></sc-if>
+            </span>
+          </div>
+        </sc-for>
+        <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:44px 24px; text-align:center;">
+            <div style="width:52px; height:52px; border-radius:13px; background:#F1F5F4; color:#94A3AC; display:flex; align-items:center; justify-content:center; margin:0 auto 12px;"><i class="ph ph-hand-heart" style="font-size:26px;"></i></div>
+            <div style="font-size:14px; font-weight:600; color:#334155;">{{ emptyText }}</div>
+          </div>
+        </sc-if>
+      </section>
+    </main>
+  </div>
+
+  <!-- ===== CUSTOMER DETAIL MODAL ===== -->
+  <sc-if value="{{ showDetail }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; inset:0; z-index:100; background:rgba(20,24,20,.55); display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; padding:32px 16px;">
+      <div style="width:100%; max-width:620px; background:#fff; border-radius:14px; box-shadow:0 24px 60px rgba(0,0,0,.3); overflow:hidden;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 24px; border-bottom:1px solid #E2E8F0;">
+          <div style="display:flex; align-items:center; gap:11px;"><span style="width:36px; height:36px; border-radius:10px; background:#edeee0; color:#42481c; display:flex; align-items:center; justify-content:center;"><i class="ph ph-user" style="font-size:19px;"></i></span><div><h2 style="font-size:16px; font-weight:700;">Detail Pelanggan</h2><p style="font-size:12px; color:#94A3AC; margin-top:2px;">{{ dtNo }}</p></div></div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <sc-if value="{{ dtReadonly }}" hint-placeholder-val="{{ true }}"><button onClick="{{ startEdit }}" style="display:inline-flex; align-items:center; gap:6px; background:#edeee0; color:#42481c; border:none; border-radius:8px; padding:8px 13px; font-size:12.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-pencil-simple" style="font-size:15px;"></i> Edit</button></sc-if>
+            <span onClick="{{ closeDetail }}" style="width:32px; height:32px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#64748B;"><i class="ph ph-x" style="font-size:16px;"></i></span>
+          </div>
+        </div>
+        <div style="padding:22px 24px; display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+          <div style="grid-column:1 / -1;"><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Nama Penuh</label><input value="{{ dtName }}" onInput="{{ onDtName }}" disabled="{{ dtReadonly }}" style="{{ inpStyle }}"></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">No. Telefon</label><input value="{{ dtPhone }}" onInput="{{ onDtPhone }}" disabled="{{ dtReadonly }}" style="{{ inpStyle }}"></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Emel</label><input value="{{ dtEmail }}" onInput="{{ onDtEmail }}" disabled="{{ dtReadonly }}" style="{{ inpStyle }}"></div>
+          <div style="grid-column:1 / -1;"><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Alamat (No. &amp; Jalan)</label><input value="{{ dtAddr }}" onInput="{{ onDtAddr }}" disabled="{{ dtReadonly }}" style="{{ inpStyle }}"></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Poskod</label><input value="{{ dtPoskod }}" onInput="{{ onDtPoskod }}" disabled="{{ dtReadonly }}" style="{{ inpStyle }}"></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Bandar</label><input value="{{ dtCity }}" onInput="{{ onDtCity }}" disabled="{{ dtReadonly }}" style="{{ inpStyle }}"></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Ibadah</label><input value="{{ dtIbadah }}" disabled="{{ true }}" style="{{ inpStyleRO }}"></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Negara Pelaksanaan</label><input value="{{ dtCountry }}" onInput="{{ onDtCountry }}" disabled="{{ dtReadonly }}" style="{{ inpStyle }}"></div>
+        </div>
+        <div style="padding:0 24px 4px;">
+          <div style="border-top:1px solid #F1F5F4; padding-top:16px;">
+            <div style="font-size:12px; font-weight:700; color:#334155; margin-bottom:10px;">Ringkasan Bayaran</div>
+            <div style="border:1px solid #E2E8F0; border-radius:10px; overflow:hidden;">
+              <div style="display:flex; align-items:center; justify-content:space-between; padding:11px 14px; font-size:13px; color:#475569; background:#F6F8F7;"><span>{{ dtIbadah }} &middot; {{ dtBhg }} bahagian</span><span>{{ dtUnitPrice }} / bhg</span></div>
+              <div style="display:flex; align-items:center; justify-content:space-between; padding:11px 14px; font-size:13px; color:#475569; border-top:1px solid #F1F5F4;"><span>Subjumlah ({{ dtShareLabel }})</span><span>{{ dtSubtotal }}</span></div>
+              <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-top:1px solid #E2E8F0; background:#FCFBF5;"><span style="font-size:13px; font-weight:700; color:#42481c;">Jumlah Bayaran</span><span style="font-size:16px; font-weight:800; color:#42481c;">{{ dtTotal }}</span></div>
+              <div style="display:flex; align-items:center; justify-content:space-between; padding:11px 14px; border-top:1px solid #F1F5F4;"><span style="font-size:12.5px; color:#64748B;">Kaedah: <b style="color:#334155;">{{ dtPayMethod }}</b></span><span style="{{ dtPayBadge }}">{{ dtPayStatus }}</span></div>
+            </div>
+          </div>
+        </div>
+        <sc-if value="{{ dtHasParticipants }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:0 24px 4px;">
+            <div style="border-top:1px solid #F1F5F4; padding-top:16px;">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;"><span style="font-size:12px; font-weight:700; color:#334155;">Senarai Peserta ({{ dtBhg }})</span><span style="font-size:11px; color:#94A3AC;">1 bahagian = 1 peserta</span></div>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                <sc-for list="{{ dtParticipants }}" as="p" hint-placeholder-count="7"><div style="display:flex; align-items:center; gap:9px; background:#F6F8F7; border-radius:8px; padding:9px 11px;"><span style="width:22px; height:22px; border-radius:50%; background:#edeee0; color:#42481c; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0;">{{ p.n }}</span><span style="font-size:12.5px; color:#1A1D21; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ p.name }}</span></div></sc-for>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ dtEditing }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:0 24px 22px; display:flex; gap:10px; justify-content:flex-end;">
+            <button onClick="{{ cancelEdit }}" style="background:#fff; color:#334155; border:1px solid #E2E8F0; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;">Batal</button>
+            <button onClick="{{ saveDetail }}" style="display:inline-flex; align-items:center; gap:7px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-check" style="font-size:16px;"></i> Simpan Perubahan</button>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ===== AKAD MODAL ===== -->
+  <sc-if value="{{ showAkad }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; inset:0; z-index:100; background:rgba(20,24,20,.55); display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; padding:32px 16px;">
+      <div style="width:100%; max-width:600px; background:#fff; border-radius:14px; box-shadow:0 24px 60px rgba(0,0,0,.3); overflow:hidden;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 24px; border-bottom:1px solid #E2E8F0;">
+          <div style="display:flex; align-items:center; gap:11px;"><span style="width:36px; height:36px; border-radius:10px; background:#edeee0; color:#42481c; display:flex; align-items:center; justify-content:center;"><i class="ph ph-hand-heart" style="font-size:19px;"></i></span><div><h2 style="font-size:16px; font-weight:700;">Lafaz Akad Wakalah</h2><p style="font-size:12px; color:#94A3AC; margin-top:2px;">{{ akadNo }} &middot; {{ akadName }}</p></div></div>
+          <span onClick="{{ closeAkad }}" style="width:32px; height:32px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#64748B;"><i class="ph ph-x" style="font-size:16px;"></i></span>
+        </div>
+        <div style="padding:22px 24px;">
+          <div style="background:#FCFBF5; border:1px solid #ece7cf; border-radius:12px; padding:20px 22px;">
+            <div style="font-size:11px; font-weight:700; letter-spacing:.5px; color:#C9A227; text-transform:uppercase; margin-bottom:12px; text-align:center;">Mohon Peserta Mengikuti Bacaan Lafaz Akad Seperti Yang Dipaparkan</div>
+            <p style="font-family:'Amiri', serif; font-size:21px; line-height:2; color:#42481c; text-align:center; direction:rtl;">﷽</p>
+            <p style="font-size:13.5px; line-height:1.85; color:#334155; margin-top:14px; text-align:justify;">Saya <b style="color:#42481c;">{{ akadName }}</b> mewakilkan Syarikat <b style="color:#42481c;">Nadi Qurban Sdn Bhd</b> bertanggungjawab atas pelaksanaan ibadah <b style="color:#42481c;">{{ akadIbadah }}</b> pada tahun ini di atas nama yang didaftarkan kerana Allah Ta'ala.</p>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:20px;">
+            <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Kaedah Akad</label>
+              <div style="display:flex; gap:8px;"><sc-for list="{{ methods }}" as="m" hint-placeholder-count="3"><span onClick="{{ m.onClick }}" style="{{ m.style }}"><i class="{{ m.icon }}" style="font-size:15px;"></i> {{ m.label }}</span></sc-for></div>
+            </div>
+            <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Saksi / PIC</label><select value="{{ akadWitness }}" onChange="{{ onWitness }}" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none; background:#fff; cursor:pointer;"><sc-for list="{{ pics }}" as="p" hint-placeholder-count="4"><option value="{{ p.value }}">{{ p.label }}</option></sc-for></select></div>
+          </div>
+          <label style="display:flex; align-items:center; gap:10px; margin-top:18px; cursor:pointer;"><span onClick="{{ toggleConsent }}" style="{{ consentBox }}"><sc-if value="{{ consent }}" hint-placeholder-val="{{ false }}"><i class="ph-fill ph-check" style="font-size:13px; color:#fff;"></i></sc-if></span><span style="font-size:13px; color:#334155;">Pelanggan telah faham &amp; bersetuju dengan lafaz akad di atas.</span></label>
+        </div>
+        <div style="padding:0 24px 22px; display:flex; gap:10px; justify-content:flex-end;">
+          <button onClick="{{ closeAkad }}" style="background:#fff; color:#334155; border:1px solid #E2E8F0; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;">Batal</button>
+          <button onClick="{{ confirmAkad }}" style="display:inline-flex; align-items:center; gap:7px; background:{{ confirmBg }}; color:#fff; border:none; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:{{ confirmCursor }}; font-family:inherit;"><i class="ph ph-check-circle" style="font-size:16px;"></i> Sahkan Akad</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: 'pending', akadDone: {}, showAkad: false, akadCur: null, method: 'Telefon', witness: 'Muhammad Nurfitkri', consent: false, showDetail: false, detailNo: null, detailEdit: false, detailOverride: {}, draft: {} };
+  renderVals() {
+    const s = this.state;
+    const set = (o) => this.setState(o);
+
+    const navItem = (icon, label, active, badge) => ({
+      isItem: true, isSection: false, label, badge: badge || '',
+      icon, iconColor: active ? '#42481c' : '#94A3AC', bar: active ? '#42481c' : 'transparent',
+      onClick: () => { const m = { 'Dashboard': 'Dashboard Operasi.dc.html', 'Bayaran Ansuran': 'Bayaran Ansuran.dc.html', 'Tempahan & Pelanggan': 'Tempahan & Pelanggan.dc.html', 'Pengesahan Bayaran': 'Tempahan & Pelanggan.dc.html', 'Lafaz Akad': 'Lafaz Akad.dc.html', 'Agihan Negara': 'Agihan Negara.dc.html', 'Pelaksanaan & Laporan': 'Pelaksanaan & Laporan.dc.html', 'AWB & Postage': 'AWB & Postage.dc.html', 'Tempahan Selesai': 'Tempahan Selesai.dc.html', 'Vendor': 'Vendor.dc.html', 'Produk': 'Produk.dc.html', 'Dokumen': 'Dokumen.dc.html', 'Sales CRM': 'Sales CRM.dc.html', 'Kod Promosi': 'Kod Promosi.dc.html', 'Kewangan': 'Kewangan.dc.html', 'Pusat Laporan': 'Pusat Laporan.dc.html', 'Audit Log': 'Audit Log.dc.html', 'Notifikasi': 'Notifikasi.dc.html', 'Pengguna': 'Pengguna & Peranan.dc.html', 'Sijil': 'Tempahan & Pelanggan.dc.html', 'Tetapan': 'Tempahan & Pelanggan.dc.html' }; if (m[label] && !active) { try { location.href = (function(p){try{var u=new URL(p,location.href);new URLSearchParams(location.search).forEach(function(v,k){if(!u.searchParams.has(k))u.searchParams.set(k,v);});return u.href;}catch(e){return p;}})(m[label]); } catch (e) {} } },
+      rowStyle: 'position:relative; display:flex; align-items:center; gap:12px; padding:10px 14px; margin:2px 0; border-radius:9px; font-size:13.5px; cursor:pointer;' + (active ? 'background:#edeee0; color:#42481c; font-weight:700;' : 'color:#475569; font-weight:500;'),
+    });
+    const sec = (label) => ({ isSection: true, isItem: false, label });
+    const nav = [
+      sec('UTAMA'), navItem('ph ph-squares-four', 'Dashboard', false),
+      sec('OPERASI'), navItem('ph ph-calendar-check', 'Bayaran Ansuran', false), navItem('ph ph-shopping-cart-simple', 'Tempahan & Pelanggan', false, '34'), navItem('ph ph-seal-check', 'Pengesahan Bayaran', false, '5'), navItem('ph ph-hand-heart', 'Lafaz Akad', true), navItem('ph ph-globe-hemisphere-west', 'Agihan Negara', false), navItem('ph ph-shopping-bag', 'Pelaksanaan & Laporan', false), navItem('ph ph-package', 'AWB & Postage', false), navItem('ph ph-check-square-offset', 'Tempahan Selesai', false), navItem('ph ph-truck', 'Vendor', false), navItem('ph ph-cow', 'Produk', false), navItem('ph ph-folders', 'Dokumen', false),
+      sec('JUALAN & KEWANGAN'), navItem('ph ph-users-three', 'Sales CRM', false), navItem('ph ph-ticket', 'Kod Promosi', false), navItem('ph ph-wallet', 'Kewangan', false, '87'),
+      sec('LAPORAN'), navItem('ph ph-chart-bar', 'Pusat Laporan', false), navItem('ph ph-clock-counter-clockwise', 'Audit Log', false),
+      sec('SISTEM'), navItem('ph ph-bell', 'Notifikasi', false, '7'), navItem('ph ph-users', 'Pengguna', false), navItem('ph ph-certificate', 'Sijil', false), navItem('ph ph-gear-six', 'Tetapan', false),
+    ];
+
+    const badge = (bg, col) => 'font-size:10.5px; font-weight:700; border-radius:6px; padding:3px 9px; background:' + bg + '; color:' + col + '; white-space:nowrap;';
+    const data = [
+      ['NQ-QB-LE-001243', 'Ahmad Zaki bin Hassan', '012-3345 671', 'Qurban — Lembu', '1/7', 'Uganda', '2027', 'ahmad.zaki@gmail.com', 'No. 12, Jalan Melati 3, Taman Sri Indah', '40150', 'Shah Alam', 'Delima'],
+      ['NQ-QB-KA-001244', 'Nurul Ain binti Rahman', '013-9921 044', 'Qurban — Kambing', '1/1', 'Nigeria', '2027', 'nurulain.r@gmail.com', 'No. 8, Lorong Kenanga 2', '53100', 'Kuala Lumpur', 'Zamrud'],
+      ['NQ-QB-LE-001245', 'Syed Farid Aljunied', '019-6650 128', 'Qurban — Lembu', '7/7', 'Uganda', '2027', 'sfarid@outlook.com', 'A-2-8, Residensi Damai, Jalan Ampang', '50450', 'Kuala Lumpur', 'Topaz'],
+      ['NQ-QB-UN-001246', 'Tan Abdullah', '017-3320 990', 'Qurban — Unta', '3/7', 'Somalia', '2027', 'tan.abdullah@gmail.com', 'No. 45, Jalan Bukit Bintang', '55100', 'Kuala Lumpur', 'Nilam'],
+      ['NQ-QB-KA-001247', 'Faridah binti Omar', '011-2245 778', 'Qurban — Kambing', '1/1', 'Bangladesh', '2027', 'faridah.omar@yahoo.com', 'No. 3, Jalan Seri Gombak 7', '68100', 'Batu Caves', 'Mutiara'],
+      ['NQ-QB-LE-001248', 'Iskandar bin Yusof', '014-8890 213', 'Qurban — Lembu', '2/7', 'Palestin', '2027', 'iskandar.y@gmail.com', 'No. 20, Persiaran Kayangan', '40000', 'Shah Alam', 'Delima'],
+    ];
+    let confirmedPay = [];
+    try {
+      const store = JSON.parse(localStorage.getItem('nq_akad_orders') || '{}');
+      confirmedPay = Object.values(store).sort((a, b) => (b.at || 0) - (a.at || 0))
+        .map(o => [o.no, o.name, o.phone || '-', o.ibadah || 'Qurban', o.bhg || '1/1', o.country || '-', o.year || '2027', '-', '-', '-', '-', o.pkg || '-']);
+    } catch (e) {}
+    const seen = {};
+    const data2 = confirmedPay.concat(data).filter(d => { if (seen[d[0]]) return false; seen[d[0]] = 1; return true; });
+    const done = s.akadDone || {};
+    const ov = s.detailOverride || {};
+    const all = data2.map((d, i) => {
+      const o = ov[d[0]] || {};
+      return {
+        no: d[0], name: o.name != null ? o.name : d[1], phone: o.phone != null ? o.phone : d[2],
+        ibadah: d[3], bhg: d[4], country: o.country != null ? o.country : d[5], year: d[6],
+        email: o.email != null ? o.email : d[7], addr: o.addr != null ? o.addr : d[8],
+        poskod: o.poskod != null ? o.poskod : d[9], city: o.city != null ? o.city : d[10], pkg: d[11] || '-',
+        isDone: !!done[d[0]],
+      };
+    });
+    const pendingList = all.filter(o => !o.isDone);
+    const doneList = all.filter(o => o.isDone);
+    const shown = s.tab === 'pending' ? pendingList : doneList;
+
+    const checked = s.checked || {};
+    const chkBox = (on) => 'width:20px; height:20px; border-radius:6px; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;' + (on ? 'background:#42481c; border:1px solid #42481c;' : 'border:1.5px solid #CBD5E1;');
+    const rows = shown.map(o => ({
+      no: o.no, name: o.name, phone: o.phone, ibadah: o.ibadah, bhg: o.bhg, pkg: o.pkg || '-',
+      checked: !!checked[o.no], checkStyle: chkBox(!!checked[o.no]),
+      onCheck: () => set({ checked: { ...(s.checked || {}), [o.no]: !checked[o.no] } }),
+      pending: !o.isDone, done: o.isDone,
+      statusLabel: o.isDone ? 'Selesai' : 'Menunggu',
+      badgeStyle: o.isDone ? badge('#EAF7EE', '#16A34A') : badge('#FEF3E2', '#D97706'),
+      onAkad: () => set({ showAkad: true, akadCur: o, consent: false }),
+      onView: () => set({ showAkad: true, akadCur: o, consent: true }),
+      onDetail: () => set({ showDetail: true, detailNo: o.no, detailEdit: false, draft: {} }),
+    }));
+
+    const participantsMap = {
+      'NQ-QB-LE-001245': ['Syed Farid Aljunied', 'Puan Sharifah Aljunied', 'Syed Hakim Aljunied', 'Sharifah Nadia', 'Syed Danial', 'Sharifah Aisyah', 'Syed Iskandar'],
+      'NQ-QB-UN-001246': ['Tan Abdullah', 'Siti Mariam Abdullah', 'Aiman Tan'],
+      'NQ-QB-LE-001248': ['Iskandar bin Yusof', 'Rohaya binti Ismail'],
+    };
+    const shareCount = (bhg) => { const m = String(bhg || '').match(/^(\d+)/); return m ? parseInt(m[1], 10) : 1; };
+    const dtRow = all.find(o => o.no === s.detailNo) || {};
+    const dtShare = shareCount(dtRow.bhg);
+    const dtNames = participantsMap[dtRow.no] || (dtRow.name ? [dtRow.name] : []);
+    const dtParticipants = [];
+    for (let i = 0; i < dtShare; i++) dtParticipants.push({ n: String(i + 1), name: dtNames[i] || ('Peserta ' + (i + 1)) });
+    const dtRO = !s.detailEdit;
+    const dr = s.draft || {};
+    const dget = (k) => dr[k] != null ? dr[k] : dtRow[k];
+    const setDraft = (k) => (e) => set({ draft: { ...dr, [k]: e.target.value } });
+    const inpBase = 'width:100%; font-family:inherit; font-size:13px; border-radius:9px; padding:10px 12px; outline:none; border:1px solid #E2E8F0;';
+
+    const tabs = [['pending', 'Menunggu Akad', pendingList.length], ['done', 'Akad Selesai', doneList.length]].map(([k, label, count]) => {
+      const on = s.tab === k;
+      return { label, count: String(count), onClick: () => set({ tab: k }),
+        style: 'display:inline-flex; align-items:center; gap:8px; font-size:13px; font-weight:600; border-radius:9px; padding:9px 15px; cursor:pointer;' + (on ? 'background:#42481c; color:#fff;' : 'background:#fff; border:1px solid #E2E8F0; color:#475569;'),
+        countStyle: 'font-size:11px; font-weight:700; border-radius:20px; padding:1px 8px;' + (on ? 'background:rgba(255,255,255,.22); color:#fff;' : 'background:#F1F5F4; color:#64748B;') };
+    });
+
+    const stats = [
+      { icon: 'ph ph-hand-heart', tint: '#FEF3E2', color: '#D97706', value: String(pendingList.length), label: 'Menunggu Akad' },
+      { icon: 'ph ph-check-circle', tint: '#EAF7EE', color: '#16A34A', value: String(doneList.length), label: 'Akad Selesai' },
+      { icon: 'ph ph-scroll', tint: '#edeee0', color: '#42481c', value: '1,204', label: 'Jumlah Akad 2027' },
+      { icon: 'ph ph-whatsapp-logo', tint: '#E8F0FB', color: '#2563EB', value: '68%', label: 'Melalui Telefon/WA' },
+    ];
+
+    const cur = s.akadCur || {};
+    const methods = [['Telefon', 'ph ph-phone'], ['WhatsApp', 'ph ph-whatsapp-logo'], ['Bersemuka', 'ph ph-users']].map(([label, icon]) => {
+      const on = s.method === label;
+      return { label, icon, onClick: () => set({ method: label }),
+        style: 'display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600; border-radius:8px; padding:8px 11px; cursor:pointer;' + (on ? 'background:#edeee0; color:#42481c; border:1px solid #42481c;' : 'background:#fff; color:#64748B; border:1px solid #E2E8F0;') };
+    });
+
+    const allChecked = shown.length > 0 && shown.every(o => checked[o.no]);
+    const canConfirm = s.consent === true;
+    return {
+      nav, rows, tabs, stats,
+      allChecked, allCheckStyle: chkBox(allChecked),
+      toggleAll: () => { const nc = { ...(s.checked || {}) }; if (allChecked) { shown.forEach(o => delete nc[o.no]); } else { shown.forEach(o => nc[o.no] = true); } set({ checked: nc }); },
+      hasSelection: s.tab === 'pending' && shown.some(o => checked[o.no]),
+      selCount: String(shown.filter(o => checked[o.no]).length),
+      bulkAkad: () => {
+        const nd = { ...(s.akadDone || {}) };
+        try { const p = JSON.parse(localStorage.getItem('nq_pipeline') || '{}'); shown.forEach(o => { if (checked[o.no] && !o.isDone && (p[o.no] || 0) < 2) p[o.no] = 2; }); localStorage.setItem('nq_pipeline', JSON.stringify(p)); } catch (e) {}
+        shown.forEach(o => { if (checked[o.no] && !o.isDone) nd[o.no] = { method: 'Pukal', witness: s.witness, at: Date.now() }; });
+        set({ akadDone: nd, checked: {}, tab: 'done' });
+      },
+      empty: shown.length === 0,
+      emptyText: s.tab === 'pending' ? 'Tiada tempahan menunggu akad.' : 'Belum ada akad yang direkod.',
+      showAkad: s.showAkad === true,
+      akadNo: cur.no || '', akadName: cur.name || '', akadIbadah: cur.ibadah || '',
+      akadBhg: cur.bhg || '', akadCountry: cur.country || '', akadYear: cur.year || '2027',
+      methods,
+      akadWitness: s.witness, onWitness: (e) => set({ witness: e.target.value }),
+      pics: (function () {
+        let id = 'SP-001', nm = 'Muhammad Nurfitkri';
+        try { id = localStorage.getItem('nq_user_id') || id; nm = localStorage.getItem('nq_user_name') || nm; } catch (e) {}
+        const short = nm.split(' ').slice(0, 2).join(' ');
+        return [{ value: nm, label: short }];
+      })(),
+      consent: s.consent === true,
+      consentBox: 'width:20px; height:20px; border-radius:6px; display:flex; align-items:center; justify-content:center; flex-shrink:0;' + (s.consent ? 'background:#42481c; border:1px solid #42481c;' : 'border:1.5px solid #CBD5E1;'),
+      toggleConsent: () => set({ consent: !s.consent }),
+      confirmBg: canConfirm ? '#16A34A' : '#9CA3AF',
+      confirmCursor: canConfirm ? 'pointer' : 'not-allowed',
+      closeAkad: () => set({ showAkad: false }),
+      confirmAkad: () => {
+        if (!canConfirm) return;
+        try { const p = JSON.parse(localStorage.getItem('nq_pipeline') || '{}'); if ((p[cur.no] || 0) < 2) { p[cur.no] = 2; localStorage.setItem('nq_pipeline', JSON.stringify(p)); } } catch (e) {}
+        set({ akadDone: { ...(s.akadDone || {}), [cur.no]: { method: s.method, witness: s.witness, at: Date.now() } }, showAkad: false, tab: 'done' });
+      },
+
+      showDetail: s.showDetail === true,
+      dtNo: dtRow.no || '', dtReadonly: dtRO, dtEditing: s.detailEdit === true,
+      inpStyle: inpBase + (dtRO ? 'background:#F6F8F7; color:#64748B;' : 'background:#fff; color:#1A1D21;'),
+      inpStyleRO: inpBase + 'background:#F6F8F7; color:#64748B;',
+      dtName: dget('name'), onDtName: setDraft('name'),
+      dtPhone: dget('phone'), onDtPhone: setDraft('phone'),
+      dtEmail: dget('email'), onDtEmail: setDraft('email'),
+      dtAddr: dget('addr'), onDtAddr: setDraft('addr'),
+      dtPoskod: dget('poskod'), onDtPoskod: setDraft('poskod'),
+      dtCity: dget('city'), onDtCity: setDraft('city'),
+      dtCountry: dget('country'), onDtCountry: setDraft('country'),
+      dtIbadah: dtRow.ibadah || '',
+      dtHasParticipants: dtShare > 1, dtBhg: dtRow.bhg || '', dtParticipants,
+      ...(function () {
+        const unit = /unta/i.test(dtRow.ibadah || '') ? 3800 : /lembu/i.test(dtRow.ibadah || '') ? 2700 : 950;
+        const fmt = (n) => 'RM ' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const sub = unit * dtShare;
+        const paid = dtRow.no && (s.akadDone || {})[dtRow.no];
+        return {
+          dtUnitPrice: fmt(unit), dtShareLabel: dtShare + ' bahagian × ' + fmt(unit),
+          dtSubtotal: fmt(sub), dtTotal: fmt(sub),
+          dtPayMethod: 'FPX Online Banking',
+          dtPayStatus: 'Berjaya', dtPayBadge: 'font-size:10.5px; font-weight:700; border-radius:6px; padding:3px 9px; background:#EAF7EE; color:#16A34A;',
+        };
+      })(),
+      startEdit: () => set({ detailEdit: true, draft: {} }),
+      cancelEdit: () => set({ detailEdit: false, draft: {} }),
+      closeDetail: () => set({ showDetail: false, detailEdit: false, draft: {} }),
+      saveDetail: () => {
+        const merged = { ...(ov[s.detailNo] || {}), ...dr };
+        set({ detailOverride: { ...ov, [s.detailNo]: merged }, detailEdit: false, draft: {} });
+      },
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; background:#F6F8F7; color:#1A1D21; -webkit-font-smoothing: antialiased; }
+  a { color:#42481c; text-decoration:none; } a:hover { color:#5a6127; }
+  ::-webkit-scrollbar { width:10px; height:10px; }
+  ::-webkit-scrollbar-thumb { background:#b3b79a; border-radius:6px; border:2px solid transparent; background-clip:padding-box; }
+</style>
+</helmet>
+
+<div style="display:flex; min-height:100vh; background:#F6F8F7;">
+
+  <!-- SIDEBAR -->
+  <aside style="width:260px; flex-shrink:0; background:#fff; border-right:1px solid #E2E8F0; display:flex; flex-direction:column; position:sticky; top:0; height:100vh;">
+    <div style="height:72px; display:flex; align-items:center; gap:12px; padding:0 22px; border-bottom:1px solid #E2E8F0; flex-shrink:0;">
+      <div style="width:38px; height:38px; border-radius:10px; overflow:hidden;"><img src="uploads/Untitled design.png" alt="Nadi Qurban" style="width:100%; height:100%; object-fit:cover; display:block;"></div>
+      <div style="line-height:1;"><div style="font-size:15px; font-weight:800; letter-spacing:.3px; color:#42481c;">NADI QURBAN</div><div style="font-size:10.5px; font-weight:600; letter-spacing:2px; color:#94A3AC; margin-top:3px;">OSI SYSTEM</div></div>
+    </div>
+    <nav style="flex:1; overflow-y:auto; padding:14px 12px;">
+      <sc-for list="{{ nav }}" as="item" hint-placeholder-count="12">
+        <sc-if value="{{ item.isSection }}" hint-placeholder-val="{{ false }}"><div style="font-size:10.5px; font-weight:700; letter-spacing:1.4px; color:#94A3AC; padding:16px 14px 8px;">{{ item.label }}</div></sc-if>
+        <sc-if value="{{ item.isItem }}" hint-placeholder-val="{{ true }}">
+          <div style="{{ item.rowStyle }}" onClick="{{ item.onClick }}">
+            <span style="position:absolute; left:0; top:8px; bottom:8px; width:3px; border-radius:0 3px 3px 0; background:{{ item.bar }};"></span>
+            <i class="{{ item.icon }}" style="font-size:19px; color:{{ item.iconColor }};"></i>
+            <span style="flex:1;">{{ item.label }}</span>
+            <sc-if value="{{ item.badge }}" hint-placeholder-val="{{ false }}"><span style="background:#C9A227; color:#fff; font-size:10.5px; font-weight:700; border-radius:20px; padding:2px 8px;">{{ item.badge }}</span></sc-if>
+          </div>
+        </sc-if>
+      </sc-for>
+    </nav>
+    <div style="padding:14px 16px; display:flex; align-items:center; gap:11px; border-top:1px solid #E2E8F0;">
+      <div style="width:38px; height:38px; border-radius:50%; background:#42481c; color:#C9A227; font-weight:800; font-size:13px; display:flex; align-items:center; justify-content:center;">MN</div>
+      <div style="min-width:0; flex:1;"><div style="font-size:13px; font-weight:700; color:#1A1D21;">Muhammad Nurfitkri</div><div style="font-size:11px; color:#64748B;">Superadmin</div></div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div style="flex:1; min-width:0; display:flex; flex-direction:column;">
+    <header style="height:72px; background:#fff; border-bottom:1px solid #E2E8F0; display:flex; align-items:center; padding:0 32px; gap:24px; position:sticky; top:0; z-index:20;">
+      <div style="flex:1; max-width:520px; margin:0 auto; display:flex; align-items:center; gap:11px; background:#F6F8F7; border:1px solid #E2E8F0; border-radius:10px; padding:10px 15px;">
+        <i class="ph ph-magnifying-glass" style="font-size:18px; color:#94A3AC;"></i>
+        <span style="font-size:13.5px; color:#94A3AC;">Cari pengguna, emel, peranan&hellip;</span>
+        <span style="margin-left:auto; font-size:11px; color:#94A3AC; border:1px solid #E2E8F0; border-radius:5px; padding:2px 7px; background:#fff;">&#8984;K</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <div style="position:relative; width:40px; height:40px; border-radius:10px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; color:#475569;"><i class="ph ph-bell" style="font-size:20px;"></i><span style="position:absolute; top:-4px; right:-4px; background:#DC2626; color:#fff; font-size:10px; font-weight:700; border-radius:20px; min-width:18px; height:18px; display:flex; align-items:center; justify-content:center; padding:0 4px; border:2px solid #fff;">7</span></div>
+        <div style="width:1px; height:30px; background:#E2E8F0; margin:0 4px;"></div>
+        <div style="width:40px; height:40px; border-radius:50%; background:#42481c; color:#C9A227; font-weight:800; font-size:13px; display:flex; align-items:center; justify-content:center;">MN</div>
+      </div>
+    </header>
+
+    <main style="flex:1; padding:28px 32px 56px; overflow-y:auto;">
+      <sc-if value="{{ isApi }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <span onClick="{{ backToRoles }}" style="display:inline-flex; align-items:center; gap:7px; font-size:13.5px; font-weight:600; color:#42481c; cursor:pointer; margin-bottom:18px;"><i class="ph ph-arrow-left" style="font-size:17px;"></i> Kembali</span>
+          <div style="display:flex; align-items:flex-end; gap:16px; margin-bottom:24px; flex-wrap:wrap;">
+            <div style="margin-right:auto;"><h1 style="font-size:23px; font-weight:700;">Integrasi API</h1><p style="font-size:13.5px; color:#64748B; margin-top:4px;">Urus kunci API, sambungan pihak ketiga &amp; had penggunaan.</p></div>
+            <button onClick="{{ openApiKey }}" style="display:flex; align-items:center; gap:8px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-plus" style="font-size:17px;"></i> Jana Kunci API</button>
+          </div>
+
+          <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:22px;">
+            <sc-for list="{{ apiStats }}" as="s" hint-placeholder-count="4">
+              <div style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; padding:16px 18px; display:flex; align-items:center; gap:14px;">
+                <div style="width:42px; height:42px; border-radius:10px; background:{{ s.tint }}; color:{{ s.color }}; display:flex; align-items:center; justify-content:center;"><i class="{{ s.icon }}" style="font-size:22px;"></i></div>
+                <div><div style="font-size:22px; font-weight:700; line-height:1;">{{ s.value }}</div><div style="font-size:12.5px; color:#64748B; margin-top:5px;">{{ s.label }}</div></div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1.5fr 1fr; gap:22px; align-items:start;">
+            <section style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; overflow:hidden;">
+              <div style="padding:16px 20px; border-bottom:1px solid #F1F5F4; font-size:14px; font-weight:700;">Kunci API</div>
+              <sc-for list="{{ apiKeys }}" as="k" hint-placeholder-count="2">
+                <div style="padding:14px 20px; border-bottom:1px solid #F1F5F4;">
+                  <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+                    <span style="font-size:13px; font-weight:600; color:#1A1D21;">{{ k.name }}</span>
+                    <span style="font-size:11px; font-weight:600; border-radius:20px; padding:4px 10px; background:#EAF7EE; color:#16A34A; flex-shrink:0;">{{ k.status }}</span>
+                  </div>
+                  <div style="font-family:monospace; font-size:12px; color:#64748B; margin-top:6px;">{{ k.prefix }}</div>
+                  <div style="display:flex; align-items:center; gap:14px; margin-top:7px; font-size:11.5px; color:#94A3AC;"><span><i class="ph ph-calendar-blank" style="font-size:13px; vertical-align:-1px;"></i> Dicipta {{ k.created }}</span><span><i class="ph ph-clock" style="font-size:13px; vertical-align:-1px;"></i> Guna {{ k.last }}</span></div>
+                </div>
+              </sc-for>
+            </section>
+
+            <section style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; padding:20px;">
+              <div style="font-size:13px; font-weight:700; color:#1A1D21; margin-bottom:6px;">Base URL</div>
+              <div style="display:flex; gap:8px;"><input value="https://api.nadiqurban.com/v1" readonly style="flex:1; font-family:monospace; font-size:12px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:9px 11px; outline:none; background:#F6F8F7;"><button style="background:#42481c; color:#fff; border:none; border-radius:9px; padding:0 13px; font-size:12px; font-weight:600; cursor:pointer; font-family:inherit;">Salin</button></div>
+              <p style="font-size:11.5px; color:#94A3AC; margin-top:8px; line-height:1.5;">Sertakan header <b>Authorization: Bearer &lt;API_KEY&gt;</b> pada setiap permintaan.</p>
+              <div style="height:1px; background:#F1F5F4; margin:16px 0;"></div>
+              <div style="font-size:13px; font-weight:700; color:#1A1D21; margin-bottom:10px;">Had Kadar</div>
+              <div style="display:flex; align-items:center; justify-content:space-between; font-size:12.5px; color:#475569;"><span>120 permintaan / minit</span><span style="font-weight:700; color:#42481c;">18% digunakan</span></div>
+              <div style="height:8px; border-radius:20px; background:#F1F5F4; margin-top:8px; overflow:hidden;"><div style="width:18%; height:100%; background:#42481c;"></div></div>
+            </section>
+          </div>
+
+          <section style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; overflow:hidden; margin-top:22px;">
+            <div style="padding:16px 20px; border-bottom:1px solid #F1F5F4; font-size:14px; font-weight:700;">Sambungan Pihak Ketiga</div>
+            <sc-for list="{{ apiConnections }}" as="c" hint-placeholder-count="4">
+              <div style="display:flex; align-items:center; gap:14px; padding:14px 20px; border-bottom:1px solid #F1F5F4;">
+                <div style="width:42px; height:42px; border-radius:10px; background:{{ c.tint }}; color:{{ c.color }}; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><i class="{{ c.icon }}" style="font-size:22px;"></i></div>
+                <div style="flex:1; min-width:0;"><div style="font-size:13.5px; font-weight:600; color:#1A1D21;">{{ c.name }}</div><div style="font-size:12px; color:#94A3AC; margin-top:2px;">{{ c.desc }}</div></div>
+                <span style="font-size:11px; font-weight:600; border-radius:20px; padding:4px 11px; flex-shrink:0; {{ c.stStyle }}">{{ c.status }}</span>
+              </div>
+            </sc-for>
+          </section>
+
+          <section style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; overflow:hidden; margin-top:22px;">
+            <div style="padding:16px 20px; border-bottom:1px solid #F1F5F4; font-size:14px; font-weight:700;">Gerbang Pembayaran &mdash; Kutipan (Collect Payment)</div>
+            <div style="display:flex; align-items:center; gap:14px; padding:16px 20px;">
+              <div style="width:46px; height:46px; border-radius:11px; background:#EAF7EE; color:#16A34A; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><i class="ph ph-credit-card" style="font-size:24px;"></i></div>
+              <div style="flex:1; min-width:0;"><div style="font-size:14px; font-weight:700; color:#1A1D21;">CHIP IN <span style="font-size:11px; font-weight:600; color:#16A34A; background:#EAF7EE; border-radius:20px; padding:3px 9px; margin-left:6px;">{{ chipStatus }}</span></div><div style="font-size:12px; color:#94A3AC; margin-top:3px;">FPX, kad kredit/debit, e-Wallet &amp; DuitNow QR untuk kutipan bayaran pelanggan.</div></div>
+              <button onClick="{{ openChip }}" style="display:inline-flex; align-items:center; gap:7px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:10px 16px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit; flex-shrink:0;"><i class="ph ph-gear-six" style="font-size:16px;"></i> Tetapan</button>
+              <button onClick="{{ offChip }}" style="display:inline-flex; align-items:center; gap:7px; {{ chipOffStyle }} border-radius:9px; padding:10px 14px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit; flex-shrink:0;"><i class="{{ chipOffIcon }}" style="font-size:16px;"></i> {{ chipOffLabel }}</button>
+            </div>
+            <div style="display:flex; align-items:center; gap:14px; padding:16px 20px; border-top:1px solid #F1F5F4;">
+              <div style="width:46px; height:46px; border-radius:11px; background:#E8F0FB; color:#2563EB; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><i class="ph ph-money" style="font-size:24px;"></i></div>
+              <div style="flex:1; min-width:0;"><div style="font-size:14px; font-weight:700; color:#1A1D21;">Billplz <span style="font-size:11px; font-weight:600; color:#64748B; background:#F1F5F4; border-radius:20px; padding:3px 9px; margin-left:6px;">{{ bpStatus }}</span></div><div style="font-size:12px; color:#94A3AC; margin-top:3px;">FPX &amp; kad kredit melalui Billplz Collections untuk kutipan bayaran.</div></div>
+              <button onClick="{{ openBp }}" style="display:inline-flex; align-items:center; gap:7px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:10px 16px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit; flex-shrink:0;"><i class="ph ph-gear-six" style="font-size:16px;"></i> Tetapan</button>
+              <button onClick="{{ offBp }}" style="display:inline-flex; align-items:center; gap:7px; {{ bpOffStyle }} border-radius:9px; padding:10px 14px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit; flex-shrink:0;"><i class="{{ bpOffIcon }}" style="font-size:16px;"></i> {{ bpOffLabel }}</button>
+            </div>
+            <div style="display:flex; align-items:center; gap:14px; padding:16px 20px; border-top:1px solid #F1F5F4;">
+              <div style="width:46px; height:46px; border-radius:11px; background:#FEF3E2; color:#D97706; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><i class="ph ph-wallet" style="font-size:24px;"></i></div>
+              <div style="flex:1; min-width:0;"><div style="font-size:14px; font-weight:700; color:#1A1D21;">toyyibPay <span style="font-size:11px; font-weight:600; color:#64748B; background:#F1F5F4; border-radius:20px; padding:3px 9px; margin-left:6px;">{{ tpStatus }}</span></div><div style="font-size:12px; color:#94A3AC; margin-top:3px;">FPX &amp; kad kredit melalui toyyibPay Category/Bill untuk kutipan bayaran.</div></div>
+              <button onClick="{{ openTp }}" style="display:inline-flex; align-items:center; gap:7px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:10px 16px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit; flex-shrink:0;"><i class="ph ph-gear-six" style="font-size:16px;"></i> Tetapan</button>
+              <button onClick="{{ offTp }}" style="display:inline-flex; align-items:center; gap:7px; {{ tpOffStyle }} border-radius:9px; padding:10px 14px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit; flex-shrink:0;"><i class="{{ tpOffIcon }}" style="font-size:16px;"></i> {{ tpOffLabel }}</button>
+            </div>
+          </section>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isWebhooks }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <span onClick="{{ backToRoles }}" style="display:inline-flex; align-items:center; gap:7px; font-size:13.5px; font-weight:600; color:#42481c; cursor:pointer; margin-bottom:18px;"><i class="ph ph-arrow-left" style="font-size:17px;"></i> Kembali</span>
+          <div style="display:flex; align-items:flex-end; gap:16px; margin-bottom:24px; flex-wrap:wrap;">
+            <div style="margin-right:auto;"><h1 style="font-size:23px; font-weight:700;">Webhooks</h1><p style="font-size:13.5px; color:#64748B; margin-top:4px;">Terima notifikasi peristiwa sistem secara masa nyata ke endpoint anda.</p></div>
+            <button onClick="{{ openAddHook }}" style="display:flex; align-items:center; gap:8px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-plus" style="font-size:17px;"></i> Tambah Endpoint</button>
+          </div>
+
+          <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:22px;">
+            <sc-for list="{{ hookStats }}" as="s" hint-placeholder-count="4">
+              <div style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; padding:16px 18px; display:flex; align-items:center; gap:14px;">
+                <div style="width:42px; height:42px; border-radius:10px; background:{{ s.tint }}; color:{{ s.color }}; display:flex; align-items:center; justify-content:center;"><i class="{{ s.icon }}" style="font-size:22px;"></i></div>
+                <div><div style="font-size:22px; font-weight:700; line-height:1;">{{ s.value }}</div><div style="font-size:12.5px; color:#64748B; margin-top:5px;">{{ s.label }}</div></div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1.5fr 1fr; gap:22px; align-items:start;">
+            <section style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; overflow:hidden;">
+              <div style="padding:16px 20px; border-bottom:1px solid #F1F5F4; font-size:14px; font-weight:700;">Endpoint Berdaftar</div>
+              <sc-for list="{{ hookEndpoints }}" as="e" hint-placeholder-count="3">
+                <div style="padding:14px 20px; border-bottom:1px solid #F1F5F4;">
+                  <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+                    <span style="font-size:13px; font-weight:600; color:#1A1D21; font-family:monospace; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ e.url }}</span>
+                    <span style="font-size:11px; font-weight:600; border-radius:20px; padding:4px 10px; flex-shrink:0; {{ e.stStyle }}">{{ e.status }}</span>
+                  </div>
+                  <div style="display:flex; align-items:center; gap:14px; margin-top:7px; font-size:11.5px; color:#94A3AC;"><span><i class="ph ph-lightning" style="font-size:13px; vertical-align:-1px;"></i> {{ e.events }} peristiwa</span><span><i class="ph ph-clock" style="font-size:13px; vertical-align:-1px;"></i> {{ e.last }}</span><span style="color:{{ e.rateColor }};">{{ e.rate }} berjaya</span></div>
+                </div>
+              </sc-for>
+            </section>
+
+            <div style="display:flex; flex-direction:column; gap:22px;">
+              <section style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; padding:20px;">
+                <div style="font-size:13px; font-weight:700; color:#1A1D21; margin-bottom:12px;">Signing Secret</div>
+                <div style="display:flex; gap:8px;"><input value="whsec_2f9a71c3e8b40d65" readonly style="flex:1; font-family:monospace; font-size:12px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:9px 11px; outline:none; background:#F6F8F7;"><button style="background:#42481c; color:#fff; border:none; border-radius:9px; padding:0 13px; font-size:12px; font-weight:600; cursor:pointer; font-family:inherit;">Salin</button></div>
+                <p style="font-size:11.5px; color:#94A3AC; margin-top:8px; line-height:1.5;">Gunakan secret ini untuk mengesahkan tandatangan <b>X-NQ-Signature</b> (HMAC-SHA256) setiap payload.</p>
+              </section>
+              <section style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; overflow:hidden;">
+                <div style="padding:14px 20px; border-bottom:1px solid #F1F5F4; font-size:13px; font-weight:700;">Peristiwa Tersedia</div>
+                <sc-for list="{{ hookEvents }}" as="ev" hint-placeholder-count="4">
+                  <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:11px 20px; border-bottom:1px solid #F1F5F4;">
+                    <div><div style="font-size:12.5px; font-weight:600; color:#1A1D21;">{{ ev.name }}</div><div style="font-size:11px; color:#94A3AC; font-family:monospace;">{{ ev.key }}</div></div>
+                    <span style="width:36px; height:20px; border-radius:20px; background:#42481c; position:relative; flex-shrink:0;"><span style="position:absolute; top:2px; right:2px; width:16px; height:16px; border-radius:50%; background:#fff;"></span></span>
+                  </div>
+                </sc-for>
+              </section>
+            </div>
+          </div>
+
+          <section style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; overflow:hidden; margin-top:22px;">
+            <div style="padding:16px 20px; border-bottom:1px solid #F1F5F4; font-size:14px; font-weight:700;">Log Penghantaran Terkini</div>
+            <div style="display:grid; grid-template-columns:1.4fr 1fr 0.8fr 1fr; gap:14px; padding:11px 20px; background:#F6F8F7; border-bottom:1px solid #E2E8F0; font-size:11px; font-weight:700; letter-spacing:.4px; color:#94A3AC; text-transform:uppercase;"><span>Peristiwa</span><span>Endpoint</span><span style="text-align:center;">Kod</span><span style="text-align:right;">Masa</span></div>
+            <sc-for list="{{ hookLogs }}" as="l" hint-placeholder-count="5">
+              <div style="display:grid; grid-template-columns:1.4fr 1fr 0.8fr 1fr; gap:14px; padding:12px 20px; border-bottom:1px solid #F1F5F4; align-items:center; font-size:12.5px;">
+                <span style="font-family:monospace; color:#42481c; font-weight:600;">{{ l.event }}</span>
+                <span style="color:#64748B; font-family:monospace; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ l.url }}</span>
+                <span style="text-align:center;"><span style="font-size:11px; font-weight:700; border-radius:6px; padding:3px 8px; {{ l.codeStyle }}">{{ l.code }}</span></span>
+                <span style="text-align:right; color:#94A3AC;">{{ l.time }}</span>
+              </div>
+            </sc-for>
+          </section>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isNotWebhooks }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex; align-items:flex-end; gap:16px; margin-bottom:22px; flex-wrap:wrap;">
+        <div style="margin-right:auto;">
+          <div style="display:flex; align-items:center; gap:8px; font-size:12.5px; color:#94A3AC; margin-bottom:6px;"><span>Sistem</span><i class="ph ph-caret-right" style="font-size:12px;"></i><span style="color:#42481c; font-weight:600;">Pengguna &amp; Peranan</span></div>
+          <h1 style="font-size:23px; font-weight:700;">Pengguna &amp; Peranan</h1>
+        </div>
+        <button onClick="{{ openAddUser }}" style="display:flex; align-items:center; gap:8px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;" style-hover="background:#5a6127;"><i class="ph ph-user-plus" style="font-size:17px;"></i> Tambah Pengguna</button>
+      </div>
+
+      <!-- top tabs -->
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:22px; border-bottom:1px solid #E2E8F0;">
+        <sc-for list="{{ mainTabs }}" as="t" hint-placeholder-count="2"><span onClick="{{ t.onClick }}" style="{{ t.style }}"><i class="{{ t.icon }}" style="font-size:17px;"></i> {{ t.label }}</span></sc-for>
+      </div>
+
+      <!-- ===== USERS TAB ===== -->
+      <sc-if value="{{ isUsers }}" hint-placeholder-val="{{ true }}">
+        <div>
+          <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:20px;">
+            <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
+              <div style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; padding:16px 18px; display:flex; align-items:center; gap:14px;">
+                <div style="width:42px; height:42px; border-radius:10px; background:{{ s.tint }}; color:{{ s.color }}; display:flex; align-items:center; justify-content:center;"><i class="{{ s.icon }}" style="font-size:22px;"></i></div>
+                <div><div style="font-size:22px; font-weight:700; line-height:1;">{{ s.value }}</div><div style="font-size:12.5px; color:#64748B; margin-top:5px;">{{ s.label }}</div></div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; overflow:hidden;">
+            <div style="padding:14px 20px; display:flex; gap:12px; flex-wrap:wrap; align-items:center; border-bottom:1px solid #E2E8F0;">
+              <div style="flex:1; min-width:200px; display:flex; align-items:center; gap:10px; background:#F6F8F7; border:1px solid #E2E8F0; border-radius:9px; padding:9px 13px;"><i class="ph ph-magnifying-glass" style="font-size:16px; color:#94A3AC;"></i><input placeholder="Cari nama atau emel" style="border:none; background:transparent; flex:1; font-size:13px; outline:none; color:#1A1D21;"></div>
+              <div style="display:flex; align-items:center; gap:9px; background:#fff; border:1px solid #E2E8F0; border-radius:9px; padding:9px 13px; font-size:13px; color:#334155; cursor:pointer;"><i class="ph ph-funnel" style="font-size:16px; color:#64748B;"></i> Peranan</div>
+            </div>
+            <div style="overflow-x:auto;"><div style="min-width:880px;">
+              <div style="display:grid; grid-template-columns:1.8fr 1.3fr 1fr 1fr 0.9fr; padding:12px 20px; background:#F6F8F7; border-bottom:1px solid #E2E8F0; font-size:11px; font-weight:700; letter-spacing:.4px; color:#94A3AC; text-transform:uppercase;">
+                <span>Pengguna</span><span>Peranan</span><span>Akses Terakhir</span><span style="text-align:center;">Status</span><span style="text-align:right;">Tindakan</span>
+              </div>
+              <sc-for list="{{ users }}" as="u" hint-placeholder-count="8">
+                <div style="display:grid; grid-template-columns:1.8fr 1.3fr 1fr 1fr 0.9fr; padding:14px 20px; align-items:center; border-bottom:1px solid #F1F5F4;">
+                  <span style="display:flex; align-items:center; gap:12px;"><span style="width:38px; height:38px; border-radius:50%; background:{{ u.avTint }}; color:{{ u.avColor }}; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center;">{{ u.initials }}</span><span><span style="font-size:13px; font-weight:600; color:#1A1D21; display:block;">{{ u.name }}</span><span style="font-size:11.5px; color:#94A3AC;">{{ u.email }}</span></span></span>
+                  <span><span style="{{ u.roleStyle }}">{{ u.role }}</span></span>
+                  <span style="font-size:12.5px; color:#64748B;">{{ u.last }}</span>
+                  <span style="display:flex; justify-content:center;"><span style="{{ u.statusStyle }}">{{ u.status }}</span></span>
+                  <span style="display:flex; justify-content:flex-end; gap:6px;">
+                    <span onClick="{{ u.onEdit }}" style="width:30px; height:30px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#42481c;"><i class="ph ph-pencil-simple" style="font-size:15px;"></i></span>
+                    <span onClick="{{ u.onLock }}" style="width:30px; height:30px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#DC2626;"><i class="ph ph-lock-key" style="font-size:15px;"></i></span>
+                  </span>
+                </div>
+              </sc-for>
+            </div></div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ===== ROLES TAB ===== -->
+      <sc-if value="{{ isRolesList }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:16px; margin-bottom:24px;">
+            <sc-for list="{{ roles }}" as="r" hint-placeholder-count="5">
+              <div onClick="{{ r.onClick }}" style="{{ r.cardStyle }}">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;"><span style="width:40px; height:40px; border-radius:10px; background:{{ r.tint }}; color:{{ r.color }}; display:flex; align-items:center; justify-content:center;"><i class="{{ r.icon }}" style="font-size:21px;"></i></span><span style="font-size:12px; font-weight:700; color:#64748B; background:#F6F8F7; border-radius:20px; padding:2px 9px;">{{ r.count }}</span></div>
+                <div style="font-size:14.5px; font-weight:700; color:#1A1D21;">{{ r.name }}</div>
+                <div style="font-size:12px; color:#64748B; margin-top:4px; line-height:1.5;">{{ r.desc }}</div>
+              </div>
+            </sc-for>
+          </div>
+
+          <!-- permission matrix -->
+          <section style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; overflow:hidden;">
+            <div style="padding:20px 24px 16px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+              <div><h2 style="font-size:15px; font-weight:700;">Matriks Kebenaran</h2><p style="font-size:12.5px; color:#64748B; margin-top:3px;">Kebenaran akses mengikut modul &amp; peranan</p></div>
+              <div style="display:flex; align-items:center; gap:14px; font-size:12px; color:#64748B;">
+                <span style="display:flex; align-items:center; gap:5px;"><i class="ph-fill ph-check-circle" style="font-size:16px; color:#16A34A;"></i>Penuh</span>
+                <span style="display:flex; align-items:center; gap:5px;"><i class="ph-fill ph-eye" style="font-size:16px; color:#C9A227;"></i>Lihat</span>
+                <span style="display:flex; align-items:center; gap:5px;"><i class="ph ph-minus-circle" style="font-size:16px; color:#CBD5D0;"></i>Tiada</span>
+                <button onClick="{{ saveMatrix }}" style="display:inline-flex; align-items:center; gap:7px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:9px 15px; font-size:12.5px; font-weight:600; cursor:pointer; font-family:inherit; margin-left:6px;"><i class="ph ph-floppy-disk" style="font-size:15px;"></i> Simpan Matriks</button>
+                <sc-if value="{{ matrixSaved }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex; align-items:center; gap:5px; color:#16A34A; font-weight:600;"><i class="ph-fill ph-check-circle" style="font-size:15px;"></i> Disimpan</span></sc-if>
+              </div>
+            </div>
+            <div style="overflow-x:auto;"><div style="min-width:820px;">
+              <div style="display:grid; grid-template-columns:1.6fr repeat(5,1fr); padding:11px 24px; background:#F6F8F7; border-top:1px solid #E2E8F0; border-bottom:1px solid #E2E8F0; font-size:11px; font-weight:700; letter-spacing:.3px; color:#94A3AC; text-transform:uppercase;">
+                <span>Modul</span><span style="text-align:center;">Super Admin</span><span style="text-align:center;">Admin HQ</span><span style="text-align:center;">Kewangan</span><span style="text-align:center;">Sales</span><span style="text-align:center;">Vendor</span>
+              </div>
+              <sc-for list="{{ matrix }}" as="m" hint-placeholder-count="8">
+                <div style="display:grid; grid-template-columns:1.6fr repeat(5,1fr); padding:13px 24px; align-items:center; border-bottom:1px solid #F1F5F4;">
+                  <span style="font-size:13px; font-weight:600; color:#334155;">{{ m.module }}</span>
+                  <sc-for list="{{ m.cells }}" as="c" hint-placeholder-count="5"><span onClick="{{ c.onToggle }}" style="display:flex; justify-content:center; cursor:pointer;"><i class="{{ c.icon }}" style="font-size:19px; color:{{ c.color }};"></i></span></sc-for>
+                </div>
+              </sc-for>
+            </div></div>
+          </section>
+        </div>
+      </sc-if>
+
+      <!-- ===== ROLE DETAIL ===== -->
+      <sc-if value="{{ isRoleDetail }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <span onClick="{{ backToRoles }}" style="display:inline-flex; align-items:center; gap:7px; font-size:13.5px; font-weight:600; color:#42481c; cursor:pointer; margin-bottom:18px;"><i class="ph ph-arrow-left" style="font-size:17px;"></i> Kembali ke peranan</span>
+
+          <div style="background:#fff; border:1px solid #E2E8F0; border-radius:14px; padding:24px; display:flex; align-items:center; gap:20px; margin-bottom:20px; flex-wrap:wrap;">
+            <div style="width:60px; height:60px; border-radius:15px; background:{{ role.tint }}; color:{{ role.color }}; display:flex; align-items:center; justify-content:center;"><i class="{{ role.icon }}" style="font-size:30px;"></i></div>
+            <div style="min-width:0; flex:1;">
+              <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;"><h1 style="font-size:22px; font-weight:700;">{{ role.name }}</h1><span style="font-size:11.5px; font-weight:700; color:#64748B; background:#F6F8F7; border-radius:20px; padding:3px 11px;">{{ role.count }} ahli</span></div>
+              <p style="font-size:13px; color:#64748B; margin-top:6px; max-width:560px; line-height:1.5;">{{ role.desc }}</p>
+            </div>
+            <button onClick="{{ openEditRole }}" style="display:flex; align-items:center; gap:8px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-pencil-simple" style="font-size:16px;"></i> Edit Peranan</button>
+          </div>
+
+          <div style="display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.4fr); gap:20px; align-items:start;">
+            <!-- members -->
+            <section style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; overflow:hidden;">
+              <div style="padding:18px 22px 14px; display:flex; align-items:center; justify-content:space-between;"><h2 style="font-size:15px; font-weight:700;">Ahli Peranan</h2><span style="font-size:12.5px; font-weight:600; color:#42481c; cursor:pointer;">+ Tambah</span></div>
+              <sc-if value="{{ role.hasMembers }}" hint-placeholder-val="{{ true }}">
+                <sc-for list="{{ role.members }}" as="u" hint-placeholder-count="4">
+                  <div style="display:flex; align-items:center; gap:12px; padding:12px 22px; border-top:1px solid #F1F5F4;">
+                    <span style="width:36px; height:36px; border-radius:50%; background:{{ u.avTint }}; color:{{ u.avColor }}; font-size:12.5px; font-weight:700; display:flex; align-items:center; justify-content:center;">{{ u.initials }}</span>
+                    <span style="flex:1; min-width:0;"><span style="font-size:13px; font-weight:600; color:#1A1D21; display:block;">{{ u.name }}</span><span style="font-size:11.5px; color:#94A3AC;">{{ u.email }}</span></span>
+                    <span style="{{ u.statusStyle }}">{{ u.status }}</span>
+                  </div>
+                </sc-for>
+              </sc-if>
+            </section>
+
+            <!-- permissions -->
+            <section style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; overflow:hidden;">
+              <div style="padding:18px 22px 14px;"><h2 style="font-size:15px; font-weight:700;">Kebenaran Modul</h2><p style="font-size:12.5px; color:#64748B; margin-top:3px;">Tahap akses peranan ini bagi setiap modul</p></div>
+              <sc-for list="{{ role.perms }}" as="p" hint-placeholder-count="8">
+                <div style="display:flex; align-items:center; gap:12px; padding:13px 22px; border-top:1px solid #F1F5F4;">
+                  <span style="width:32px; height:32px; border-radius:8px; background:#F6F8F7; color:#64748B; display:flex; align-items:center; justify-content:center;"><i class="{{ p.modIcon }}" style="font-size:17px;"></i></span>
+                  <span style="flex:1; font-size:13px; font-weight:600; color:#334155;">{{ p.module }}</span>
+                  <span style="{{ p.pillStyle }}"><i class="{{ p.icon }}" style="font-size:15px;"></i> {{ p.label }}</span>
+                </div>
+              </sc-for>
+            </section>
+          </div>
+        </div>
+      </sc-if>
+      </sc-if>
+
+    </main>
+  </div>
+
+  <sc-if value="{{ showAddHook }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; inset:0; z-index:120; background:rgba(20,24,20,.55); display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; padding:32px 16px;">
+      <div style="width:100%; max-width:480px; background:#fff; border-radius:14px; box-shadow:0 24px 60px rgba(0,0,0,.3); overflow:hidden;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 24px; border-bottom:1px solid #E2E8F0;">
+          <div style="display:flex; align-items:center; gap:11px;"><span style="width:36px; height:36px; border-radius:10px; background:#edeee0; color:#42481c; display:flex; align-items:center; justify-content:center;"><i class="ph ph-webhooks-logo" style="font-size:19px;"></i></span><div><h2 style="font-size:16px; font-weight:700;">Tambah Endpoint</h2><p style="font-size:12px; color:#94A3AC; margin-top:2px;">Daftar URL penerima webhook baharu</p></div></div>
+          <span onClick="{{ closeAddHook }}" style="width:32px; height:32px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#64748B;"><i class="ph ph-x" style="font-size:16px;"></i></span>
+        </div>
+        <div style="padding:22px 24px; display:flex; flex-direction:column; gap:16px;">
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Endpoint URL</label><input placeholder="https://sistem-anda.com/webhook" style="width:100%; font-family:monospace; font-size:12.5px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Deskripsi</label><input placeholder="cth. Sistem ERP dalaman" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:8px;">Peristiwa Dilanggan</label>
+            <div style="display:flex; flex-wrap:wrap; gap:8px;"><sc-for list="{{ hookEvents }}" as="ev" hint-placeholder-count="4"><span style="font-size:12px; font-weight:600; border-radius:20px; padding:6px 12px; background:#F6F8F7; color:#475569; border:1px solid #E2E8F0; cursor:pointer;">{{ ev.name }}</span></sc-for></div>
+          </div>
+        </div>
+        <div style="padding:0 24px 22px; display:flex; gap:10px; justify-content:flex-end;">
+          <button onClick="{{ closeAddHook }}" style="background:#fff; color:#334155; border:1px solid #E2E8F0; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;">Batal</button>
+          <button onClick="{{ closeAddHook }}" style="display:inline-flex; align-items:center; gap:7px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-check" style="font-size:16px;"></i> Simpan Endpoint</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showHooks }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; inset:0; z-index:120; background:rgba(20,24,20,.55); display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; padding:32px 16px;">
+      <div style="width:100%; max-width:560px; background:#fff; border-radius:14px; box-shadow:0 24px 60px rgba(0,0,0,.3); overflow:hidden;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 24px; border-bottom:1px solid #E2E8F0;">
+          <div style="display:flex; align-items:center; gap:11px;"><span style="width:36px; height:36px; border-radius:10px; background:#edeee0; color:#42481c; display:flex; align-items:center; justify-content:center;"><i class="ph ph-webhooks-logo" style="font-size:19px;"></i></span><div><h2 style="font-size:16px; font-weight:700;">Webhooks</h2><p style="font-size:12px; color:#94A3AC; margin-top:2px;">Terima notifikasi peristiwa masa nyata</p></div></div>
+          <span onClick="{{ closeHooks }}" style="width:32px; height:32px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#64748B;"><i class="ph ph-x" style="font-size:16px;"></i></span>
+        </div>
+        <div style="padding:22px 24px; display:flex; flex-direction:column; gap:16px;">
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Endpoint URL</label><input placeholder="https://sistem-anda.com/webhook" style="width:100%; font-family:monospace; font-size:12.5px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Signing Secret</label><div style="display:flex; gap:8px;"><input value="whsec_2f9a71c3e8b40d65" readonly style="flex:1; font-family:monospace; font-size:12.5px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none; background:#F6F8F7;"><button style="background:#42481c; color:#fff; border:none; border-radius:9px; padding:0 14px; font-size:12.5px; font-weight:600; cursor:pointer; font-family:inherit;">Salin</button></div></div>
+          <div style="font-size:13px; font-weight:700; color:#1A1D21; margin-top:4px;">Peristiwa Dilanggan</div>
+          <sc-for list="{{ hookEvents }}" as="e" hint-placeholder-count="4">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:11px 14px; border:1px solid #E2E8F0; border-radius:10px;">
+              <div><div style="font-size:12.5px; font-weight:600; color:#1A1D21;">{{ e.name }}</div><div style="font-size:11px; color:#94A3AC; font-family:monospace;">{{ e.key }}</div></div>
+              <span style="font-size:11px; font-weight:600; color:#16A34A; background:#EAF7EE; border-radius:20px; padding:4px 10px;">Aktif</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="padding:0 24px 22px; display:flex; gap:10px; justify-content:flex-end;">
+          <button onClick="{{ closeHooks }}" style="background:#fff; color:#334155; border:1px solid #E2E8F0; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;">Tutup</button>
+          <button onClick="{{ closeHooks }}" style="display:inline-flex; align-items:center; gap:7px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-check" style="font-size:16px;"></i> Simpan Webhook</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showTp }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; inset:0; z-index:120; background:rgba(20,24,20,.55); display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; padding:32px 16px;">
+      <div style="width:100%; max-width:460px; background:#fff; border-radius:14px; box-shadow:0 24px 60px rgba(0,0,0,.3); overflow:hidden;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 24px; border-bottom:1px solid #E2E8F0;">
+          <div style="display:flex; align-items:center; gap:11px;"><span style="width:36px; height:36px; border-radius:10px; background:#FEF3E2; color:#D97706; display:flex; align-items:center; justify-content:center;"><i class="ph ph-wallet" style="font-size:19px;"></i></span><div><h2 style="font-size:16px; font-weight:700;">Tetapan toyyibPay</h2><p style="font-size:12px; color:#94A3AC; margin-top:2px;">Gerbang kutipan pembayaran</p></div></div>
+          <span onClick="{{ closeTp }}" style="width:32px; height:32px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#64748B;"><i class="ph ph-x" style="font-size:16px;"></i></span>
+        </div>
+        <div style="padding:22px 24px; display:flex; flex-direction:column; gap:16px;">
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Secret Key</label><div style="display:flex; gap:8px;"><input value="{{ tpKey }}" onInput="{{ onTpKey }}" type="{{ tpKeyType }}" placeholder="cth. abcd1234-ef56-..." style="flex:1; font-family:monospace; font-size:12.5px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"><button onClick="{{ toggleTpKey }}" style="background:#F6F8F7; color:#42481c; border:1px solid #E2E8F0; border-radius:9px; padding:0 13px; font-size:12px; font-weight:600; cursor:pointer; font-family:inherit;">{{ tpKeyBtn }}</button></div></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Category Code</label><input value="{{ tpCat }}" onInput="{{ onTpCat }}" placeholder="cth. 7hk2mabc" style="width:100%; font-family:monospace; font-size:12.5px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Persekitaran</label><div style="display:flex; gap:8px;"><sc-for list="{{ tpEnvs }}" as="ev" hint-placeholder-count="2"><span onClick="{{ ev.onClick }}" style="{{ ev.style }}">{{ ev.label }}</span></sc-for></div></div>
+          <sc-if value="{{ tpSaved }}" hint-placeholder-val="{{ false }}"><p style="font-size:12px; font-weight:600; color:#16A34A; background:#EAF7EE; border-radius:9px; padding:10px 12px; display:flex; align-items:center; gap:7px;"><i class="ph-fill ph-check-circle" style="font-size:15px;"></i> Tetapan toyyibPay disimpan &amp; disambung.</p></sc-if>
+          <p style="font-size:11.5px; color:#94A3AC; line-height:1.5; background:#F6F8F7; border-radius:9px; padding:10px 12px;"><i class="ph ph-info" style="font-size:13px; vertical-align:-2px; color:#D97706;"></i> Endpoint: <b>{{ tpEndpoint }}</b></p>
+        </div>
+        <div style="padding:0 24px 22px; display:flex; gap:10px; justify-content:flex-end;">
+          <button onClick="{{ closeTp }}" style="background:#fff; color:#334155; border:1px solid #E2E8F0; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;">Batal</button>
+          <button onClick="{{ saveTp }}" style="display:inline-flex; align-items:center; gap:7px; background:{{ tpSaveBg }}; color:#fff; border:none; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:{{ tpSaveCursor }}; font-family:inherit;"><i class="ph ph-check" style="font-size:16px;"></i> Simpan &amp; Sambung</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showAddUser }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; inset:0; z-index:120; background:rgba(20,24,20,.55); display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; padding:32px 16px;">
+      <div style="width:100%; max-width:480px; background:#fff; border-radius:14px; box-shadow:0 24px 60px rgba(0,0,0,.3); overflow:hidden;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 24px; border-bottom:1px solid #E2E8F0;">
+          <div style="display:flex; align-items:center; gap:11px;"><span style="width:36px; height:36px; border-radius:10px; background:#edeee0; color:#42481c; display:flex; align-items:center; justify-content:center;"><i class="ph ph-user-plus" style="font-size:19px;"></i></span><div><h2 style="font-size:16px; font-weight:700;">Tambah Pengguna</h2><p style="font-size:12px; color:#94A3AC; margin-top:2px;">Cipta akaun pengguna baharu</p></div></div>
+          <span onClick="{{ closeAddUser }}" style="width:32px; height:32px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#64748B;"><i class="ph ph-x" style="font-size:16px;"></i></span>
+        </div>
+        <div style="padding:22px 24px; display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+          <div style="grid-column:1 / -1;"><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Nama Penuh</label><input placeholder="Nama pengguna" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Emel</label><input type="email" placeholder="emel@nadiqurban.com" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">No. Telefon</label><input placeholder="01X-XXXXXXX" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+          <div style="grid-column:1 / -1;"><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:8px;">Peranan <span style="color:#94A3AC; font-weight:400;">(boleh pilih lebih daripada satu)</span></label>
+            <div style="display:flex; flex-wrap:wrap; gap:8px;"><sc-for list="{{ addRoleChips }}" as="rc" hint-placeholder-count="5"><span onClick="{{ rc.onToggle }}" style="{{ rc.style }}"><sc-if value="{{ rc.on }}" hint-placeholder-val="{{ false }}"><i class="ph-fill ph-check" style="font-size:13px;"></i></sc-if>{{ rc.label }}</span></sc-for></div>
+          </div>
+          <div style="grid-column:1 / -1;"><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Kata Laluan Sementara</label><input placeholder="Auto-jana atau taip" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+        </div>
+        <div style="padding:0 24px 22px; display:flex; gap:10px; justify-content:flex-end;">
+          <button onClick="{{ closeAddUser }}" style="background:#fff; color:#334155; border:1px solid #E2E8F0; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;">Batal</button>
+          <button onClick="{{ closeAddUser }}" style="display:inline-flex; align-items:center; gap:7px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-check" style="font-size:16px;"></i> Simpan Pengguna</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showLockUser }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; inset:0; z-index:120; background:rgba(20,24,20,.55); display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; padding:32px 16px;">
+      <div style="width:100%; max-width:420px; background:#fff; border-radius:14px; box-shadow:0 24px 60px rgba(0,0,0,.3); overflow:hidden;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 24px; border-bottom:1px solid #E2E8F0;">
+          <div style="display:flex; align-items:center; gap:11px;"><span style="width:36px; height:36px; border-radius:10px; background:#FDECEC; color:#DC2626; display:flex; align-items:center; justify-content:center;"><i class="ph ph-lock-key" style="font-size:19px;"></i></span><div><h2 style="font-size:16px; font-weight:700;">Akses &amp; Keselamatan</h2><p style="font-size:12px; color:#94A3AC; margin-top:2px;">{{ luName }}</p></div></div>
+          <span onClick="{{ closeLockUser }}" style="width:32px; height:32px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#64748B;"><i class="ph ph-x" style="font-size:16px;"></i></span>
+        </div>
+        <div style="padding:20px 24px; display:flex; flex-direction:column; gap:10px;">
+          <sc-if value="{{ luDone }}" hint-placeholder-val="{{ false }}"><div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:600; color:#16A34A; background:#EAF7EE; border-radius:10px; padding:12px 14px;"><i class="ph-fill ph-check-circle" style="font-size:17px;"></i> {{ luMsg }}</div></sc-if>
+          <button onClick="{{ luReset }}" style="display:flex; align-items:center; gap:10px; width:100%; text-align:left; background:#F6F8F7; border:1px solid #E2E8F0; border-radius:10px; padding:13px 15px; font-size:13.5px; font-weight:600; color:#334155; cursor:pointer; font-family:inherit;"><i class="ph ph-arrow-counter-clockwise" style="font-size:18px; color:#42481c;"></i> Set semula kata laluan</button>
+          <button onClick="{{ luForce }}" style="display:flex; align-items:center; gap:10px; width:100%; text-align:left; background:#F6F8F7; border:1px solid #E2E8F0; border-radius:10px; padding:13px 15px; font-size:13.5px; font-weight:600; color:#334155; cursor:pointer; font-family:inherit;"><i class="ph ph-key" style="font-size:18px; color:#42481c;"></i> Paksa tukar kata laluan</button>
+          <button onClick="{{ luSuspend }}" style="display:flex; align-items:center; gap:10px; width:100%; text-align:left; background:#FDECEC; border:1px solid #F7CFCF; border-radius:10px; padding:13px 15px; font-size:13.5px; font-weight:600; color:#DC2626; cursor:pointer; font-family:inherit;"><i class="ph ph-lock-simple" style="font-size:18px;"></i> Gantung / Kunci akaun</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showEditUser }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; inset:0; z-index:120; background:rgba(20,24,20,.55); display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; padding:32px 16px;">
+      <div style="width:100%; max-width:440px; background:#fff; border-radius:14px; box-shadow:0 24px 60px rgba(0,0,0,.3); overflow:hidden;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 24px; border-bottom:1px solid #E2E8F0;">
+          <div style="display:flex; align-items:center; gap:11px;"><span style="width:36px; height:36px; border-radius:10px; background:#edeee0; color:#42481c; display:flex; align-items:center; justify-content:center;"><i class="ph ph-user-gear" style="font-size:19px;"></i></span><div><h2 style="font-size:16px; font-weight:700;">Edit Pengguna</h2><p style="font-size:12px; color:#94A3AC; margin-top:2px;">{{ euName }}</p></div></div>
+          <span onClick="{{ closeEditUser }}" style="width:32px; height:32px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#64748B;"><i class="ph ph-x" style="font-size:16px;"></i></span>
+        </div>
+        <div style="padding:22px 24px; display:flex; flex-direction:column; gap:16px;">
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Nama Penuh</label><input value="{{ euName }}" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Emel</label><input value="{{ euEmail }}" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:8px;">Peranan <span style="color:#94A3AC; font-weight:400;">(boleh pilih lebih daripada satu)</span></label>
+            <div style="display:flex; flex-wrap:wrap; gap:8px;"><sc-for list="{{ euRoleChips }}" as="rc" hint-placeholder-count="5"><span onClick="{{ rc.onToggle }}" style="{{ rc.style }}"><sc-if value="{{ rc.on }}" hint-placeholder-val="{{ false }}"><i class="ph-fill ph-check" style="font-size:13px;"></i></sc-if>{{ rc.label }}</span></sc-for></div>
+          </div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Status</label><select style="width:100%; font-family:inherit; font-size:13px; color:#334155; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none; background:#fff;"><option>Aktif</option><option>Digantung</option></select></div>
+        </div>
+        <div style="padding:0 24px 22px; display:flex; gap:10px; justify-content:flex-end;">
+          <button onClick="{{ closeEditUser }}" style="background:#fff; color:#334155; border:1px solid #E2E8F0; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;">Batal</button>
+          <button onClick="{{ closeEditUser }}" style="display:inline-flex; align-items:center; gap:7px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-check" style="font-size:16px;"></i> Simpan</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showEditRole }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; inset:0; z-index:120; background:rgba(20,24,20,.55); display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; padding:32px 16px;">
+      <div style="width:100%; max-width:460px; background:#fff; border-radius:14px; box-shadow:0 24px 60px rgba(0,0,0,.3); overflow:hidden;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 24px; border-bottom:1px solid #E2E8F0;">
+          <div style="display:flex; align-items:center; gap:11px;"><span style="width:36px; height:36px; border-radius:10px; background:#edeee0; color:#42481c; display:flex; align-items:center; justify-content:center;"><i class="ph ph-pencil-simple" style="font-size:19px;"></i></span><div><h2 style="font-size:16px; font-weight:700;">Edit Peranan</h2><p style="font-size:12px; color:#94A3AC; margin-top:2px;">{{ editRoleName }}</p></div></div>
+          <span onClick="{{ closeEditRole }}" style="width:32px; height:32px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#64748B;"><i class="ph ph-x" style="font-size:16px;"></i></span>
+        </div>
+        <div style="padding:22px 24px; display:flex; flex-direction:column; gap:16px;">
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Nama Peranan</label><input value="{{ editRoleName }}" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Keterangan</label><textarea rows="3" value="{{ editRoleDesc }}" style="width:100%; resize:vertical; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></textarea></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:8px;">Kebenaran Modul <span style="color:#94A3AC; font-weight:400;">(klik lencana untuk tukar)</span></label>
+            <div style="border:1px solid #E2E8F0; border-radius:10px; max-height:230px; overflow-y:auto;">
+              <sc-for list="{{ editRolePerms }}" as="p" hint-placeholder-count="6">
+                <div style="display:flex; align-items:center; gap:10px; padding:10px 13px; border-bottom:1px solid #F1F5F4;">
+                  <span style="width:26px; height:26px; border-radius:7px; background:#F6F8F7; color:#64748B; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><i class="{{ p.modIcon }}" style="font-size:15px;"></i></span>
+                  <span style="flex:1; font-size:12.5px; color:#334155;">{{ p.module }}</span>
+                  <span onClick="{{ p.onCycle }}" style="{{ p.pillStyle }} cursor:pointer;"><i class="{{ p.icon }}" style="font-size:13px;"></i> {{ p.label }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+        <div style="padding:0 24px 22px; display:flex; gap:10px; justify-content:flex-end;">
+          <button onClick="{{ closeEditRole }}" style="background:#fff; color:#334155; border:1px solid #E2E8F0; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;">Batal</button>
+          <button onClick="{{ closeEditRole }}" style="display:inline-flex; align-items:center; gap:7px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-check" style="font-size:16px;"></i> Simpan Peranan</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showBp }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; inset:0; z-index:120; background:rgba(20,24,20,.55); display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; padding:32px 16px;">
+      <div style="width:100%; max-width:460px; background:#fff; border-radius:14px; box-shadow:0 24px 60px rgba(0,0,0,.3); overflow:hidden;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 24px; border-bottom:1px solid #E2E8F0;">
+          <div style="display:flex; align-items:center; gap:11px;"><span style="width:36px; height:36px; border-radius:10px; background:#E8F0FB; color:#2563EB; display:flex; align-items:center; justify-content:center;"><i class="ph ph-money" style="font-size:19px;"></i></span><div><h2 style="font-size:16px; font-weight:700;">Tetapan Billplz</h2><p style="font-size:12px; color:#94A3AC; margin-top:2px;">Gerbang kutipan pembayaran</p></div></div>
+          <span onClick="{{ closeBp }}" style="width:32px; height:32px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#64748B;"><i class="ph ph-x" style="font-size:16px;"></i></span>
+        </div>
+        <div style="padding:22px 24px; display:flex; flex-direction:column; gap:16px;">
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">API Secret Key</label><div style="display:flex; gap:8px;"><input value="{{ bpKey }}" onInput="{{ onBpKey }}" type="{{ bpKeyType }}" placeholder="cth. 9f8e7d6c-5b4a-..." style="flex:1; font-family:monospace; font-size:12.5px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"><button onClick="{{ toggleBpKey }}" style="background:#F6F8F7; color:#42481c; border:1px solid #E2E8F0; border-radius:9px; padding:0 13px; font-size:12px; font-weight:600; cursor:pointer; font-family:inherit;">{{ bpKeyBtn }}</button></div></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Collection ID</label><input value="{{ bpColl }}" onInput="{{ onBpColl }}" placeholder="cth. inbmmepb" style="width:100%; font-family:monospace; font-size:12.5px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">X-Signature Key</label><input value="{{ bpSig }}" onInput="{{ onBpSig }}" placeholder="Kunci pengesahan callback (opsyenal)" style="width:100%; font-family:monospace; font-size:12.5px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+          <sc-if value="{{ bpSaved }}" hint-placeholder-val="{{ false }}"><p style="font-size:12px; font-weight:600; color:#16A34A; background:#EAF7EE; border-radius:9px; padding:10px 12px; display:flex; align-items:center; gap:7px;"><i class="ph-fill ph-check-circle" style="font-size:15px;"></i> Tetapan Billplz disimpan &amp; disambung.</p></sc-if>
+          <p style="font-size:11.5px; color:#94A3AC; line-height:1.5; background:#F6F8F7; border-radius:9px; padding:10px 12px;"><i class="ph ph-info" style="font-size:13px; vertical-align:-2px; color:#2563EB;"></i> Endpoint: <b>https://www.billplz.com/api/v3</b></p>
+        </div>
+        <div style="padding:0 24px 22px; display:flex; gap:10px; justify-content:flex-end;">
+          <button onClick="{{ closeBp }}" style="background:#fff; color:#334155; border:1px solid #E2E8F0; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;">Batal</button>
+          <button onClick="{{ saveBp }}" style="display:inline-flex; align-items:center; gap:7px; background:{{ bpSaveBg }}; color:#fff; border:none; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:{{ bpSaveCursor }}; font-family:inherit;"><i class="ph ph-check" style="font-size:16px;"></i> Simpan &amp; Sambung</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showChip }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; inset:0; z-index:120; background:rgba(20,24,20,.55); display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; padding:32px 16px;">
+      <div style="width:100%; max-width:460px; background:#fff; border-radius:14px; box-shadow:0 24px 60px rgba(0,0,0,.3); overflow:hidden;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 24px; border-bottom:1px solid #E2E8F0;">
+          <div style="display:flex; align-items:center; gap:11px;"><span style="width:36px; height:36px; border-radius:10px; background:#EAF7EE; color:#16A34A; display:flex; align-items:center; justify-content:center;"><i class="ph ph-credit-card" style="font-size:19px;"></i></span><div><h2 style="font-size:16px; font-weight:700;">Tetapan CHIP IN</h2><p style="font-size:12px; color:#94A3AC; margin-top:2px;">Gerbang kutipan pembayaran</p></div></div>
+          <span onClick="{{ closeChip }}" style="width:32px; height:32px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#64748B;"><i class="ph ph-x" style="font-size:16px;"></i></span>
+        </div>
+        <div style="padding:22px 24px; display:flex; flex-direction:column; gap:16px;">
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Brand ID</label><input value="{{ chipBrand }}" onInput="{{ onChipBrand }}" placeholder="cth. 88f3a1c2-9e40-4d1b-b0a7-1234567890ab" style="width:100%; font-family:monospace; font-size:12.5px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Secret Key</label><div style="display:flex; gap:8px;"><input value="{{ chipSecret }}" onInput="{{ onChipSecret }}" type="{{ chipSecretType }}" placeholder="sk_live_&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" style="flex:1; font-family:monospace; font-size:12.5px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"><button onClick="{{ toggleChipSecret }}" style="background:#F6F8F7; color:#42481c; border:1px solid #E2E8F0; border-radius:9px; padding:0 13px; font-size:12px; font-weight:600; cursor:pointer; font-family:inherit;">{{ chipSecretBtn }}</button></div></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:8px;">Kaedah Pembayaran <span style="color:#94A3AC; font-weight:400;">(klik untuk hidup/mati)</span></label>
+            <div style="display:flex; flex-wrap:wrap; gap:8px;"><sc-for list="{{ chipMethods }}" as="m" hint-placeholder-count="4"><span onClick="{{ m.onToggle }}" style="{{ m.style }}"><i class="{{ m.icon }}" style="font-size:14px;"></i>{{ m.label }}</span></sc-for></div>
+          </div>
+          <sc-if value="{{ chipSaved }}" hint-placeholder-val="{{ false }}"><p style="font-size:12px; font-weight:600; color:#16A34A; background:#EAF7EE; border-radius:9px; padding:10px 12px; display:flex; align-items:center; gap:7px;"><i class="ph-fill ph-check-circle" style="font-size:15px;"></i> Tetapan CHIP IN disimpan &amp; disambung.</p></sc-if>
+          <p style="font-size:11.5px; color:#94A3AC; line-height:1.5; background:#F6F8F7; border-radius:9px; padding:10px 12px;"><i class="ph ph-info" style="font-size:13px; vertical-align:-2px; color:#16A34A;"></i> Endpoint: <b>https://gate.chip-in.asia/api/v1</b></p>
+        </div>
+        <div style="padding:0 24px 22px; display:flex; gap:10px; justify-content:flex-end;">
+          <button onClick="{{ closeChip }}" style="background:#fff; color:#334155; border:1px solid #E2E8F0; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;">Batal</button>
+          <button onClick="{{ saveChip }}" style="display:inline-flex; align-items:center; gap:7px; background:{{ chipSaveBg }}; color:#fff; border:none; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:{{ chipSaveCursor }}; font-family:inherit;"><i class="ph ph-check" style="font-size:16px;"></i> Simpan &amp; Sambung</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showApi }}" hint-placeholder-val="{{ false }}">    <div style="position:fixed; inset:0; z-index:120; background:rgba(20,24,20,.55); display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; padding:32px 16px;">
+      <div style="width:100%; max-width:560px; background:#fff; border-radius:14px; box-shadow:0 24px 60px rgba(0,0,0,.3); overflow:hidden;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 24px; border-bottom:1px solid #E2E8F0;">
+          <div style="display:flex; align-items:center; gap:11px;"><span style="width:36px; height:36px; border-radius:10px; background:#edeee0; color:#42481c; display:flex; align-items:center; justify-content:center;"><i class="ph ph-plugs" style="font-size:19px;"></i></span><div><h2 style="font-size:16px; font-weight:700;">Integrasi API</h2><p style="font-size:12px; color:#94A3AC; margin-top:2px;">Kunci API &amp; sambungan pihak ketiga</p></div></div>
+          <span onClick="{{ closeApi }}" style="width:32px; height:32px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#64748B;"><i class="ph ph-x" style="font-size:16px;"></i></span>
+        </div>
+        <div style="padding:22px 24px; display:flex; flex-direction:column; gap:16px;">
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">API Key Name</label><input value="Nadi Qurban Sdn Bhd" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Client ID</label><input value="nq_client_2027_88f3a1" readonly style="width:100%; font-family:monospace; font-size:12.5px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none; background:#F6F8F7;"></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Client Key</label><div style="display:flex; gap:8px;"><input value="nq_ck_5d1e9a72b64c0f38" readonly style="flex:1; font-family:monospace; font-size:12.5px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none; background:#F6F8F7;"><button style="background:#42481c; color:#fff; border:none; border-radius:9px; padding:0 14px; font-size:12.5px; font-weight:600; cursor:pointer; font-family:inherit;">Salin</button></div></div>
+          <div>
+            <label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Kunci API Rasmi</label>
+            <div style="display:flex; gap:8px;"><input value="nq_live_sk_8f2a91c47b0e5d3" readonly style="flex:1; font-family:monospace; font-size:12.5px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none; background:#F6F8F7;"><button style="background:#42481c; color:#fff; border:none; border-radius:9px; padding:0 14px; font-size:12.5px; font-weight:600; cursor:pointer; font-family:inherit;">Salin</button></div>
+          </div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">URL Endpoint</label><input value="https://api.nadiqurban.com/v1" readonly style="width:100%; font-family:monospace; font-size:12.5px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none; background:#F6F8F7;"></div>
+          <div style="font-size:13px; font-weight:700; color:#1A1D21; margin-top:4px;">Sambungan Aktif</div>
+          <sc-for list="{{ apiConns }}" as="c" hint-placeholder-count="3">
+            <div style="display:flex; align-items:center; gap:12px; padding:11px 14px; border:1px solid #E2E8F0; border-radius:10px;">
+              <span style="width:34px; height:34px; border-radius:9px; background:{{ c.tint }}; color:{{ c.color }}; display:flex; align-items:center; justify-content:center;"><i class="{{ c.icon }}" style="font-size:17px;"></i></span>
+              <div style="flex:1;"><div style="font-size:13px; font-weight:600; color:#1A1D21;">{{ c.name }}</div><div style="font-size:11.5px; color:#94A3AC;">{{ c.desc }}</div></div>
+              <span style="font-size:11px; font-weight:600; color:#16A34A; background:#EAF7EE; border-radius:20px; padding:4px 10px;">Tersambung</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="padding:0 24px 22px; display:flex; justify-content:flex-end;">
+          <button onClick="{{ closeApi }}" style="background:#42481c; color:#fff; border:none; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;">Tutup</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: 'users', view: 'list', curRole: 0 };
+  renderVals() {
+    const s = this.state;
+    const set = (o) => this.setState(o);
+
+    const navItem = (icon, label, active, badge) => ({
+      isItem: true, isSection: false, label, badge: badge || '',
+      icon, iconColor: active ? '#42481c' : '#94A3AC', bar: active ? '#42481c' : 'transparent',
+      onClick: label === 'Sijil' ? (() => { try { location.href = (function(p){try{var u=new URL(p,location.href);new URLSearchParams(location.search).forEach(function(v,k){if(!u.searchParams.has(k))u.searchParams.set(k,v);});return u.href;}catch(e){return p;}})('Tempahan & Pelanggan.dc.html'); } catch (e) {} }) : label === 'Integrasi API' ? (() => set({ view: 'api' })) : label === 'Webhooks' ? (() => set({ view: 'webhooks' })) : label === 'Pengguna' ? (() => set({ view: 'roles' })) : (() => { const m = { 'Dashboard': 'Dashboard Operasi.dc.html', 'Bayaran Ansuran': 'Bayaran Ansuran.dc.html', 'Tempahan & Pelanggan': 'Tempahan & Pelanggan.dc.html', 'Pengesahan Bayaran': 'Tempahan & Pelanggan.dc.html', 'Lafaz Akad': 'Lafaz Akad.dc.html', 'Agihan Negara': 'Agihan Negara.dc.html', 'Pelaksanaan & Laporan': 'Pelaksanaan & Laporan.dc.html', 'AWB & Postage': 'AWB & Postage.dc.html', 'Tempahan Selesai': 'Tempahan Selesai.dc.html', 'Vendor': 'Vendor.dc.html', 'Produk': 'Produk.dc.html', 'Dokumen': 'Dokumen.dc.html', 'Sales CRM': 'Sales CRM.dc.html', 'Kod Promosi': 'Kod Promosi.dc.html', 'Kewangan': 'Kewangan.dc.html', 'Pusat Laporan': 'Pusat Laporan.dc.html', 'Audit Log': 'Audit Log.dc.html', 'Notifikasi': 'Notifikasi.dc.html', 'Tetapan': 'Tempahan & Pelanggan.dc.html' }; if (m[label]) { try { location.href = (function(p){try{var u=new URL(p,location.href);new URLSearchParams(location.search).forEach(function(v,k){if(!u.searchParams.has(k))u.searchParams.set(k,v);});return u.href;}catch(e){return p;}})(m[label]); } catch (e) {} } }),
+      rowStyle: 'position:relative; display:flex; align-items:center; gap:12px; padding:10px 14px; margin:2px 0; border-radius:9px; font-size:13.5px; cursor:pointer;' + (active ? 'background:#edeee0; color:#42481c; font-weight:700;' : 'color:#475569; font-weight:500;'),
+    });
+    const sec = (label) => ({ isSection: true, isItem: false, label });
+    const nav = [
+      sec('UTAMA'), navItem('ph ph-squares-four', 'Dashboard', false),
+      sec('OPERASI'), navItem('ph ph-calendar-check', 'Bayaran Ansuran', false), navItem('ph ph-shopping-cart-simple', 'Tempahan & Pelanggan', false, '34'), navItem('ph ph-seal-check', 'Pengesahan Bayaran', false, '5'), navItem('ph ph-hand-heart', 'Lafaz Akad', false), navItem('ph ph-globe-hemisphere-west', 'Agihan Negara', false), navItem('ph ph-shopping-bag', 'Pelaksanaan & Laporan', false), navItem('ph ph-package', 'AWB & Postage', false), navItem('ph ph-check-square-offset', 'Tempahan Selesai', false), navItem('ph ph-truck', 'Vendor', false), navItem('ph ph-cow', 'Produk', false), navItem('ph ph-folders', 'Dokumen', false),
+      sec('JUALAN & KEWANGAN'), navItem('ph ph-users-three', 'Sales CRM', false), navItem('ph ph-ticket', 'Kod Promosi', false), navItem('ph ph-wallet', 'Kewangan', false, '87'),
+      sec('LAPORAN'), navItem('ph ph-chart-bar', 'Pusat Laporan', false), navItem('ph ph-clock-counter-clockwise', 'Audit Log', false),
+      sec('SISTEM'), navItem('ph ph-bell', 'Notifikasi', false, '7'), navItem('ph ph-users', 'Pengguna', true), navItem('ph ph-certificate', 'Sijil', false), navItem('ph ph-gear-six', 'Tetapan', false),
+      sec('IT & TEKNIKAL'), navItem('ph ph-webhooks-logo', 'Webhooks', false), navItem('ph ph-plugs', 'Integrasi API', false),
+    ];
+
+    const mainTabs = [['users', 'Pengguna', 'ph ph-users'], ['roles', 'Peranan & Kebenaran', 'ph ph-shield-check']].map(([id, label, icon]) => {
+      const on = s.tab === id;
+      return { label, icon, onClick: () => set({ tab: id, view: 'list' }),
+        style: 'display:flex; align-items:center; gap:8px; font-size:13.5px; font-weight:600; padding:12px 16px; cursor:pointer; margin-bottom:-1px;' + (on ? 'color:#42481c; border-bottom:2px solid #42481c;' : 'color:#64748B; border-bottom:2px solid transparent;') };
+    });
+
+    const stats = [
+      { icon: 'ph ph-users-three', tint: '#edeee0', color: '#42481c', value: '48', label: 'Jumlah Pengguna' },
+      { icon: 'ph ph-check-circle', tint: '#EAF7EE', color: '#16A34A', value: '44', label: 'Aktif' },
+      { icon: 'ph ph-shield-check', tint: '#E8F0FB', color: '#2563EB', value: '5', label: 'Peranan' },
+      { icon: 'ph ph-lock-key', tint: '#FDECEC', color: '#DC2626', value: '2', label: 'Digantung' },
+    ];
+
+    const roleStyleMap = {
+      'Super Admin': 'font-size:11px; font-weight:700; border-radius:6px; padding:3px 9px; background:#FDECEC; color:#DC2626;',
+      'Admin HQ': 'font-size:11px; font-weight:700; border-radius:6px; padding:3px 9px; background:#edeee0; color:#42481c;',
+      'Kewangan': 'font-size:11px; font-weight:700; border-radius:6px; padding:3px 9px; background:#EAF7EE; color:#16A34A;',
+      'Sales': 'font-size:11px; font-weight:700; border-radius:6px; padding:3px 9px; background:#E8F0FB; color:#2563EB;',
+      'Vendor': 'font-size:11px; font-weight:700; border-radius:6px; padding:3px 9px; background:#FBF3DC; color:#9a7d16;',
+    };
+    const stActive = 'display:inline-block; font-size:11.5px; font-weight:600; border-radius:20px; padding:4px 12px; background:#EAF7EE; color:#16A34A;';
+    const stSusp = 'display:inline-block; font-size:11.5px; font-weight:600; border-radius:20px; padding:4px 12px; background:#FDECEC; color:#DC2626;';
+    const avPairs = [['#edeee0','#42481c'],['#FBF3DC','#C9A227'],['#E8F0FB','#2563EB'],['#EAF7EE','#16A34A'],['#F3ECFB','#7C3AED'],['#FDECEC','#DC2626']];
+    const raw = [
+      ['Muhammad Nurfitkri', 'nurfitri@nadiqurban.com', 'Admin HQ', '2 minit lalu', 'Aktif'],
+      ['Ahmad Sufian', 'sufian@nadiqurban.com', 'Super Admin', '1 jam lalu', 'Aktif'],
+      ['Fatimah Noor', 'fatimah@nadiqurban.com', 'Kewangan', '35 minit lalu', 'Aktif'],
+      ['Rahim Salleh', 'rahim@nadiqurban.com', 'Sales', '3 jam lalu', 'Aktif'],
+      ['Nur Hidayah', 'hidayah@nadiqurban.com', 'Sales', 'Semalam', 'Aktif'],
+      ['Al-Barakah Livestock', 'vendor@albarakah.ug', 'Vendor', '5 jam lalu', 'Aktif'],
+      ['Kamarul Zaman', 'kamarul@nadiqurban.com', 'Kewangan', '2 hari lalu', 'Digantung'],
+      ['Siti Aisyah', 'aisyah@nadiqurban.com', 'Admin HQ', '4 hari lalu', 'Digantung'],
+    ];
+    const users = raw.map((r, i) => {
+      const av = avPairs[i % avPairs.length];
+      const initials = r[0].split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase();
+      return { name: r[0], email: r[1], role: r[2], roleStyle: roleStyleMap[r[2]], last: r[3], status: r[4],
+        statusStyle: r[4] === 'Aktif' ? stActive : stSusp, initials, avTint: av[0], avColor: av[1],
+        onEdit: () => set({ showEditUser: { name: r[0], email: r[1], role: r[2] }, euRoles: { [r[2]]: true } }),
+        onLock: () => set({ showLockUser: { name: r[0], status: r[4] } }) };
+    });
+
+    const roleCards = [
+      ['Super Admin', 'ph ph-crown', '#FDECEC', '#DC2626', '2', 'Akses penuh semua modul & tetapan sistem.'],
+      ['Admin HQ', 'ph ph-shield-star', '#edeee0', '#42481c', '8', 'Urus operasi, tempahan, vendor & verifikasi.'],
+      ['Kewangan', 'ph ph-wallet', '#EAF7EE', '#16A34A', '6', 'Akses invois, bayaran & laporan kewangan.'],
+      ['Sales', 'ph ph-handshake', '#E8F0FB', '#2563EB', '12', 'Urus lead, CRM & tempahan pelanggan.'],
+      ['Vendor', 'ph ph-truck', '#FBF3DC', '#C9A227', '20', 'Akses PO & muat naik laporan pelaksanaan.'],
+    ];
+    const roles = roleCards.map((r, i) => ({ name: r[0], icon: r[1], tint: r[2], color: r[3], count: r[4], desc: r[5],
+      cardStyle: 'background:#fff; border:1px solid #E2E8F0; border-radius:12px; padding:18px 20px; cursor:pointer; transition:.12s;',
+      onClick: () => set({ view: 'roleDetail', curRole: i }) }));
+
+    // permission matrix: F=full, V=view, N=none, columns [SuperAdmin, AdminHQ, Kewangan, Sales, Vendor]
+    const P = { F: { icon: 'ph-fill ph-check-circle', color: '#16A34A' }, V: { icon: 'ph-fill ph-eye', color: '#C9A227' }, N: { icon: 'ph ph-minus-circle', color: '#CBD5D0' } };
+    const mrows = [
+      ['Dashboard', 'F', 'F', 'V', 'V', 'N'],
+      ['Bayaran Ansuran', 'F', 'F', 'F', 'V', 'N'],
+      ['Tempahan & Pelanggan', 'F', 'F', 'V', 'F', 'N'],
+      ['Pengesahan Bayaran', 'F', 'F', 'F', 'N', 'N'],
+      ['Lafaz Akad', 'F', 'F', 'N', 'N', 'V'],
+      ['Agihan Negara', 'F', 'F', 'N', 'N', 'V'],
+      ['Pelaksanaan & Laporan', 'F', 'F', 'N', 'N', 'F'],
+      ['AWB & Postage', 'F', 'F', 'N', 'N', 'V'],
+      ['Tempahan Selesai', 'F', 'F', 'V', 'V', 'V'],
+      ['Vendor', 'F', 'F', 'N', 'N', 'V'],
+      ['Produk', 'F', 'F', 'N', 'F', 'N'],
+      ['Dokumen', 'F', 'F', 'V', 'V', 'V'],
+      ['Sales CRM', 'F', 'V', 'N', 'F', 'N'],
+      ['Kod Promosi', 'F', 'F', 'N', 'F', 'N'],
+      ['Kewangan', 'F', 'V', 'F', 'N', 'N'],
+      ['Pusat Laporan', 'F', 'F', 'F', 'V', 'N'],
+      ['Audit Log', 'F', 'V', 'V', 'N', 'N'],
+      ['Notifikasi', 'F', 'F', 'V', 'V', 'V'],
+      ['Pengguna & Peranan', 'F', 'V', 'N', 'N', 'N'],
+      ['Sijil', 'F', 'F', 'V', 'V', 'N'],
+      ['Tetapan', 'F', 'V', 'N', 'N', 'N'],
+      ['Webhooks', 'F', 'N', 'N', 'N', 'N'],
+      ['Integrasi API', 'F', 'N', 'N', 'N', 'N'],
+    ];
+    const roleCols = ['Super Admin', 'Admin HQ', 'Kewangan', 'Sales', 'Vendor'];
+    const cycleM = { F: 'V', V: 'N', N: 'F' };
+    const matrix = mrows.map(r => ({ module: r[0], cells: r.slice(1).map((code, ci2) => {      const ov = (s.permOverride || {})[roleCols[ci2] + ':' + r[0]];
+      const eff = ov || code;
+      return Object.assign({}, P[eff], { onToggle: () => set({ permOverride: Object.assign({}, s.permOverride, { [roleCols[ci2] + ':' + r[0]]: cycleM[eff] }) }) });
+    }) }));
+
+    // ---- role detail ----
+    const modIcons = {
+      'Papan Pemuka': 'ph ph-squares-four', 'Tempahan & Pelanggan': 'ph ph-shopping-cart-simple',
+      'Vendor': 'ph ph-truck', 'Sales CRM': 'ph ph-users-three', 'Kewangan': 'ph ph-wallet',
+      'Dokumen': 'ph ph-folders', 'Pusat Laporan': 'ph ph-chart-bar', 'Pengguna & Peranan': 'ph ph-users',
+    };
+    const colIndex = { 'Super Admin': 0, 'Admin HQ': 1, 'Kewangan': 2, 'Sales': 3, 'Vendor': 4 };
+    const pill = (bg, col) => 'display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:700; border-radius:20px; padding:4px 11px; background:' + bg + '; color:' + col + ';';
+    const pillMap = {
+      F: { label: 'Akses Penuh', icon: 'ph-fill ph-check-circle', pillStyle: pill('#EAF7EE', '#16A34A') },
+      V: { label: 'Lihat Sahaja', icon: 'ph-fill ph-eye', pillStyle: pill('#FBF3DC', '#9a7d16') },
+      N: { label: 'Tiada Akses', icon: 'ph ph-minus-circle', pillStyle: pill('#F1F5F4', '#94A3AC') },
+    };
+    const curRoleCard = roles[s.curRole] || roles[0];
+    const ci = colIndex[curRoleCard.name] ?? 0;
+    const rolePerms = mrows.map(r => {
+      const ov = (s.permOverride || {})[curRoleCard.name + ':' + r[0]];
+      const code = ov || r[1 + ci];
+      const pm = pillMap[code];
+      const cycle = { F: 'V', V: 'N', N: 'F' };
+      return { module: r[0], modIcon: modIcons[r[0]] || 'ph ph-circle', label: pm.label, icon: pm.icon, pillStyle: pm.pillStyle,
+        onCycle: () => set({ permOverride: Object.assign({}, s.permOverride, { [curRoleCard.name + ':' + r[0]]: cycle[code] }) }) };
+    });
+    const roleMembers = users.filter(u => u.role === curRoleCard.name);
+    const role = { name: curRoleCard.name, icon: curRoleCard.icon, tint: curRoleCard.tint, color: curRoleCard.color,
+      count: curRoleCard.count, desc: curRoleCard.desc, perms: rolePerms, members: roleMembers, hasMembers: roleMembers.length > 0 };
+
+    return {
+      nav, mainTabs, stats, users, roles, matrix, role,
+      showApi: s.showApi === true,
+      closeApi: () => set({ showApi: false }),
+      showHooks: s.showHooks === true,
+      closeHooks: () => set({ showHooks: false }),
+      apiConns: [
+        { icon: 'ph ph-whatsapp-logo', tint: '#EAF7EE', color: '#16A34A', name: 'WhatsApp Cloud API', desc: 'Notifikasi & auto-mesej pelanggan' },
+        { icon: 'ph ph-credit-card', tint: '#E8F0FB', color: '#2563EB', name: 'Gerbang Pembayaran (FPX)', desc: 'Pengesahan bayaran automatik' },
+        { icon: 'ph ph-truck', tint: '#FEF3E2', color: '#D97706', name: 'EasyParcel', desc: 'Penjanaan AWB & tracking kurier' },
+      ],
+      backToRoles: () => set({ view: 'list' }),
+      matrixSaved: s.matrixSaved === true,
+      saveMatrix: () => { set({ matrixSaved: true }); },
+      openEditRole: () => set({ showEditRole: true }),
+      closeEditRole: () => set({ showEditRole: false }),
+      showEditRole: s.showEditRole === true,
+      showEditUser: !!s.showEditUser,
+      euName: s.showEditUser ? s.showEditUser.name : '',
+      euEmail: s.showEditUser ? s.showEditUser.email : '',
+      euRole: s.showEditUser ? s.showEditUser.role : '',
+      euRoleChips: ['Super Admin', 'Admin HQ', 'Kewangan', 'Sales', 'Vendor PIC'].map(r => {
+        const cur = s.showEditUser ? s.showEditUser.role : '';
+        const sel = (s.euRoles || { [cur]: true });
+        const on = !!sel[r];
+        return { label: r, on, onToggle: () => set({ euRoles: Object.assign({}, sel, { [r]: !on }) }),
+          style: 'display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600; border-radius:20px; padding:7px 13px; cursor:pointer;' + (on ? 'background:#42481c; color:#fff;' : 'background:#F6F8F7; color:#475569; border:1px solid #E2E8F0;') };
+      }),
+      closeEditUser: () => set({ showEditUser: null }),
+      showLockUser: !!s.showLockUser,
+      luName: s.showLockUser ? s.showLockUser.name : '',
+      luDone: !!s.luMsg,
+      luMsg: s.luMsg || '',
+      luReset: () => set({ luMsg: 'Pautan set semula kata laluan dihantar ke emel pengguna.' }),
+      luForce: () => set({ luMsg: 'Pengguna akan diminta tukar kata laluan pada log masuk seterusnya.' }),
+      luSuspend: () => set({ luMsg: 'Akaun telah digantung. Pengguna tidak boleh log masuk.' }),
+      closeLockUser: () => set({ showLockUser: null, luMsg: '' }),
+      showAddUser: s.showAddUser === true,
+      openAddUser: () => set({ showAddUser: true }),
+      closeAddUser: () => set({ showAddUser: false }),
+      addRoleChips: ['Super Admin', 'Admin HQ', 'Kewangan', 'Sales', 'Vendor PIC'].map(r => {
+        const on = !!(s.addRoles || {})[r];
+        return { label: r, on, onToggle: () => set({ addRoles: Object.assign({}, s.addRoles, { [r]: !on }) }),
+          style: 'display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600; border-radius:20px; padding:7px 13px; cursor:pointer;' + (on ? 'background:#42481c; color:#fff;' : 'background:#F6F8F7; color:#475569; border:1px solid #E2E8F0;') };
+      }),
+      editRoleName: role.name, editRoleDesc: role.desc, editRolePerms: rolePerms,
+      isWebhooks: s.view === 'webhooks',
+      isApi: s.view === 'api',
+      isNotWebhooks: s.view !== 'webhooks' && s.view !== 'api',
+      apiStats: [
+        { icon: 'ph ph-plugs-connected', tint: '#EAF7EE', color: '#16A34A', value: '3', label: 'Sambungan Aktif' },
+        { icon: 'ph ph-key', tint: '#edeee0', color: '#42481c', value: '2', label: 'Kunci API' },
+        { icon: 'ph ph-arrows-left-right', tint: '#E8F0FB', color: '#2563EB', value: '18.4K', label: 'Panggilan (30h)' },
+        { icon: 'ph ph-gauge', tint: '#FEF3E2', color: '#D97706', value: '120/min', label: 'Had Kadar' },
+      ],
+      apiConnections: [
+        { name: 'WhatsApp Cloud API', desc: 'Notifikasi status tempahan kepada pelanggan', icon: 'ph ph-whatsapp-logo', tint: '#EAF7EE', color: '#16A34A', status: 'Aktif', stStyle: 'background:#EAF7EE; color:#16A34A;' },
+        { name: 'Gerbang Pembayaran FPX', desc: 'Pengesahan bayaran masa nyata (toyyibPay)', icon: 'ph ph-bank', tint: '#E8F0FB', color: '#2563EB', status: 'Aktif', stStyle: 'background:#EAF7EE; color:#16A34A;' },
+        { name: 'EasyParcel', desc: 'Tempahan kurier & penjejakan AWB', icon: 'ph ph-truck', tint: '#FEF3E2', color: '#D97706', status: 'Aktif', stStyle: 'background:#EAF7EE; color:#16A34A;' },
+        { name: 'Google Sheets Export', desc: 'Segerak data tempahan ke spreadsheet', icon: 'ph ph-table', tint: '#F6F8F7', color: '#64748B', status: 'Tidak Aktif', stStyle: 'background:#F1F5F4; color:#64748B;' },
+      ],
+      apiKeys: [
+        { name: 'Nadi Qurban Production', prefix: 'nq_live_88f3a1\u2022\u2022\u2022\u2022\u2022\u2022', created: '12 Jan 2027', last: '3 min lalu', status: 'Aktif' },
+        { name: 'Sandbox / Ujian', prefix: 'nq_test_2c7e10\u2022\u2022\u2022\u2022\u2022\u2022', created: '12 Jan 2027', last: '2 hari lalu', status: 'Aktif' },
+      ],
+      openAddHook: () => set({ showAddHook: true }),
+      openApiKey: () => set({ showApi: true }),
+      chipStatus: s.chipOff ? 'Tidak Aktif' : ((s.chipSaved || (s.chip && s.chip.brand)) ? 'Aktif' : 'Belum Sambung'),
+      bpStatus: s.bpOff ? 'Tidak Aktif' : ((s.bpSaved || (s.bp && s.bp.key)) ? 'Aktif' : 'Belum Sambung'),
+      tpStatus: s.tpOff ? 'Tidak Aktif' : ((s.tpSaved || (s.tp && s.tp.key)) ? 'Aktif' : 'Belum Sambung'),
+      offChip: () => set({ chipOff: !s.chipOff }),
+      offBp: () => set({ bpOff: !s.bpOff }),
+      offTp: () => set({ tpOff: !s.tpOff }),
+      chipOffLabel: s.chipOff ? 'Aktifkan' : 'Nyahaktif', bpOffLabel: s.bpOff ? 'Aktifkan' : 'Nyahaktif', tpOffLabel: s.tpOff ? 'Aktifkan' : 'Nyahaktif',
+      chipOffStyle: s.chipOff ? 'background:#EAF7EE; color:#16A34A; border:1px solid #BFE5CC;' : 'background:#fff; color:#DC2626; border:1px solid #F7CFCF;',
+      bpOffStyle: s.bpOff ? 'background:#EAF7EE; color:#16A34A; border:1px solid #BFE5CC;' : 'background:#fff; color:#DC2626; border:1px solid #F7CFCF;',
+      tpOffStyle: s.tpOff ? 'background:#EAF7EE; color:#16A34A; border:1px solid #BFE5CC;' : 'background:#fff; color:#DC2626; border:1px solid #F7CFCF;',
+      chipOffIcon: s.chipOff ? 'ph ph-power' : 'ph ph-prohibit', bpOffIcon: s.bpOff ? 'ph ph-power' : 'ph ph-prohibit', tpOffIcon: s.tpOff ? 'ph ph-power' : 'ph ph-prohibit',
+      showTp: s.showTp === true,
+      openTp: () => set({ showTp: true, tpSaved: false }),
+      closeTp: () => set({ showTp: false }),
+      tpKey: (s.tp && s.tp.key) || '',
+      tpCat: (s.tp && s.tp.cat) || '',
+      onTpKey: (e) => set({ tp: Object.assign({}, s.tp, { key: e.target.value }), tpSaved: false }),
+      onTpCat: (e) => set({ tp: Object.assign({}, s.tp, { cat: e.target.value }), tpSaved: false }),
+      tpKeyType: s.tpShow ? 'text' : 'password',
+      tpKeyBtn: s.tpShow ? 'Sorok' : 'Papar',
+      toggleTpKey: () => set({ tpShow: !s.tpShow }),
+      tpEndpoint: (s.tp && s.tp.env === 'sandbox') ? 'https://dev.toyyibpay.com' : 'https://toyyibpay.com',
+      tpEnvs: [['prod', 'Production'], ['sandbox', 'Sandbox']].map(([k, label]) => {
+        const on = (s.tp && s.tp.env || 'prod') === k;
+        return { label, onClick: () => set({ tp: Object.assign({}, s.tp, { env: k }), tpSaved: false }),
+          style: 'font-size:12px; font-weight:600; border-radius:20px; padding:7px 14px; cursor:pointer;' + (on ? 'background:#42481c; color:#fff;' : 'background:#F6F8F7; color:#475569; border:1px solid #E2E8F0;') };
+      }),
+      tpSaved: s.tpSaved === true,
+      tpSaveBg: (s.tp && s.tp.key && s.tp.cat) ? '#42481c' : '#9CA3AF',
+      tpSaveCursor: (s.tp && s.tp.key && s.tp.cat) ? 'pointer' : 'not-allowed',
+      saveTp: () => { if (!(s.tp && s.tp.key && s.tp.cat)) return; set({ tpSaved: true, tpOff: false }); },
+      showBp: s.showBp === true,
+      openBp: () => set({ showBp: true, bpSaved: false }),
+      closeBp: () => set({ showBp: false }),
+      bpKey: (s.bp && s.bp.key) || '',
+      bpColl: (s.bp && s.bp.coll) || '',
+      bpSig: (s.bp && s.bp.sig) || '',
+      onBpKey: (e) => set({ bp: Object.assign({}, s.bp, { key: e.target.value }), bpSaved: false }),
+      onBpColl: (e) => set({ bp: Object.assign({}, s.bp, { coll: e.target.value }), bpSaved: false }),
+      onBpSig: (e) => set({ bp: Object.assign({}, s.bp, { sig: e.target.value }), bpSaved: false }),
+      bpKeyType: s.bpShow ? 'text' : 'password',
+      bpKeyBtn: s.bpShow ? 'Sorok' : 'Papar',
+      toggleBpKey: () => set({ bpShow: !s.bpShow }),
+      bpSaved: s.bpSaved === true,
+      bpSaveBg: (s.bp && s.bp.key && s.bp.coll) ? '#42481c' : '#9CA3AF',
+      bpSaveCursor: (s.bp && s.bp.key && s.bp.coll) ? 'pointer' : 'not-allowed',
+      saveBp: () => { if (!(s.bp && s.bp.key && s.bp.coll)) return; set({ bpSaved: true, bpOff: false }); },
+      showChip: s.showChip === true,
+      openChip: () => set({ showChip: true, chipSaved: false }),
+      closeChip: () => set({ showChip: false }),
+      chipBrand: (s.chip && s.chip.brand) || '',
+      chipSecret: (s.chip && s.chip.secret) || '',
+      onChipBrand: (e) => set({ chip: Object.assign({}, s.chip, { brand: e.target.value }), chipSaved: false }),
+      onChipSecret: (e) => set({ chip: Object.assign({}, s.chip, { secret: e.target.value }), chipSaved: false }),
+      chipSecretType: s.chipShow ? 'text' : 'password',
+      chipSecretBtn: s.chipShow ? 'Sorok' : 'Papar',
+      toggleChipSecret: () => set({ chipShow: !s.chipShow }),
+      chipSaved: s.chipSaved === true,
+      chipSaveBg: ((s.chip && s.chip.brand && s.chip.secret)) ? '#42481c' : '#9CA3AF',
+      chipSaveCursor: ((s.chip && s.chip.brand && s.chip.secret)) ? 'pointer' : 'not-allowed',
+      saveChip: () => { if (!(s.chip && s.chip.brand && s.chip.secret)) return; set({ chipSaved: true, chipOff: false }); },
+      chipMethods: [
+        ['FPX', 'ph ph-bank'], ['Kad Kredit/Debit', 'ph ph-credit-card'], ['e-Wallet', 'ph ph-wallet'], ['DuitNow QR', 'ph ph-qr-code'],
+      ].map(([label, icon]) => {
+        const off = (s.chipOff || {})[label];
+        return { label, icon, onToggle: () => set({ chipOff: Object.assign({}, s.chipOff, { [label]: !off }) }),
+          style: 'display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600; border-radius:20px; padding:6px 12px; cursor:pointer;' + (off ? 'background:#F1F5F4; color:#94A3AC;' : 'background:#edeee0; color:#42481c;') };
+      }),
+      showAddHook: s.showAddHook === true,
+      closeAddHook: () => set({ showAddHook: false }),
+      hookStats: [
+        { icon: 'ph ph-webhooks-logo', tint: '#edeee0', color: '#42481c', value: '3', label: 'Endpoint Aktif' },
+        { icon: 'ph ph-lightning', tint: '#FBF3DC', color: '#C9A227', value: '8', label: 'Peristiwa' },
+        { icon: 'ph ph-check-circle', tint: '#EAF7EE', color: '#16A34A', value: '99.2%', label: 'Kadar Berjaya' },
+        { icon: 'ph ph-paper-plane-tilt', tint: '#E8F0FB', color: '#2563EB', value: '1,284', label: 'Dihantar (30h)' },
+      ],
+      hookEndpoints: [
+        { url: 'https://erp.nadiqurban.com/hooks', status: 'Aktif', stStyle: 'background:#EAF7EE; color:#16A34A;', events: '8', last: '2 min lalu', rate: '99.8%', rateColor: '#16A34A' },
+        { url: 'https://crm.partner.com/nq/webhook', status: 'Aktif', stStyle: 'background:#EAF7EE; color:#16A34A;', events: '3', last: '18 min lalu', rate: '97.1%', rateColor: '#16A34A' },
+        { url: 'https://sms.gateway.my/callback', status: 'Ralat', stStyle: 'background:#FDECEC; color:#DC2626;', events: '2', last: '1 jam lalu', rate: '84.0%', rateColor: '#D97706' },
+      ],
+      hookEvents: [
+        { name: 'Bayaran Disahkan', key: 'payment.confirmed' },
+        { name: 'Tempahan Selesai', key: 'order.completed' },
+        { name: 'AWB Dijana', key: 'awb.generated' },
+        { name: 'Laporan Disahkan', key: 'report.verified' },
+      ],
+      hookLogs: [
+        { event: 'payment.confirmed', url: 'erp.nadiqurban.com', code: '200', codeStyle: 'background:#EAF7EE; color:#16A34A;', time: '2 min lalu' },
+        { event: 'awb.generated', url: 'erp.nadiqurban.com', code: '200', codeStyle: 'background:#EAF7EE; color:#16A34A;', time: '14 min lalu' },
+        { event: 'order.completed', url: 'crm.partner.com', code: '200', codeStyle: 'background:#EAF7EE; color:#16A34A;', time: '18 min lalu' },
+        { event: 'report.verified', url: 'sms.gateway.my', code: '500', codeStyle: 'background:#FDECEC; color:#DC2626;', time: '1 jam lalu' },
+        { event: 'payment.confirmed', url: 'erp.nadiqurban.com', code: '200', codeStyle: 'background:#EAF7EE; color:#16A34A;', time: '2 jam lalu' },
+      ],
+      isUsers: s.tab === 'users',
+      isRolesList: s.tab === 'roles' && s.view === 'list',
+      isRoleDetail: s.tab === 'roles' && s.view === 'roleDetail',
+    };
+  }
+}
+</script>
+</body>
+</html>

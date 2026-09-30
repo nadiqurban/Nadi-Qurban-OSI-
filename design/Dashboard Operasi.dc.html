@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://unpkg.com/d3@7.9.0/dist/d3.min.js" integrity="sha384-CjloA8y00+1SDAUkjs099PVfnY2KmDC2BZnws9kh8D/lX1s46w6EPhpXdqMfjK6i" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/topojson-client@3.1.0/dist/topojson-client.min.js" integrity="sha384-Ukv1p/xTma6P4/2bY5KzWBw+ydSpXmhCMtyciIQVDJ1RmOxtCYNMF1uXT9T63H67" crossorigin="anonymous"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  #app-root {
+    --canvas:#F6F8F7; --surface:#FFFFFF; --line:#E2E8F0; --line2:#F1F5F4;
+    --ink:#1A1D21; --ink2:#334155; --slate:#64748B; --slate2:#94A3AC;
+    --soft:#edeee0; --barTrack:#eef0e4; --headRow:#F6F8F7;
+  }
+  #app-root[data-theme="dark"] {
+    --canvas:#0E1512; --surface:#14201B; --line:#2c2e1c; --line2:#20220f;
+    --ink:#E6EDEA; --ink2:#C3D0CA; --slate:#9DB0A8; --slate2:#7C8E86;
+    --soft:#26281a; --barTrack:#2c2e1c; --headRow:#14150c;
+  }
+  a { color: #5a6127; text-decoration: none; }
+  a:hover { color: #C9A227; }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-thumb { background: #9fb3aa; border-radius: 6px; border: 2px solid transparent; background-clip: padding-box; }
+  ::-webkit-scrollbar-track { background: transparent; }
+</style>
+</helmet>
+
+<div id="app-root" data-theme="{{ theme }}" style="display:flex; min-height:100vh; background:var(--canvas);">
+
+  <!-- SIDEBAR -->
+  <aside style="width:260px; flex-shrink:0; background:var(--surface); border-right:1px solid var(--line); display:flex; flex-direction:column; position:sticky; top:0; height:100vh;">
+    <div style="height:72px; display:flex; align-items:center; gap:12px; padding:0 22px; border-bottom:1px solid var(--line); flex-shrink:0;">
+      <div style="width:38px; height:38px; border-radius:10px; overflow:hidden; flex-shrink:0;">
+        <img src="uploads/Untitled design (2).png" alt="Nadi Qurban" style="width:100%; height:100%; object-fit:cover; display:block; transform:scale(1.22);">
+      </div>
+      <div style="line-height:1;">
+        <div style="font-size:15px; font-weight:800; letter-spacing:.3px; color:#42481c;">NADI QURBAN</div>
+        <div style="font-size:10.5px; font-weight:600; letter-spacing:2px; color:var(--slate2); margin-top:3px;">OSI SYSTEM</div>
+      </div>
+    </div>
+
+    <nav style="flex:1; overflow-y:auto; padding:14px 12px;">
+      <sc-for list="{{ nav }}" as="item" hint-placeholder-count="12">
+        <sc-if value="{{ item.isSection }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:10.5px; font-weight:700; letter-spacing:1.4px; color:var(--slate2); padding:16px 14px 8px;">{{ item.label }}</div>
+        </sc-if>
+        <sc-if value="{{ item.isItem }}" hint-placeholder-val="{{ true }}">
+          <div style="{{ item.rowStyle }}" onClick="{{ item.onClick }}">
+            <span style="position:absolute; left:0; top:8px; bottom:8px; width:3px; border-radius:0 3px 3px 0; background:{{ item.bar }};"></span>
+            <span style="display:flex; align-items:center;">{{ item.icon }}</span>
+            <span style="flex:1;">{{ item.label }}</span>
+            <sc-if value="{{ item.badge }}" hint-placeholder-val="{{ false }}">
+              <span style="background:#C9A227; color:#fff; font-size:10.5px; font-weight:700; border-radius:20px; padding:2px 8px;">{{ item.badge }}</span>
+            </sc-if>
+          </div>
+        </sc-if>
+      </sc-for>
+    </nav>
+
+    <div style="padding:14px 16px; display:flex; align-items:center; gap:11px; border-top:1px solid var(--line); flex-shrink:0;">
+      <div style="width:38px; height:38px; border-radius:50%; background:#42481c; color:#C9A227; font-weight:800; font-size:13px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">MN</div>
+      <div style="min-width:0; flex:1;">
+        <div style="font-size:13px; font-weight:700; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Muhammad Nurfitkri</div>
+        <div style="font-size:11px; color:var(--slate); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Superadmin</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div style="flex:1; min-width:0; display:flex; flex-direction:column;">
+
+    <!-- TOP BAR -->
+    <header style="height:72px; background:var(--surface); border-bottom:1px solid var(--line); display:flex; align-items:center; padding:0 32px; gap:24px; position:sticky; top:0; z-index:20;">
+      <div style="flex:1; max-width:520px; margin:0 auto; display:flex; align-items:center; gap:11px; background:var(--canvas); border:1px solid var(--line); border-radius:10px; padding:10px 15px;">
+        <i class="ph ph-magnifying-glass" style="font-size:18px; color:var(--slate2); line-height:1;"></i>
+        <span style="font-size:13.5px; color:var(--slate2);">Cari tempahan, pelanggan, vendor, no. tracking&hellip;</span>
+        <span style="margin-left:auto; font-size:11px; color:var(--slate2); border:1px solid var(--line); border-radius:5px; padding:2px 7px; background:var(--surface);">&#8984;K</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <div style="position:relative; width:40px; height:40px; border-radius:10px; border:1px solid var(--line); display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--slate);">
+          <i class="ph ph-bell" style="font-size:20px; line-height:1;"></i>
+          <span style="position:absolute; top:-4px; right:-4px; background:#DC2626; color:#fff; font-size:10px; font-weight:700; border-radius:20px; min-width:18px; height:18px; display:flex; align-items:center; justify-content:center; padding:0 4px; border:2px solid #fff;">7</span>
+        </div>
+        <div onClick="{{ toggleTheme }}" title="Tukar tema" style="width:40px; height:40px; border-radius:10px; border:1px solid var(--line); display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--slate);">
+          {{ themeIcon }}
+        </div>
+        <div style="width:1px; height:30px; background:var(--line); margin:0 4px;"></div>
+        <div style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+          <div style="width:40px; height:40px; border-radius:50%; background:#42481c; color:#C9A227; font-weight:800; font-size:13px; display:flex; align-items:center; justify-content:center;">MN</div>
+          <div style="line-height:1.2;">
+            <div style="font-size:13px; font-weight:700; color:var(--ink);">Muhammad Nurfitkri</div>
+            <div style="font-size:11px; color:var(--slate);">Superadmin</div>
+          </div>
+          <i class="ph ph-caret-down" style="font-size:16px; color:var(--slate2); line-height:1;"></i>
+        </div>
+      </div>
+    </header>
+
+    <!-- CONTENT -->
+    <main style="flex:1; padding:28px 32px 56px; overflow-y:auto;">
+
+      <!-- page header -->
+      <div style="display:flex; align-items:flex-end; gap:16px; margin-bottom:26px; flex-wrap:wrap;">
+        <div style="margin-right:auto;">
+          <h1 style="font-size:23px; font-weight:700; color:var(--ink);">Dashboard</h1>
+          <p style="font-size:13.5px; color:var(--slate); margin-top:4px;">Assalamualaikum {{ userName }} &mdash; ringkasan operasi bagi musim Qurban 2027.</p>
+        </div>
+        <div style="display:inline-flex; align-items:center; gap:8px; background:var(--surface); border:1px solid var(--line); border-radius:9px; padding:8px 13px;">
+          <i class="ph ph-calendar-blank" style="font-size:16px; color:#42481c;"></i>
+          <input type="date" value="{{ filterDate }}" onInput="{{ onFilterDate }}" style="font-family:inherit; font-size:13px; font-weight:600; color:var(--ink2); border:none; outline:none; background:transparent;">
+        </div>
+        <div onClick="{{ exportExcel }}" style="display:flex; align-items:center; gap:8px; background:#16A34A; color:#fff; border:none; border-radius:9px; padding:9px 14px; font-size:13.5px; font-weight:600; cursor:pointer;">
+          <i class="ph ph-microsoft-excel-logo" style="font-size:16px; line-height:1;"></i>
+          Eksport Excel
+        </div>
+        <button style="display:flex; align-items:center; gap:8px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:10px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;" style-hover="background:#5a6127;">
+          <i class="ph ph-arrows-clockwise" style="font-size:16px; line-height:1;"></i>
+          Muat Semula
+        </button>
+      </div>
+
+      <!-- KPI GRID -->
+      <div style="display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:18px; margin-bottom:24px;">
+        <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="8">
+          <div style="background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:18px 20px; box-shadow:0 1px 2px rgba(16,24,40,.04); display:flex; flex-direction:column; gap:14px;">
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <div style="width:40px; height:40px; border-radius:10px; background:{{ k.tint }}; color:{{ k.color }}; display:flex; align-items:center; justify-content:center;">{{ k.icon }}</div>
+              <span style="{{ k.deltaStyle }}">{{ k.delta }}</span>
+            </div>
+            <div>
+              <div style="font-size:27px; font-weight:700; color:var(--ink); line-height:1;">{{ k.value }}</div>
+              <div style="font-size:12.5px; color:var(--slate); margin-top:7px;">{{ k.label }}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+
+      <!-- SALES CHART + ACHIEVEMENT -->
+      <div style="display:grid; grid-template-columns:minmax(0,1.9fr) minmax(0,1fr); gap:18px; margin-bottom:24px;">
+        <section style="background:var(--surface); border:1px solid var(--line); border-radius:12px; box-shadow:0 1px 2px rgba(16,24,40,.04); padding:22px 24px;">
+          <div style="display:flex; align-items:flex-start; gap:10px; margin-bottom:8px; justify-content:space-between;">
+            <div style="display:flex; align-items:flex-start; gap:10px;">
+              <span onClick="{{ chkJualan.toggle }}" style="{{ chkJualan.style }}"><sc-if value="{{ chkJualan.on }}" hint-placeholder-val="{{ false }}"><i class="ph-fill ph-check" style="font-size:12px; color:#fff;"></i></sc-if></span>
+              <div>
+                <h2 style="font-size:15.5px; font-weight:700; color:var(--ink);">Jualan Bulanan</h2>
+                <p style="font-size:12.5px; color:var(--slate); margin-top:3px;">Nilai tempahan disahkan (RM) mengikut bulan</p>
+              </div>
+            </div>
+            <div style="display:flex; align-items:center; gap:16px; font-size:12.5px; color:var(--slate);">
+              <span style="display:flex; align-items:center; gap:6px;"><span style="width:10px; height:10px; border-radius:3px; background:#42481c;"></span>Jualan</span>
+              <span style="display:flex; align-items:center; gap:6px;"><span style="width:10px; height:10px; border-radius:3px; background:#C9A227;"></span>Sasaran</span>
+            </div>
+          </div>
+          <sc-if value="{{ chkJualan.off }}" hint-placeholder-val="{{ true }}">{{ salesChart }}</sc-if>
+        </section>
+
+        <section style="background:var(--surface); border:1px solid var(--line); border-radius:12px; box-shadow:0 1px 2px rgba(16,24,40,.04); padding:22px 24px; display:flex; flex-direction:column;">
+          <div style="display:flex; align-items:flex-start; gap:10px; margin-bottom:0;"><span onClick="{{ chkSasaran.toggle }}" style="{{ chkSasaran.style }}"><sc-if value="{{ chkSasaran.on }}" hint-placeholder-val="{{ false }}"><i class="ph-fill ph-check" style="font-size:12px; color:#fff;"></i></sc-if></span><div><h2 style="font-size:15.5px; font-weight:700; color:var(--ink);">Pencapaian Jualan</h2><p style="font-size:12.5px; color:var(--slate); margin-top:3px;">Sasaran musim RM 5.00 juta</p></div></div>
+          <sc-if value="{{ chkSasaran.off }}" hint-placeholder-val="{{ true }}">
+          <div style="flex:1; display:flex; align-items:center; justify-content:center; position:relative; margin:6px 0;">
+            {{ gauge }}
+            <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+              <div style="font-size:32px; font-weight:800; color:#42481c; line-height:1;">76%</div>
+              <div style="font-size:12px; color:var(--slate); margin-top:4px;">tercapai</div>
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; text-align:center; padding-top:14px; border-top:1px solid var(--line);">
+            <div><div style="font-size:16px; font-weight:700; color:var(--ink);">RM 3.82j</div><div style="font-size:11.5px; color:var(--slate); margin-top:2px;">Dicapai</div></div>
+            <div><div style="font-size:16px; font-weight:700; color:#C9A227;">RM 1.18j</div><div style="font-size:11.5px; color:var(--slate); margin-top:2px;">Baki</div></div>
+          </div>
+          </sc-if>
+        </section>
+      </div>
+
+      <!-- COUNTRY DONUT + VENDOR BARS -->
+      <div style="display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.35fr); gap:18px; margin-bottom:24px;">
+        <section style="background:var(--surface); border:1px solid var(--line); border-radius:12px; box-shadow:0 1px 2px rgba(16,24,40,.04); padding:22px 24px;">
+          <div style="display:flex; align-items:flex-start; gap:10px; margin-bottom:4px;"><span onClick="{{ chkNegara.toggle }}" style="{{ chkNegara.style }}"><sc-if value="{{ chkNegara.on }}" hint-placeholder-val="{{ false }}"><i class="ph-fill ph-check" style="font-size:12px; color:#fff;"></i></sc-if></span><h2 style="font-size:15.5px; font-weight:700; color:var(--ink);">Agihan Negara</h2></div>
+          <sc-if value="{{ chkNegara.off }}" hint-placeholder-val="{{ true }}">
+          <p style="font-size:12.5px; color:var(--slate); margin-bottom:16px;">Tempahan mengikut negara pelaksanaan</p>
+          <div style="display:flex; flex-direction:column; gap:16px;">
+            <div style="flex-shrink:0;"><div id="nq-country-map" style="width:100%; min-height:190px;"></div></div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:9px 22px;">
+              <sc-for list="{{ countries }}" as="c" hint-placeholder-count="7">
+                <div style="display:flex; align-items:center; gap:9px; font-size:12.5px;">
+                  <span style="width:9px; height:9px; border-radius:50%; background:{{ c.color }}; flex-shrink:0;"></span>
+                  <span style="flex:1; color:var(--ink2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ c.name }}</span>
+                  <span style="font-weight:700; color:var(--ink);">{{ c.pct }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          </sc-if>
+        </section>
+
+        <section style="background:var(--surface); border:1px solid var(--line); border-radius:12px; box-shadow:0 1px 2px rgba(16,24,40,.04); padding:22px 24px;">
+          <h2 style="font-size:15.5px; font-weight:700; color:var(--ink); margin-bottom:4px;">Ranking Vendor</h2>
+          <p style="font-size:12.5px; color:var(--slate); margin-bottom:18px;">Kedudukan mengikut kadar penyiapan pesanan</p>
+          <div style="display:flex; flex-direction:column;">
+            <sc-for list="{{ vendors }}" as="v" hint-placeholder-count="5">
+              <div style="display:flex; align-items:center; gap:13px; padding:11px 0; border-bottom:1px solid var(--line2);">
+                <span style="width:28px; height:28px; border-radius:8px; background:{{ v.rankBg }}; color:{{ v.rankColor }}; font-size:13px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0;">{{ v.rank }}</span>
+                <div style="flex:1; min-width:0;">
+                  <div style="font-size:13.5px; font-weight:600; color:var(--ink2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ v.name }}</div>
+                  <div style="display:flex; align-items:center; gap:7px; margin-top:2px;"><span style="font-size:11.5px; color:var(--slate2);">{{ v.country }}</span><span style="font-size:10px; font-weight:700; color:{{ v.levelColor }}; background:{{ v.levelBg }}; border-radius:20px; padding:2px 8px;">{{ v.level }}</span></div>
+                </div>
+                <span style="font-size:15px; font-weight:800; color:var(--ink);">{{ v.pct }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+      </div>
+
+      <!-- COUNTRY PERFORMANCE + RECENT ACTIVITIES -->
+      <div style="display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,1fr); gap:18px; margin-bottom:24px;">
+        <section style="background:var(--surface); border:1px solid var(--line); border-radius:12px; box-shadow:0 1px 2px rgba(16,24,40,.04); overflow:hidden;">
+          <div style="padding:20px 24px 14px; display:flex; align-items:center; gap:10px;"><span onClick="{{ chkPrestasi.toggle }}" style="{{ chkPrestasi.style }}"><sc-if value="{{ chkPrestasi.on }}" hint-placeholder-val="{{ false }}"><i class="ph-fill ph-check" style="font-size:12px; color:#fff;"></i></sc-if></span><h2 style="font-size:15.5px; font-weight:700; color:var(--ink);">Prestasi Negara</h2></div>
+          <sc-if value="{{ chkPrestasi.off }}" hint-placeholder-val="{{ true }}">
+          <div style="display:grid; grid-template-columns:1.4fr 1fr 1.2fr 1fr; padding:0 24px 10px; font-size:11.5px; font-weight:700; letter-spacing:.4px; color:var(--slate2); text-transform:uppercase; border-bottom:1px solid var(--line);">
+            <span>Negara</span><span style="text-align:right;">Tempahan</span><span style="text-align:right;">Jualan</span><span style="text-align:right;">Bahagian</span>
+          </div>
+          <sc-for list="{{ countryPerf }}" as="r" hint-placeholder-count="7">
+            <div style="{{ r.rowStyle }}">
+              <span style="font-size:13.5px; font-weight:600; color:var(--ink);">{{ r.name }}</span>
+              <span style="text-align:right; font-size:13.5px; color:var(--ink2);">{{ r.orders }}</span>
+              <span style="text-align:right; font-size:13.5px; font-weight:600; color:#42481c;">{{ r.sales }}</span>
+              <span style="text-align:right; font-size:13.5px; color:var(--ink2);">{{ r.share }}</span>
+            </div>
+          </sc-for>
+          </sc-if>
+        </section>
+
+        <section style="background:var(--surface); border:1px solid var(--line); border-radius:12px; box-shadow:0 1px 2px rgba(16,24,40,.04); padding:20px 24px;">
+          <h2 style="font-size:15.5px; font-weight:700; color:var(--ink); margin-bottom:18px;">Aktiviti Terkini</h2>
+          <div style="display:flex; flex-direction:column;">
+            <sc-for list="{{ activities }}" as="a" hint-placeholder-count="6">
+              <div style="display:flex; gap:14px;">
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                  <span style="width:30px; height:30px; border-radius:8px; background:{{ a.tint }}; color:{{ a.color }}; display:flex; align-items:center; justify-content:center; flex-shrink:0;">{{ a.icon }}</span>
+                  <span style="{{ a.lineStyle }}"></span>
+                </div>
+                <div style="padding-bottom:16px;">
+                  <div style="font-size:13px; font-weight:600; color:var(--ink);">{{ a.title }}</div>
+                  <div style="font-size:12px; color:var(--slate); margin-top:2px;">{{ a.who }} &middot; {{ a.time }}</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+      </div>
+
+      <!-- BREAKDOWN: PAKEJ & HAIWAN -->
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:24px;">
+        <section style="background:var(--surface); border:1px solid var(--line); border-radius:12px; box-shadow:0 1px 2px rgba(16,24,40,.04); padding:22px 24px;">
+          <h2 style="font-size:15.5px; font-weight:700; color:var(--ink); margin-bottom:4px; display:flex; align-items:center; gap:10px;"><span onClick="{{ chkPakej.toggle }}" style="{{ chkPakej.style }}"><sc-if value="{{ chkPakej.on }}" hint-placeholder-val="{{ false }}"><i class="ph-fill ph-check" style="font-size:12px; color:#fff;"></i></sc-if></span>Jumlah Mengikut Pakej</h2>
+          <sc-if value="{{ chkPakej.off }}" hint-placeholder-val="{{ true }}">
+          <p style="font-size:12.5px; color:var(--slate); margin-bottom:16px;">Bilangan tempahan setiap jenis pakej</p>
+          <div style="display:flex; flex-direction:column; gap:13px;">
+            <sc-for list="{{ pkgBreak }}" as="p" hint-placeholder-count="5">
+              <div>
+                <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px;"><span style="font-size:13px; font-weight:600; color:var(--ink2);">{{ p.name }}</span><span style="font-size:13px; font-weight:700; color:var(--ink);">{{ p.count }}</span></div>
+                <div style="height:8px; background:var(--barTrack); border-radius:20px; overflow:hidden;"><div style="height:100%; width:{{ p.width }}; background:{{ p.color }}; border-radius:20px;"></div></div>
+              </div>
+            </sc-for>
+          </div>
+          </sc-if>
+        </section>
+        <section style="background:var(--surface); border:1px solid var(--line); border-radius:12px; box-shadow:0 1px 2px rgba(16,24,40,.04); padding:22px 24px;">
+          <h2 style="font-size:15.5px; font-weight:700; color:var(--ink); margin-bottom:4px; display:flex; align-items:center; gap:10px;"><span onClick="{{ chkHaiwan.toggle }}" style="{{ chkHaiwan.style }}"><sc-if value="{{ chkHaiwan.on }}" hint-placeholder-val="{{ false }}"><i class="ph-fill ph-check" style="font-size:12px; color:#fff;"></i></sc-if></span>Jumlah Mengikut Haiwan</h2>
+          <p style="font-size:12.5px; color:var(--slate); margin-bottom:16px;">Bilangan ibadah setiap jenis haiwan</p>
+          <p style="font-size:12.5px; color:var(--slate); margin-bottom:16px;">Bilangan ibadah setiap jenis haiwan</p>
+          <sc-if value="{{ chkHaiwan.off }}" hint-placeholder-val="{{ true }}">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <sc-for list="{{ animalBreak }}" as="a" hint-placeholder-count="4">
+              <div style="display:flex; align-items:center; gap:12px; padding:12px 14px; background:var(--soft); border-radius:11px;">
+                <span style="width:40px; height:40px; border-radius:10px; background:{{ a.tint }}; color:{{ a.color }}; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><i class="{{ a.icon }}" style="font-size:22px;"></i></span>
+                <div><div style="font-size:20px; font-weight:800; color:var(--ink); line-height:1;">{{ a.count }}</div><div style="font-size:12px; color:var(--slate); margin-top:3px;">{{ a.name }}</div></div>
+              </div>
+            </sc-for>
+          </div>
+          </sc-if>
+        </section>
+      </div>
+
+      <!-- LATEST ORDERS -->
+      <section style="background:var(--surface); border:1px solid var(--line); border-radius:12px; box-shadow:0 1px 2px rgba(16,24,40,.04); overflow:hidden;">
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:20px 24px 14px;">
+          <div style="display:flex; align-items:center; gap:10px;"><span onClick="{{ chkTerkini.toggle }}" style="{{ chkTerkini.style }}"><sc-if value="{{ chkTerkini.on }}" hint-placeholder-val="{{ false }}"><i class="ph-fill ph-check" style="font-size:12px; color:#fff;"></i></sc-if></span><div><h2 style="font-size:15.5px; font-weight:700; color:var(--ink);">Tempahan Terkini</h2><p style="font-size:12.5px; color:var(--slate); margin-top:3px;">8 tempahan terbaru diterima</p></div></div>
+          <a href="#" style="font-size:13px; font-weight:600; color:#42481c;">Lihat semua &rarr;</a>
+        </div>
+        <div style="overflow-x:auto;">
+          <sc-if value="{{ chkTerkini.off }}" hint-placeholder-val="{{ true }}">
+          <div style="min-width:960px;">
+            <div style="display:grid; grid-template-columns:1.3fr 1.5fr 1.4fr 0.9fr 1.1fr 0.7fr 1fr 1.1fr; padding:10px 24px; background:var(--canvas); border-top:1px solid var(--line); border-bottom:1px solid var(--line); font-size:11.5px; font-weight:700; letter-spacing:.4px; color:var(--slate2); text-transform:uppercase;">
+              <span>No. Tempahan</span><span>Pelanggan</span><span>Servis</span><span>Pakej</span><span>Negara</span><span style="text-align:center;">Kuantiti</span><span style="text-align:right;">Jumlah</span><span style="text-align:center;">Status</span>
+            </div>
+            <sc-for list="{{ orders }}" as="o" hint-placeholder-count="8">
+              <div style="{{ o.rowStyle }}">
+                <span style="font-size:13px; font-weight:600; color:#42481c; font-variant-numeric:tabular-nums;">{{ o.no }}</span>
+                <span style="font-size:13px; color:var(--ink);">{{ o.name }}</span>
+                <span style="font-size:13px; color:var(--ink2);">{{ o.service }}</span>
+                <span style="font-size:13px; color:var(--ink2);">{{ o.pkg }}</span>
+                <span style="font-size:13px; color:var(--ink2);">{{ o.country }}</span>
+                <span style="text-align:center; font-size:13px; color:var(--ink); font-weight:600;">{{ o.qty }}</span>
+                <span style="text-align:right; font-size:13px; font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums;">{{ o.amount }}</span>
+                <span style="display:flex; justify-content:center;"><span style="{{ o.badgeStyle }}">{{ o.status }}</span></span>
+              </div>
+            </sc-for>
+          </div>
+          </sc-if>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { active: 'Dashboard', dark: false };
+  componentDidMount() { this._renderMap(); }
+  componentDidUpdate() { this._renderMap(); }
+  _renderMap() {
+    const el = document.getElementById('nq-country-map');
+    if (!el || typeof d3 === 'undefined' || typeof topojson === 'undefined') { if (!this._mapRetry) { this._mapRetry = setTimeout(() => { this._mapRetry = null; this._renderMap(); }, 250); } return; }
+    const dark = this.state.dark;
+    const cData = [
+      { name: 'Malaysia', value: 38, color: '#42481c', lon: 102, lat: 3 },
+      { name: 'Arab Saudi', value: 18, color: '#5a6127', lon: 45, lat: 24 },
+      { name: 'Uganda', value: 12, color: '#C9A227', lon: 32, lat: 1 },
+      { name: 'Chad', value: 9, color: '#8a924e', lon: 19, lat: 15 },
+      { name: 'Nigeria', value: 8, color: '#b1b67c', lon: 8, lat: 9 },
+      { name: 'India', value: 8, color: '#E0BE5A', lon: 78, lat: 22 },
+      { name: 'Burkina Faso', value: 7, color: '#d3d6ab', lon: -2, lat: 12 },
+    ];
+    const key = dark ? 'd' : 'l';
+    if (this._mapKey === key && this._mapDrawn) return;
+    const draw = (topo) => {
+      this._mapKey = key; this._mapDrawn = true;
+      el.innerHTML = '';
+      const W = el.clientWidth || 340, H = 200;
+      const feats = topojson.feature(topo, topo.objects.countries).features;
+      const svg = d3.select(el).append('svg').attr('viewBox', '0 0 ' + W + ' ' + H).attr('width', '100%').attr('height', H).style('display', 'block');
+      svg.append('rect').attr('width', W).attr('height', H).attr('rx', 10).attr('fill', dark ? 'rgba(90,120,160,.10)' : '#eef3f6');
+      const proj = d3.geoMercator().center([48, 14]).scale(W * 0.62).translate([W / 2, H / 2]);
+      const path = d3.geoPath(proj);
+      svg.append('g').selectAll('path').data(feats).join('path').attr('d', path)
+        .attr('fill', dark ? 'rgba(201,162,39,.14)' : '#e2e5d0')
+        .attr('stroke', dark ? 'rgba(201,162,39,.25)' : '#cfd3b6').attr('stroke-width', 0.5);
+      const maxV = Math.max.apply(null, cData.map(d => d.value));
+      cData.forEach((d) => {
+        const p = proj([d.lon, d.lat]); if (!p) return;
+        const rad = 5 + (d.value / maxV) * 11;
+        const g = svg.append('g');
+        g.append('circle').attr('cx', p[0]).attr('cy', p[1]).attr('r', rad + 5).attr('fill', d.color).attr('opacity', 0.16);
+        g.append('circle').attr('cx', p[0]).attr('cy', p[1]).attr('r', rad).attr('fill', d.color).attr('stroke', dark ? '#14201B' : '#fff').attr('stroke-width', 2);
+        g.append('text').attr('x', p[0]).attr('y', p[1] + 3.2).attr('text-anchor', 'middle').attr('font-size', 9).attr('font-weight', 700).attr('font-family', 'Inter,sans-serif').attr('fill', (d.value > 15 || d.color === '#42481c') ? '#fff' : '#1A1D21').text(d.value);
+      });
+    };
+    if (this._topo) { draw(this._topo); return; }
+    d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json').then((topo) => { this._topo = topo; draw(topo); }).catch(() => {});
+  }
+  renderVals() {
+    const E = React.createElement;
+    let userName = 'Muhammad Nurfitri';
+    try { userName = localStorage.getItem('nq_user_name') || userName; } catch (e) {}
+    userName = String(userName).split(' ')[0];
+    let uid = 0;
+    const dark = !!this.state.dark;
+    const T = dark
+      ? { ink:'#E6EDEA', slate:'#9DB0A8', slate2:'#7C8E86', line:'#2c2e1c', line2:'#20220f', grid:'#2c2e1c', track:'#2c2e1c', soft:'#26281a', activeText:'#c9ce93', navText:'#9DB0A8', flatBg:'#20220f', flatText:'#9DB0A8' }
+      : { ink:'#1A1D21', slate:'#64748B', slate2:'#94A3AC', line:'#E2E8F0', line2:'#F1F5F4', grid:'#eef0e4', track:'#eef0e4', soft:'#edeee0', activeText:'#42481c', navText:'#475569', flatBg:'#F1F5F4', flatText:'#64748B' };
+    const theme = dark ? 'dark' : 'light';
+    const toggleTheme = () => this.setState(s => ({ dark: !s.dark }));
+    const ph = (name, size = 18) =>
+      E('i', { key: 'i' + (uid++), className: 'ph ph-' + name, style: { fontSize: size + 'px', lineHeight: 1, display: 'block' } });
+    // legacy SVG helpers retained for the line/bar/donut charts (real vector geometry)
+    const P = (d) => E('path', { key: 'p' + (uid++), d });
+
+    const icons = {
+      grid: () => ph('squares-four'),
+      cart: () => ph('shopping-cart-simple'),
+      ansuran: () => ph('calendar-check'),
+      seal: () => ph('seal-check'),
+      heart: () => ph('hand-heart'),
+      globe: () => ph('globe-hemisphere-west'),
+      cert: () => ph('certificate'),
+      truck: () => ph('truck'),
+      produk: () => ph('cow'),
+      doc: () => ph('folders'),
+      fist: () => ph('shopping-bag'),
+      pkg: () => ph('package'),
+      done: () => ph('check-square-offset'),
+      users: () => ph('users-three'),
+      promo: () => ph('ticket'),
+      wallet: () => ph('wallet'),
+      chart: () => ph('chart-bar'),
+      audit: () => ph('clock-counter-clockwise'),
+      bell: () => ph('bell'),
+      user: () => ph('users'),
+      gear: () => ph('gear-six'),
+      money: () => ph('money'),
+      part: () => ph('users-three'),
+      clock: () => ph('clock'),
+      cert: () => ph('certificate'),
+      cal: () => ph('calendar-check'),
+      check: () => ph('check-circle'),
+      upload: () => ph('upload-simple'),
+      po: () => ph('clipboard-text'),
+      mail: () => ph('envelope-simple'),
+    };
+
+    const active = this.state.active;
+    const setActive = (l) => this.setState({ active: l });
+    const item = (icon, label, badge) => {
+      const on = active === label;
+      const base = 'position:relative; display:flex; align-items:center; gap:12px; padding:10px 14px; margin:2px 0; border-radius:9px; font-size:13.5px; cursor:pointer;';
+      const rowStyle = base + (on ? 'background:' + T.soft + '; color:' + T.activeText + '; font-weight:700;' : 'color:' + T.navText + '; font-weight:500;');
+      return { isItem: true, isSection: false, label, badge: badge || '', bar: on ? (dark ? '#C9A227' : '#42481c') : 'transparent', rowStyle,
+        icon: E('span', { style: { color: on ? T.activeText : T.slate2, display: 'flex' } }, icons[icon]()), onClick: () => { const m = { 'Dashboard': 'Dashboard Operasi.dc.html', 'Bayaran Ansuran': 'Bayaran Ansuran.dc.html', 'Tempahan & Pelanggan': 'Tempahan & Pelanggan.dc.html', 'Pengesahan Bayaran': 'Tempahan & Pelanggan.dc.html', 'Lafaz Akad': 'Lafaz Akad.dc.html', 'Agihan Negara': 'Agihan Negara.dc.html', 'Pelaksanaan & Laporan': 'Pelaksanaan & Laporan.dc.html', 'AWB & Postage': 'AWB & Postage.dc.html', 'Tempahan Selesai': 'Tempahan Selesai.dc.html', 'Vendor': 'Vendor.dc.html', 'Produk': 'Produk.dc.html', 'Dokumen': 'Dokumen.dc.html', 'Sales CRM': 'Sales CRM.dc.html', 'Kod Promosi': 'Kod Promosi.dc.html', 'Kewangan': 'Kewangan.dc.html', 'Pusat Laporan': 'Pusat Laporan.dc.html', 'Audit Log': 'Audit Log.dc.html', 'Notifikasi': 'Notifikasi.dc.html', 'Pengguna': 'Pengguna & Peranan.dc.html', 'Sijil': 'Tempahan & Pelanggan.dc.html', 'Tetapan': 'Tempahan & Pelanggan.dc.html' }; if (m[label] && !on) { try { location.href = (function(p){try{var u=new URL(p,location.href);new URLSearchParams(location.search).forEach(function(v,k){if(!u.searchParams.has(k))u.searchParams.set(k,v);});return u.href;}catch(e){return p;}})(m[label]); } catch (e) {} } } };
+    };
+    const section = (label) => ({ isSection: true, isItem: false, label });
+
+    const nav = [
+      section('UTAMA'),
+      item('grid', 'Dashboard'),
+      section('OPERASI'),
+      item('ansuran', 'Bayaran Ansuran'),
+      item('cart', 'Tempahan & Pelanggan', '34'),
+      item('seal', 'Pengesahan Bayaran', '5'),
+      item('heart', 'Lafaz Akad'),
+      item('globe', 'Agihan Negara'),
+      item('fist', 'Pelaksanaan & Laporan'),
+      item('pkg', 'AWB & Postage'),
+      item('done', 'Tempahan Selesai'),
+      item('truck', 'Vendor'),
+      item('produk', 'Produk'),
+      item('doc', 'Dokumen'),
+      section('JUALAN & KEWANGAN'),
+      item('users', 'Sales CRM'),
+      item('promo', 'Kod Promosi'),
+      item('wallet', 'Kewangan', '87'),
+      section('LAPORAN'),
+      item('chart', 'Pusat Laporan'),
+      item('audit', 'Audit Log'),
+      section('SISTEM'),
+      item('bell', 'Notifikasi', '7'),
+      item('user', 'Pengguna'),
+      item('cert', 'Sijil'),
+      item('gear', 'Tetapan'),
+    ];
+
+    // KPI cards
+    const up = (t) => 'font-size:12px; font-weight:700; color:#16A34A; background:#EAF7EE; border-radius:20px; padding:3px 9px;';
+    const dn = 'font-size:12px; font-weight:700; color:#DC2626; background:#FDECEC; border-radius:20px; padding:3px 9px;';
+    const flat = 'font-size:12px; font-weight:700; color:' + T.flatText + '; background:' + T.flatBg + '; border-radius:20px; padding:3px 9px;';
+    const kpi = (icon, tint, color, value, label, delta, ds) =>
+      ({ icon: E('span', { style: { display: 'flex' } }, icons[icon]()), tint, color, value, label, delta, deltaStyle: ds });
+    const kpis = [
+      kpi('cart', '#edeee0', '#42481c', '1,248', 'Jumlah Tempahan', '\u2191 12.4%', up()),
+      kpi('part', '#edeee0', '#42481c', '6,540', 'Jumlah Peserta', '\u2191 8.1%', up()),
+      kpi('money', '#FBF3DC', '#C9A227', 'RM 3.82j', 'Jumlah Jualan', '\u2191 15.2%', up()),
+      kpi('money', '#edeee0', '#42481c', 'RM 3,061', 'Purata Nilai Tempahan', '\u2191 3.8%', up()),
+      kpi('truck', '#edeee0', '#42481c', '42', 'Jumlah Vendor', '+2 baharu', flat),
+      kpi('wallet', '#FDECEC', '#DC2626', '87', 'Bayaran Tertunggak', '\u2193 4.5%', dn),
+      kpi('doc', '#FEF3E2', '#D97706', '34', 'Laporan Tertunggak', '\u2191 6', up().replace('#16A34A','#D97706').replace('#EAF7EE','#FEF3E2')),
+      kpi('cert', '#edeee0', '#42481c', '19', 'Sijil Tertunggak', '\u2193 12%', up()),
+      kpi('cal', '#E8F0FB', '#2563EB', '5', 'Pelaksanaan Akan Datang', '30 hari', 'font-size:12px; font-weight:700; color:#2563EB; background:#E8F0FB; border-radius:20px; padding:3px 9px;'),
+    ];
+
+    // Sales chart (bars = jualan, line = sasaran)
+    const months = ['Jan','Feb','Mac','Apr','Mei','Jun','Jul','Ogo','Sep','Okt','Nov','Dis'];
+    const sales = [180,240,220,310,290,470,520,410,360,300,340,380];
+    const target = months.map(() => 420);
+    const W = 720, H = 260, padL = 44, padB = 30, padT = 14, padR = 14;
+    const plotW = W - padL - padR, plotH = H - padT - padB;
+    const yMax = 600, yStep = 150;
+    const n = months.length;
+    const bw = plotW / n * 0.52;
+    const cx = (i) => padL + plotW * (i + 0.5) / n;
+    const yOf = (v) => padT + plotH - plotH * v / yMax;
+    const g = [];
+    for (let t = 0; t <= yMax; t += yStep) {
+      const y = yOf(t);
+      g.push(E('line', { key: 'gy' + t, x1: padL, y1: y, x2: W - padR, y2: y, stroke: T.grid, strokeWidth: 1 }));
+      g.push(E('text', { key: 'ty' + t, x: padL - 10, y: y + 4, textAnchor: 'end', fontSize: 11, fill: T.slate2, fontFamily: 'Inter,sans-serif' }, t));
+    }
+    sales.forEach((v, i) => {
+      g.push(E('text', { key: 'mx' + i, x: cx(i), y: H - padB + 18, textAnchor: 'middle', fontSize: 11, fill: T.slate2, fontFamily: 'Inter,sans-serif' }, months[i]));
+    });
+    const lineCol = dark ? '#a9b46b' : '#42481c';
+    const salesPts = sales.map((v, i) => cx(i) + ',' + yOf(v)).join(' ');
+    const areaPts = padL + ',' + yOf(0) + ' ' + salesPts + ' ' + (padL + plotW) + ',' + yOf(0);
+    g.push(E('polygon', { key: 'area', points: areaPts, fill: lineCol, opacity: dark ? 0.14 : 0.08 }));
+    const tgtPts = target.map((v, i) => cx(i) + ',' + yOf(v)).join(' ');
+    g.push(E('polyline', { key: 'tgt', points: tgtPts, fill: 'none', stroke: '#C9A227', strokeWidth: 2, strokeDasharray: '5 4' }));
+    g.push(E('polyline', { key: 'sline', points: salesPts, fill: 'none', stroke: lineCol, strokeWidth: 2.6, strokeLinejoin: 'round', strokeLinecap: 'round' }));
+    sales.forEach((v, i) => {
+      g.push(E('circle', { key: 'pt' + i, cx: cx(i), cy: yOf(v), r: 4, fill: T.surface, stroke: lineCol, strokeWidth: 2.4 }));
+    });
+    const salesChart = E('svg', { viewBox: '0 0 ' + W + ' ' + H, style: { width: '100%', height: 'auto', marginTop: '6px' } }, g);
+
+    // Gauge ring
+    const gs = 180, gt = 18, gr = gs / 2, rad = gr - gt / 2, circ = 2 * Math.PI * rad;
+    const gauge = E('svg', { viewBox: '0 0 ' + gs + ' ' + gs, style: { width: gs, height: gs, transform: 'rotate(-90deg)' } }, [
+      E('circle', { key: 'gb', cx: gr, cy: gr, r: rad, fill: 'none', stroke: T.track, strokeWidth: gt }),
+      E('circle', { key: 'gf', cx: gr, cy: gr, r: rad, fill: 'none', stroke: dark ? '#818e3f' : '#42481c', strokeWidth: gt, strokeDasharray: circ, strokeDashoffset: circ * (1 - 0.76), strokeLinecap: 'round' }),
+    ]);
+
+    // Country donut
+    const cData = [
+      { name: 'Malaysia', value: 38, color: '#42481c', pct: '38%', lon: 102, lat: 3 },
+      { name: 'Arab Saudi', value: 18, color: '#5a6127', pct: '18%', lon: 45, lat: 24 },
+      { name: 'Uganda', value: 12, color: '#C9A227', pct: '12%', lon: 32, lat: 1 },
+      { name: 'Chad', value: 9, color: '#8a924e', pct: '9%', lon: 19, lat: 15 },
+      { name: 'Nigeria', value: 8, color: '#b1b67c', pct: '8%', lon: 8, lat: 9 },
+      { name: 'India', value: 8, color: '#E0BE5A', pct: '8%', lon: 78, lat: 22 },
+      { name: 'Burkina Faso', value: 7, color: '#d3d6ab', pct: '7%', lon: -2, lat: 12 },
+    ];
+    const ds = 168, dth = 30, dr = ds / 2, din = dr - dth;
+    // Country map data (rendered by componentDidMount via d3 + topojson)
+    const countries = cData.map(d => ({ name: d.name, color: d.color, pct: d.pct }));
+
+    // Vendor bars
+    const vendors = [
+      { name: 'Al-Barakah Livestock', country: 'Uganda', pct: '96%', rank: 1, rankBg: '#42481c', rankColor: '#C9A227', level: 'Platinum', levelColor: '#42481c', levelBg: '#edeee0' },
+      { name: 'Qurban Nusantara', country: 'Malaysia', pct: '92%', rank: 2, rankBg: '#edeee0', rankColor: '#42481c', level: 'Emas', levelColor: '#9a7b12', levelBg: '#FBF3D6' },
+      { name: 'Sahara Cattle Co.', country: 'Chad', pct: '88%', rank: 3, rankBg: '#edeee0', rankColor: '#42481c', level: 'Emas', levelColor: '#9a7b12', levelBg: '#FBF3D6' },
+      { name: 'Kano Farms', country: 'Nigeria', pct: '84%', rank: 4, rankBg: '#F1F5F4', rankColor: '#64748B', level: 'Perak', levelColor: '#64748B', levelBg: '#F1F5F4' },
+      { name: 'Gujarat Livestock', country: 'India', pct: '80%', rank: 5, rankBg: '#F1F5F4', rankColor: '#64748B', level: 'Perak', levelColor: '#64748B', levelBg: '#F1F5F4' },
+    ];
+
+    // Country performance table
+    const rowBase = 'display:grid; grid-template-columns:1.4fr 1fr 1.2fr 1fr; padding:14px 24px; align-items:center; border-bottom:1px solid ' + T.line2 + ';';
+    const cp = [
+      ['Malaysia', '474', 'RM 1.32j', '38%'],
+      ['Arab Saudi', '225', 'RM 0.94j', '18%'],
+      ['Uganda', '150', 'RM 0.48j', '12%'],
+      ['Chad', '112', 'RM 0.31j', '9%'],
+      ['Nigeria', '100', 'RM 0.29j', '8%'],
+      ['India', '100', 'RM 0.26j', '8%'],
+      ['Burkina Faso', '87', 'RM 0.22j', '7%'],
+    ];
+    const countryPerf = cp.map(r => ({ name: r[0], orders: r[1], sales: r[2], share: r[3], rowStyle: rowBase }));
+
+    // Activities
+    const act = (icon, tint, color, title, who, time, last) => ({
+      icon: E('span', { style: { display: 'flex' } }, icons[icon]()), tint, color, title, who, time,
+      lineStyle: 'flex:1; width:2px; background:' + (last ? 'transparent' : T.line) + '; margin:4px 0;',
+    });
+    const activities = [
+      act('money', '#EAF7EE', '#16A34A', 'Bayaran disahkan \u2014 NQ-2027-001246', 'Fatimah (Finance)', '5 minit lalu'),
+      act('po', '#edeee0', '#42481c', 'Vendor terima PO-2027-0342', 'Al-Barakah Livestock', '22 minit lalu'),
+      act('upload', '#E8F0FB', '#2563EB', 'Laporan pelaksanaan dimuat naik', 'Sahara Cattle Co.', '1 jam lalu'),
+      act('cart', '#FBF3DC', '#C9A227', 'Tempahan baharu NQ-2027-001248', 'Khidmat Pelanggan', '2 jam lalu'),
+      act('mail', '#edeee0', '#42481c', 'Sijil dipos ke pelanggan (12 unit)', 'Operasi', '3 jam lalu'),
+      act('check', '#EAF7EE', '#16A34A', 'HQ verify 8 laporan pelaksanaan', 'Admin HQ', '4 jam lalu', true),
+    ];
+
+    // Orders
+    const badge = (bg, col) => 'display:inline-block; font-size:11.5px; font-weight:600; border-radius:20px; padding:4px 12px; background:' + bg + '; color:' + col + ';';
+    const st = {
+      'Selesai': badge('#EAF7EE', '#16A34A'),
+      'Dalam Proses': badge('#E8F0FB', '#2563EB'),
+      'Menunggu Bayaran': badge('#FEF3E2', '#D97706'),
+      'Dibatalkan': badge('#FDECEC', '#DC2626'),
+      'Draf': badge('#F1F5F4', '#64748B'),
+    };
+    const oRow = 'display:grid; grid-template-columns:1.3fr 1.5fr 1.4fr 0.9fr 1.1fr 0.7fr 1fr 1.1fr; padding:14px 24px; align-items:center; border-bottom:1px solid ' + T.line2 + ';';
+    const od = [
+      ['NQ-2027-001248', 'Ahmad Zaki bin Hassan', 'Qurban \u2013 Lembu', 'Delima', 'Uganda', 4, 'RM 2,450', 'Dalam Proses'],
+      ['NQ-2027-001247', 'Nurul Aina binti Rahim', 'Aqiqah \u2013 Kambing', 'Mutiara', 'Malaysia', 1, 'RM 850', 'Selesai'],
+      ['NQ-2027-001246', 'Mohd Firdaus bin Omar', 'Qurban \u2013 Unta', 'Topaz', 'Arab Saudi', 7, 'RM 5,200', 'Menunggu Bayaran'],
+      ['NQ-2027-001245', 'Siti Khadijah bt Yusof', 'Dam', 'Zamrud', 'Arab Saudi', 1, 'RM 720', 'Selesai'],
+      ['NQ-2027-001244', 'Zulhilmi bin Abdullah', 'Nazar Haiwan \u2013 Kambing', 'Nilam', 'Chad', 1, 'RM 980', 'Dalam Proses'],
+      ['NQ-2027-001243', 'Rosmah binti Idris', 'Qurban \u2013 Lembu', 'Delima', 'Nigeria', 3, 'RM 2,300', 'Dibatalkan'],
+      ['NQ-2027-001242', 'Zulkifli bin Aziz', 'Aqiqah \u2013 Kambing', 'Mutiara', 'Malaysia', 2, 'RM 900', 'Draf'],
+      ['NQ-2027-001241', 'Aminah binti Salleh', 'Qurban \u2013 Lembu', 'Zamrud', 'Burkina Faso', 7, 'RM 2,150', 'Selesai'],
+    ];
+    const orders = od.map(o => ({ no: o[0], name: o[1], service: o[2], pkg: o[3], country: o[4], qty: o[5], amount: o[6], status: o[7], badgeStyle: st[o[7]], rowStyle: oRow }));
+
+    const pkgBreak = [
+      { name: 'Delima', count: 428, color: '#42481c', width: '100%' },
+      { name: 'Zamrud', count: 312, color: '#5a6127', width: '73%' },
+      { name: 'Topaz', count: 236, color: '#8a924e', width: '55%' },
+      { name: 'Nilam', count: 172, color: '#C9A227', width: '40%' },
+      { name: 'Mutiara', count: 100, color: '#d3d6ab', width: '23%' },
+    ];
+    const animalBreak = [
+      { name: 'Lembu', count: '742', icon: 'ph ph-cow', tint: '#edeee0', color: '#42481c' },
+      { name: 'Kambing', count: '388', icon: 'ph ph-dog', tint: '#edeee0', color: '#42481c' },
+      { name: 'Unta', count: '96', icon: 'ph ph-horse', tint: '#edeee0', color: '#42481c' },
+    ];
+    const period = this.state.period || 'Tahun';
+    const _chks = this.state.checks || {};
+    const mkChk = (k) => ({ on: !!_chks[k], off: !_chks[k], toggle: () => this.setState({ checks: Object.assign({}, _chks, { [k]: !_chks[k] }) }),
+      style: 'width:20px; height:20px; border-radius:6px; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;' + (_chks[k] ? 'background:#42481c; border:1px solid #42481c;' : 'border:1.5px solid var(--line);') });
+    const chkJualan = mkChk('jualan'), chkSasaran = mkChk('sasaran'), chkNegara = mkChk('negara'), chkPrestasi = mkChk('prestasi'), chkPakej = mkChk('pakej'), chkHaiwan = mkChk('haiwan'), chkTerkini = mkChk('terkini');
+    const filterDate = this.state.filterDate || '2027-06-05';
+    const periodTabs = ['Hari', 'Bulan', 'Tahun'].map(p => {
+      const on = period === p;
+      return { label: p, onClick: () => this.setState({ period: p }), style: '' };
+    });
+    const themeIcon = ph(dark ? 'sun' : 'moon', 19);
+    const exportExcel = () => {
+      if (typeof XLSX === 'undefined') { alert('Pustaka Excel belum dimuat. Sila cuba semula.'); return; }
+      const aoa = [['No. Tempahan', 'Pelanggan', 'Servis', 'Pakej', 'Negara', 'Kuantiti', 'Jumlah', 'Status']];
+      od.forEach(o => aoa.push([o[0], o[1], o[2], o[3], o[4], o[5], o[6], o[7]]));
+      const ws = XLSX.utils.aoa_to_sheet(aoa);
+      ws['!cols'] = [{ wch: 18 }, { wch: 24 }, { wch: 20 }, { wch: 12 }, { wch: 14 }, { wch: 10 }, { wch: 12 }, { wch: 16 }];
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Tempahan');
+      XLSX.writeFile(wb, 'Dashboard-Nadi-Qurban.xlsx');
+    };
+    return { nav, kpis, salesChart, gauge, countries, vendors, countryPerf, activities, orders, pkgBreak, animalBreak, periodTabs, filterDate, onFilterDate: (e) => this.setState({ filterDate: e.target.value }), exportExcel, chkJualan, chkSasaran, chkNegara, chkPrestasi, chkPakej, chkHaiwan, chkTerkini, theme, toggleTheme, themeIcon, userName };
+  }
+}
+</script>
+</body>
+</html>

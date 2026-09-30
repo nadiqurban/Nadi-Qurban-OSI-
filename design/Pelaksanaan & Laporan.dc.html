@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; background:#F6F8F7; color:#1A1D21; -webkit-font-smoothing: antialiased; }
+  a { color:#42481c; text-decoration:none; } a:hover { color:#5a6127; }
+  ::-webkit-scrollbar { width:10px; height:10px; }
+  ::-webkit-scrollbar-thumb { background:#b3b79a; border-radius:6px; border:2px solid transparent; background-clip:padding-box; }
+</style>
+</helmet>
+
+<div style="display:flex; min-height:100vh; background:#F6F8F7;">
+
+  <!-- SIDEBAR -->
+  <aside style="width:260px; flex-shrink:0; background:#fff; border-right:1px solid #E2E8F0; display:flex; flex-direction:column; position:sticky; top:0; height:100vh;">
+    <div style="height:72px; display:flex; align-items:center; gap:12px; padding:0 22px; border-bottom:1px solid #E2E8F0; flex-shrink:0;">
+      <div style="width:38px; height:38px; border-radius:10px; overflow:hidden;"><img src="uploads/Untitled design (2).png" alt="Nadi Qurban" style="width:100%; height:100%; object-fit:cover; display:block; transform:scale(1.22);"></div>
+      <div style="line-height:1;"><div style="font-size:15px; font-weight:800; letter-spacing:.3px; color:#42481c;">NADI QURBAN</div><div style="font-size:10.5px; font-weight:600; letter-spacing:2px; color:#94A3AC; margin-top:3px;">OSI SYSTEM</div></div>
+    </div>
+    <nav style="flex:1; overflow-y:auto; padding:14px 12px;">
+      <sc-for list="{{ nav }}" as="item" hint-placeholder-count="14">
+        <sc-if value="{{ item.isSection }}" hint-placeholder-val="{{ false }}"><div style="font-size:10.5px; font-weight:700; letter-spacing:1.4px; color:#94A3AC; padding:16px 14px 8px;">{{ item.label }}</div></sc-if>
+        <sc-if value="{{ item.isItem }}" hint-placeholder-val="{{ true }}">
+          <div style="{{ item.rowStyle }}" onClick="{{ item.onClick }}">
+            <span style="position:absolute; left:0; top:8px; bottom:8px; width:3px; border-radius:0 3px 3px 0; background:{{ item.bar }};"></span>
+            <i class="{{ item.icon }}" style="font-size:19px; color:{{ item.iconColor }};"></i>
+            <span style="flex:1;">{{ item.label }}</span>
+            <sc-if value="{{ item.badge }}" hint-placeholder-val="{{ false }}"><span style="background:#C9A227; color:#fff; font-size:10.5px; font-weight:700; border-radius:20px; padding:2px 8px;">{{ item.badge }}</span></sc-if>
+          </div>
+        </sc-if>
+      </sc-for>
+    </nav>
+    <div style="padding:14px 16px; display:flex; align-items:center; gap:11px; border-top:1px solid #E2E8F0;">
+      <div style="width:38px; height:38px; border-radius:50%; background:#42481c; color:#C9A227; font-weight:800; font-size:13px; display:flex; align-items:center; justify-content:center;">MN</div>
+      <div style="min-width:0; flex:1;"><div style="font-size:13px; font-weight:700; color:#1A1D21;">Muhammad Nurfitkri</div><div style="font-size:11px; color:#64748B;">Superadmin</div></div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div style="flex:1; min-width:0; display:flex; flex-direction:column;">
+    <header style="height:72px; background:#fff; border-bottom:1px solid #E2E8F0; display:flex; align-items:center; padding:0 32px; gap:24px; position:sticky; top:0; z-index:20;">
+      <div style="flex:1; max-width:520px; margin:0 auto; display:flex; align-items:center; gap:11px; background:#F6F8F7; border:1px solid #E2E8F0; border-radius:10px; padding:10px 15px;">
+        <i class="ph ph-magnifying-glass" style="font-size:18px; color:#94A3AC;"></i>
+        <span style="font-size:13.5px; color:#94A3AC;">Cari tempahan, vendor&hellip;</span>
+        <span style="margin-left:auto; font-size:11px; color:#94A3AC; border:1px solid #E2E8F0; border-radius:5px; padding:2px 7px; background:#fff;">&#8984;K</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <div style="position:relative; width:40px; height:40px; border-radius:10px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; color:#475569;"><i class="ph ph-bell" style="font-size:20px;"></i><span style="position:absolute; top:-4px; right:-4px; background:#DC2626; color:#fff; font-size:10px; font-weight:700; border-radius:20px; min-width:18px; height:18px; display:flex; align-items:center; justify-content:center; padding:0 4px; border:2px solid #fff;">7</span></div>
+        <div style="width:1px; height:30px; background:#E2E8F0; margin:0 4px;"></div>
+        <div style="width:40px; height:40px; border-radius:50%; background:#42481c; color:#C9A227; font-weight:800; font-size:13px; display:flex; align-items:center; justify-content:center;">MN</div>
+      </div>
+    </header>
+
+    <main style="flex:1; padding:28px 32px 56px; overflow-y:auto;">
+      <div style="display:flex; align-items:flex-end; gap:16px; margin-bottom:24px; flex-wrap:wrap;">
+        <div style="margin-right:auto;">
+          <div style="display:flex; align-items:center; gap:8px; font-size:12.5px; color:#94A3AC; margin-bottom:6px;"><span>Operasi</span><i class="ph ph-caret-right" style="font-size:12px;"></i><span style="color:#42481c; font-weight:600;">Pelaksanaan &amp; Laporan</span></div>
+          <h1 style="font-size:23px; font-weight:700;">Pelaksanaan &amp; Laporan</h1>
+          <p style="font-size:13.5px; color:#64748B; margin-top:4px;">Pantau pelaksanaan ibadah &amp; sahkan laporan yang dimuat naik vendor.</p>
+        </div>
+      </div>
+
+      <!-- stats -->
+      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:22px;">
+        <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
+          <div style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; padding:16px 18px; display:flex; align-items:center; gap:14px;">
+            <div style="width:42px; height:42px; border-radius:10px; background:{{ s.tint }}; color:{{ s.color }}; display:flex; align-items:center; justify-content:center;"><i class="{{ s.icon }}" style="font-size:22px;"></i></div>
+            <div><div style="font-size:22px; font-weight:700; line-height:1;">{{ s.value }}</div><div style="font-size:12.5px; color:#64748B; margin-top:5px;">{{ s.label }}</div></div>
+          </div>
+        </sc-for>
+      </div>
+
+      <!-- tabs -->
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:14px; flex-wrap:wrap;">
+        <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3"><span onClick="{{ t.onClick }}" style="{{ t.style }}">{{ t.label }} <span style="{{ t.countStyle }}">{{ t.count }}</span></span></sc-for>
+        <button onClick="{{ exportExcel }}" style="margin-left:auto; display:inline-flex; align-items:center; gap:7px; background:#16A34A; color:#fff; border:none; border-radius:9px; padding:9px 15px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-microsoft-excel-logo" style="font-size:16px;"></i> Eksport Excel</button>
+      </div>
+
+      <!-- filters -->
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px; flex-wrap:wrap;">
+        <span style="font-size:12px; font-weight:600; color:#94A3AC; display:inline-flex; align-items:center; gap:6px;"><i class="ph ph-funnel" style="font-size:15px;"></i> Tapis:</span>
+        <select value="{{ fServis }}" onChange="{{ onFServis }}" style="font-family:inherit; font-size:12.5px; color:#334155; border:1px solid #E2E8F0; border-radius:8px; padding:8px 11px; outline:none; background:#fff; cursor:pointer;"><sc-for list="{{ servisOpts }}" as="o" hint-placeholder-count="3"><option>{{ o }}</option></sc-for></select>
+        <select value="{{ fCountry }}" onChange="{{ onFCountry }}" style="font-family:inherit; font-size:12.5px; color:#334155; border:1px solid #E2E8F0; border-radius:8px; padding:8px 11px; outline:none; background:#fff; cursor:pointer;"><sc-for list="{{ countryOpts }}" as="o" hint-placeholder-count="3"><option>{{ o }}</option></sc-for></select>
+        <select value="{{ fVendor }}" onChange="{{ onFVendor }}" style="font-family:inherit; font-size:12.5px; color:#334155; border:1px solid #E2E8F0; border-radius:8px; padding:8px 11px; outline:none; background:#fff; cursor:pointer;"><sc-for list="{{ vendorOpts }}" as="o" hint-placeholder-count="3"><option>{{ o }}</option></sc-for></select>
+        <sc-if value="{{ hasFilter }}" hint-placeholder-val="{{ false }}"><span onClick="{{ clearFilter }}" style="display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:600; color:#DC2626; cursor:pointer;"><i class="ph ph-x" style="font-size:13px;"></i> Reset</span></sc-if>
+      </div>
+
+      <!-- table -->
+      <section style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; overflow:hidden;">
+        <div style="display:grid; grid-template-columns:32px 1.3fr 1.4fr 1fr 1.2fr 1.2fr 1fr 1.1fr; gap:14px; padding:13px 20px; background:#F6F8F7; border-bottom:1px solid #E2E8F0; font-size:11px; font-weight:700; letter-spacing:.4px; color:#94A3AC; text-transform:uppercase;">
+          <span onClick="{{ toggleAll }}" style="{{ allCheckStyle }}"><sc-if value="{{ allChecked }}" hint-placeholder-val="{{ false }}"><i class="ph-fill ph-check" style="font-size:12px; color:#fff;"></i></sc-if></span><span>No. Tempahan</span><span>Pelanggan</span><span>Pakej</span><span>Negara</span><span>Vendor</span><span style="text-align:center;">Status</span><span style="text-align:right;">Tindakan</span>
+        </div>
+        <sc-for list="{{ rows }}" as="r" hint-placeholder-count="6">
+          <div style="display:grid; grid-template-columns:32px 1.3fr 1.4fr 1fr 1.2fr 1.2fr 1fr 1.1fr; gap:14px; padding:14px 20px; border-bottom:1px solid #F1F5F4; align-items:center; font-size:13px;">
+            <span onClick="{{ r.onCheck }}" style="{{ r.checkStyle }}"><sc-if value="{{ r.checked }}" hint-placeholder-val="{{ false }}"><i class="ph-fill ph-check" style="font-size:12px; color:#fff;"></i></sc-if></span>
+            <span style="font-weight:600; color:#42481c;">{{ r.no }}</span>
+            <span style="min-width:0;"><span style="display:block; font-weight:600; color:#1A1D21; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ r.name }}</span><span style="font-size:11.5px; color:#94A3AC;">{{ r.ibadah }}</span></span>
+            <span style="color:#475569;">{{ r.pkg }}</span>
+            <span style="color:#475569;">{{ r.country }}</span>
+            <span style="color:#475569;">{{ r.vendor }}</span>
+            <span style="text-align:center;"><span style="{{ r.badgeStyle }}">{{ r.statusLabel }}</span></span>
+            <span style="text-align:right;">
+              <sc-if value="{{ r.canUpload }}" hint-placeholder-val="{{ true }}"><button onClick="{{ r.onUpload }}" style="display:inline-flex; align-items:center; gap:6px; background:#42481c; color:#fff; border:none; border-radius:8px; padding:8px 13px; font-size:12.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-upload-simple" style="font-size:15px;"></i> Upload Laporan</button></sc-if>
+              <sc-if value="{{ r.canVerify }}" hint-placeholder-val="{{ false }}"><button onClick="{{ r.onReview }}" style="display:inline-flex; align-items:center; gap:6px; background:#C9A227; color:#fff; border:none; border-radius:8px; padding:8px 13px; font-size:12.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-magnifying-glass" style="font-size:15px;"></i> Semak</button></sc-if>
+              <sc-if value="{{ r.done }}" hint-placeholder-val="{{ false }}"><span onClick="{{ r.onReview }}" style="display:inline-flex; align-items:center; gap:6px; color:#16A34A; font-size:12.5px; font-weight:600; cursor:pointer;"><i class="ph-fill ph-check-circle" style="font-size:15px;"></i> Lihat Laporan</span></sc-if>
+            </span>
+          </div>
+        </sc-for>
+        <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:44px 24px; text-align:center;">
+            <div style="width:52px; height:52px; border-radius:13px; background:#F1F5F4; color:#94A3AC; display:flex; align-items:center; justify-content:center; margin:0 auto 12px;"><i class="ph ph-shopping-bag" style="font-size:26px;"></i></div>
+            <div style="font-size:14px; font-weight:600; color:#334155;">{{ emptyText }}</div>
+          </div>
+        </sc-if>
+      </section>
+    </main>
+  </div>
+
+  <!-- ===== MEDIA LIGHTBOX ===== -->
+  <sc-if value="{{ showLightbox }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeLightbox }}" style="position:fixed; inset:0; z-index:120; background:rgba(12,14,12,.82); display:flex; align-items:center; justify-content:center; padding:32px;">
+      <div style="max-width:860px; width:100%; background:#fff; border-radius:14px; overflow:hidden; box-shadow:0 24px 60px rgba(0,0,0,.4);">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:13px 18px; border-bottom:1px solid #E2E8F0;">
+          <span style="font-size:13px; font-weight:700; color:#334155;">{{ lbLabel }}</span>
+          <span onClick="{{ closeLightbox }}" style="width:30px; height:30px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#64748B;"><i class="ph ph-x" style="font-size:15px;"></i></span>
+        </div>
+        <div style="background:#0f120f; display:flex; align-items:center; justify-content:center; max-height:72vh; overflow:auto;">
+          <sc-if value="{{ lbIsVideo }}" hint-placeholder-val="{{ false }}"><video src="{{ lbSrc }}" controls autoplay style="max-width:100%; max-height:72vh; display:block;"></video></sc-if>
+          <sc-if value="{{ lbIsImage }}" hint-placeholder-val="{{ false }}"><img src="{{ lbSrc }}" alt="bukti" style="max-width:100%; max-height:72vh; display:block;"></sc-if>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ===== REPORT MODAL ===== -->
+  <sc-if value="{{ showModal }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; inset:0; z-index:100; background:rgba(20,24,20,.55); display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; padding:32px 16px;">
+      <div style="width:100%; max-width:600px; background:#fff; border-radius:14px; box-shadow:0 24px 60px rgba(0,0,0,.3); overflow:hidden;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 24px; border-bottom:1px solid #E2E8F0;">
+          <div style="display:flex; align-items:center; gap:11px;"><span style="width:36px; height:36px; border-radius:10px; background:#edeee0; color:#42481c; display:flex; align-items:center; justify-content:center;"><i class="ph ph-shopping-bag" style="font-size:19px;"></i></span><div><h2 style="font-size:16px; font-weight:700;">{{ modalTitle }}</h2><p style="font-size:12px; color:#94A3AC; margin-top:2px;">{{ mNo }} &middot; {{ mVendor }}</p></div></div>
+          <span onClick="{{ closeModal }}" style="width:32px; height:32px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#64748B;"><i class="ph ph-x" style="font-size:16px;"></i></span>
+        </div>
+        <div style="padding:22px 24px; display:flex; flex-direction:column; gap:16px;">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div style="background:#F6F8F7; border-radius:10px; padding:11px 13px;"><div style="font-size:11px; color:#94A3AC;">Pelanggan</div><div style="font-size:13px; font-weight:600; margin-top:2px;">{{ mName }}</div></div>
+            <div style="background:#F6F8F7; border-radius:10px; padding:11px 13px;"><div style="font-size:11px; color:#94A3AC;">Ibadah &middot; Negara</div><div style="font-size:13px; font-weight:600; margin-top:2px;">{{ mIbadah }} &middot; {{ mCountry }}</div></div>
+          </div>
+
+          <div>
+            <div style="font-size:12px; font-weight:700; color:#334155; margin-bottom:8px;">Muat Naik Bukti Pelaksanaan</div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+              <label style="display:flex; flex-direction:column; align-items:center; gap:6px; border:1.5px dashed #C9A227; border-radius:10px; padding:16px 10px; cursor:pointer; color:#42481c; background:#FCFBF5;"><i class="ph ph-image" style="font-size:22px;"></i><span style="font-size:11.5px; font-weight:600;">Gambar (PNG)</span><span style="font-size:10.5px; color:#94A3AC;">{{ mCountImg }}</span><input type="file" accept="image/png" multiple onChange="{{ onImg }}" style="display:none;"></label>
+              <label style="display:flex; flex-direction:column; align-items:center; gap:6px; border:1.5px dashed #7C3AED; border-radius:10px; padding:16px 10px; cursor:pointer; color:#7C3AED; background:#FBF9FE;"><i class="ph ph-video" style="font-size:22px;"></i><span style="font-size:11.5px; font-weight:600;">Video (WEBP)</span><span style="font-size:10.5px; color:#94A3AC;">{{ mCountVid }}</span><input type="file" accept="image/webp,video/webm" multiple onChange="{{ onVid }}" style="display:none;"></label>
+            </div>
+          </div>
+
+          <sc-if value="{{ hasGallery }}" hint-placeholder-val="{{ false }}">
+            <div>
+              <div style="font-size:12px; font-weight:700; color:#334155; margin-bottom:8px;">Bukti Dimuat Naik</div>
+              <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px;">
+                <sc-for list="{{ gallery }}" as="g" hint-placeholder-count="4">
+                  <sc-if value="{{ g.isImg }}" hint-placeholder-val="{{ false }}"><div onClick="{{ g.onOpen }}" style="display:block; aspect-ratio:1; border-radius:9px; overflow:hidden; border:1px solid #E2E8F0; cursor:pointer; position:relative;"><img src="{{ g.src }}" alt="bukti" style="width:100%; height:100%; object-fit:cover; display:block;"><span style="position:absolute; right:5px; bottom:5px; background:rgba(20,24,20,.6); color:#fff; width:22px; height:22px; border-radius:6px; display:flex; align-items:center; justify-content:center;"><i class="ph ph-magnifying-glass-plus" style="font-size:13px;"></i></span></div></sc-if>
+                  <sc-if value="{{ g.isFile }}" hint-placeholder-val="{{ false }}"><div onClick="{{ g.onOpen }}" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; aspect-ratio:1; border-radius:9px; border:1px solid #E2E8F0; background:{{ g.tint }}; color:{{ g.color }}; cursor:pointer;"><i class="{{ g.icon }}" style="font-size:26px;"></i><span style="font-size:10px; font-weight:600; text-align:center; padding:0 4px;">{{ g.label }}</span></div></sc-if>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Nota Laporan</label><textarea value="{{ mNotes }}" onInput="{{ onNotes }}" rows="3" placeholder="Catatan pelaksanaan, jumlah agihan, dsb." style="width:100%; resize:vertical; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></textarea></div>
+
+          <sc-if value="{{ mVerifyMode }}" hint-placeholder-val="{{ false }}">
+            <div style="background:#F6F8F7; border-radius:10px; padding:13px 15px; display:flex; align-items:center; gap:10px;"><i class="ph ph-info" style="font-size:17px; color:#42481c;"></i><span style="font-size:12.5px; color:#475569;">Semak semua bukti sebelum mengesahkan. Status akan bertukar kepada <b style="color:#16A34A;">Selesai</b>.</span></div>
+          </sc-if>
+        </div>
+        <div style="padding:0 24px 22px; display:flex; gap:10px; justify-content:flex-end;">
+          <button onClick="{{ closeModal }}" style="background:#fff; color:#334155; border:1px solid #E2E8F0; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;">Tutup</button>
+          <sc-if value="{{ mUploadMode }}" hint-placeholder-val="{{ true }}"><button onClick="{{ submitReport }}" style="display:inline-flex; align-items:center; gap:7px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-paper-plane-tilt" style="font-size:16px;"></i> Hantar Laporan</button></sc-if>
+          <sc-if value="{{ mVerifyMode }}" hint-placeholder-val="{{ false }}"><button onClick="{{ verifyReport }}" style="display:inline-flex; align-items:center; gap:7px; background:#16A34A; color:#fff; border:none; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-check-circle" style="font-size:16px;"></i> Sahkan Selesai</button></sc-if>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: 'pending', reports: {}, showModal: false, cur: null, draft: {} };
+  renderVals() {
+    const s = this.state;
+    const set = (o) => this.setState(o);
+
+    const navItem = (icon, label, active, badge) => ({
+      isItem: true, isSection: false, label, badge: badge || '',
+      icon, iconColor: active ? '#42481c' : '#94A3AC', bar: active ? '#42481c' : 'transparent',
+      onClick: () => { const m = { 'Dashboard': 'Dashboard Operasi.dc.html', 'Bayaran Ansuran': 'Bayaran Ansuran.dc.html', 'Tempahan & Pelanggan': 'Tempahan & Pelanggan.dc.html', 'Pengesahan Bayaran': 'Tempahan & Pelanggan.dc.html', 'Lafaz Akad': 'Lafaz Akad.dc.html', 'Agihan Negara': 'Agihan Negara.dc.html', 'Pelaksanaan & Laporan': 'Pelaksanaan & Laporan.dc.html', 'AWB & Postage': 'AWB & Postage.dc.html', 'Tempahan Selesai': 'Tempahan Selesai.dc.html', 'Vendor': 'Vendor.dc.html', 'Produk': 'Produk.dc.html', 'Dokumen': 'Dokumen.dc.html', 'Sales CRM': 'Sales CRM.dc.html', 'Kod Promosi': 'Kod Promosi.dc.html', 'Kewangan': 'Kewangan.dc.html', 'Pusat Laporan': 'Pusat Laporan.dc.html', 'Audit Log': 'Audit Log.dc.html', 'Notifikasi': 'Notifikasi.dc.html', 'Pengguna': 'Pengguna & Peranan.dc.html', 'Sijil': 'Tempahan & Pelanggan.dc.html', 'Tetapan': 'Tempahan & Pelanggan.dc.html' }; if (m[label] && !active) { try { location.href = (function(p){try{var u=new URL(p,location.href);new URLSearchParams(location.search).forEach(function(v,k){if(!u.searchParams.has(k))u.searchParams.set(k,v);});return u.href;}catch(e){return p;}})(m[label]); } catch (e) {} } },
+      rowStyle: 'position:relative; display:flex; align-items:center; gap:12px; padding:10px 14px; margin:2px 0; border-radius:9px; font-size:13.5px; cursor:pointer;' + (active ? 'background:#edeee0; color:#42481c; font-weight:700;' : 'color:#475569; font-weight:500;'),
+    });
+    const sec = (label) => ({ isSection: true, isItem: false, label });
+    const nav = [
+      sec('UTAMA'), navItem('ph ph-squares-four', 'Dashboard', false),
+      sec('OPERASI'), navItem('ph ph-calendar-check', 'Bayaran Ansuran', false), navItem('ph ph-shopping-cart-simple', 'Tempahan & Pelanggan', false, '34'), navItem('ph ph-seal-check', 'Pengesahan Bayaran', false, '5'), navItem('ph ph-hand-heart', 'Lafaz Akad', false), navItem('ph ph-globe-hemisphere-west', 'Agihan Negara', false), navItem('ph ph-shopping-bag', 'Pelaksanaan & Laporan', true), navItem('ph ph-package', 'AWB & Postage', false), navItem('ph ph-check-square-offset', 'Tempahan Selesai', false), navItem('ph ph-truck', 'Vendor', false), navItem('ph ph-cow', 'Produk', false), navItem('ph ph-folders', 'Dokumen', false),
+      sec('JUALAN & KEWANGAN'), navItem('ph ph-users-three', 'Sales CRM', false), navItem('ph ph-ticket', 'Kod Promosi', false), navItem('ph ph-wallet', 'Kewangan', false, '87'),
+      sec('LAPORAN'), navItem('ph ph-chart-bar', 'Pusat Laporan', false), navItem('ph ph-clock-counter-clockwise', 'Audit Log', false),
+      sec('SISTEM'), navItem('ph ph-bell', 'Notifikasi', false, '7'), navItem('ph ph-users', 'Pengguna', false), navItem('ph ph-certificate', 'Sijil', false), navItem('ph ph-gear-six', 'Tetapan', false),
+    ];
+
+    // source: distributed orders from Agihan Negara (localStorage bridge) + demo
+    let assigned = [];
+    try {
+      const store = JSON.parse(localStorage.getItem('nq_akad_orders') || '{}');
+      // reuse akad store for names; distribution stored separately
+    } catch (e) {}
+    const demo = [
+      ['NQ-QB-LE-001243', 'Ahmad Zaki bin Hassan', 'Qurban — Lembu', 'Uganda', 'Uganda Charity — SP001', 'Delima'],
+      ['NQ-QB-KA-001244', 'Nurul Ain binti Rahman', 'Qurban — Kambing', 'Nigeria', 'Kano Farms — SP009', 'Zamrud'],
+      ['NQ-QB-UN-001246', 'Mohd Firdaus bin Omar', 'Qurban — Unta', 'Somalia', 'Horn Qurban Services — SP011', 'Nilam'],
+      ['NQ-QB-LE-001248', 'Iskandar bin Yusof', 'Qurban — Lembu', 'Palestin', 'Gaza Relief Vendor — SP014', 'Topaz'],
+      ['NQ-QB-KA-001250', 'Faridah binti Omar', 'Qurban — Kambing', 'Bangladesh', 'Dhaka Agro Farm — SP012', 'Mutiara'],
+      ['NQ-QB-LE-001251', 'Rosli bin Ahmad', 'Qurban — Lembu', 'Uganda', 'Uganda Charity — SP001', 'Delima'],
+    ];
+    const reports = s.reports || {};
+    let asgArr = [];
+    try {
+      const a = JSON.parse(localStorage.getItem('nq_assigned') || '{}');
+      asgArr = Object.values(a).sort((x, y) => (y.at || 0) - (x.at || 0)).map(o => [o.no, o.name, o.ibadah || 'Qurban', o.country || '-', (o.vendor || '-'), o.pkg || '-']);
+    } catch (e) {}
+    const seenD = {};
+    const demoAll = asgArr.concat(demo).filter(d => { if (seenD[d[0]]) return false; seenD[d[0]] = 1; return true; });
+    const all = demoAll.map(d => {
+      const r = reports[d[0]] || {};
+      const status = r.verified ? 'done' : (r.submitted ? 'review' : 'pending');
+      return { no: d[0], name: d[1], ibadah: d[2], country: d[3], vendor: d[4], pkg: d[5] || '-', status };
+    });
+    const pendingList = all.filter(o => o.status === 'pending');
+    const reviewList = all.filter(o => o.status === 'review');
+    const doneList = all.filter(o => o.status === 'done');
+    const byTab = { pending: pendingList, review: reviewList, done: doneList };
+    const servisOf = (ib) => { const t = (ib || '').toLowerCase(); return t.includes('lembu') ? 'Lembu' : t.includes('unta') ? 'Unta' : t.includes('kambing') ? 'Kambing' : 'Lain'; };
+    const fServis = s.fServis || 'Semua Servis', fCountry = s.fCountry || 'Semua Negara', fVendor = s.fVendor || 'Semua Vendor';
+    const uniq = (arr) => arr.filter((v, i) => v && arr.indexOf(v) === i).sort();
+    const baseTab = byTab[s.tab] || pendingList;
+    const shown = baseTab.filter(o => (fServis === 'Semua Servis' || servisOf(o.ibadah) === fServis) && (fCountry === 'Semua Negara' || o.country === fCountry) && (fVendor === 'Semua Vendor' || o.vendor === fVendor));
+
+    const badge = (bg, col) => 'display:inline-block; font-size:11.5px; font-weight:600; border-radius:20px; padding:4px 12px; background:' + bg + '; color:' + col + ';';
+    const statusMap = {
+      pending: { label: 'Menunggu Pelaksanaan', style: badge('#F1F5F4', '#64748B') },
+      review: { label: 'Menunggu Semakan HQ', style: badge('#FEF3E2', '#D97706') },
+      done: { label: 'Selesai', style: badge('#EAF7EE', '#16A34A') },
+    };
+    const _chk = s.checkedRows || {};
+    const chkBox = (on) => 'width:20px; height:20px; border-radius:6px; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;' + (on ? 'background:#42481c; border:1px solid #42481c;' : 'border:1.5px solid #CBD5E1;');
+    const rows = shown.map(o => ({
+      no: o.no, name: o.name, ibadah: o.ibadah, pkg: o.pkg, country: o.country, vendor: o.vendor,
+      checked: !!_chk[o.no], checkStyle: chkBox(!!_chk[o.no]),
+      onCheck: () => set({ checkedRows: Object.assign({}, _chk, { [o.no]: !_chk[o.no] }) }),
+      statusLabel: statusMap[o.status].label, badgeStyle: statusMap[o.status].style,
+      canUpload: o.status === 'pending', canVerify: o.status === 'review', done: o.status === 'done',
+      onUpload: () => set({ showModal: true, cur: o, draft: {} }),
+      onReview: () => set({ showModal: true, cur: o, draft: {} }),
+    }));
+
+    const tabs = [['pending', 'Menunggu Pelaksanaan', pendingList.length], ['review', 'Menunggu Semakan', reviewList.length], ['done', 'Selesai', doneList.length]].map(([k, label, count]) => {
+      const on = s.tab === k;
+      return { label, count: String(count), onClick: () => set({ tab: k }),
+        style: 'display:inline-flex; align-items:center; gap:8px; font-size:13px; font-weight:600; border-radius:9px; padding:9px 15px; cursor:pointer;' + (on ? 'background:#42481c; color:#fff;' : 'background:#fff; border:1px solid #E2E8F0; color:#475569;'),
+        countStyle: 'font-size:11px; font-weight:700; border-radius:20px; padding:1px 8px;' + (on ? 'background:rgba(255,255,255,.22); color:#fff;' : 'background:#F1F5F4; color:#64748B;') };
+    });
+
+    const stats = [
+      { icon: 'ph ph-shopping-bag', tint: '#F1F5F4', color: '#64748B', value: String(pendingList.length), label: 'Menunggu Pelaksanaan' },
+      { icon: 'ph ph-magnifying-glass', tint: '#FEF3E2', color: '#D97706', value: String(reviewList.length), label: 'Menunggu Semakan' },
+      { icon: 'ph ph-check-circle', tint: '#EAF7EE', color: '#16A34A', value: String(doneList.length), label: 'Selesai Disahkan' },
+      { icon: 'ph ph-images', tint: '#E8F0FB', color: '#2563EB', value: '1,842', label: 'Jumlah Bukti Dimuat Naik' },
+    ];
+
+    const cur = s.cur || {};
+    const d = s.draft || {};
+    const existing = (reports[cur.no] || {});
+    const imgs = d.imgs != null ? d.imgs : (existing.imgs || []);
+    const vids = d.vids != null ? d.vids : (existing.vids || []);
+    const pdfs = d.pdfs != null ? d.pdfs : (existing.pdfs || []);
+    const imgCount = imgs.length;
+    const vidCount = vids.length;
+    const pdfCount = pdfs.length;
+    const notes = d.notes != null ? d.notes : (existing.notes || '');
+    const fmtSize = (b) => b > 1048576 ? (b / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(b / 1024)) + ' KB';
+    // Use lightweight object URLs (no base64 in state) so large PNG/video files don't bloat storage.
+    const readFiles = (fileList, cb) => {
+      const files = Array.from(fileList || []);
+      cb(files.map(f => ({ src: URL.createObjectURL(f), name: f.name, size: fmtSize(f.size) })));
+    };
+    const openLb = (src, label, kind) => set({ lb: { src, label, kind } });
+    const isVid = (x) => /\.(webm|mp4|mov|ogg)$/i.test(x.name || '') || /^video\//.test(x.type || '');
+    const gallery = []
+      .concat(imgs.map(x => ({ isImg: true, isFile: false, src: x.src, label: (x.name || '') + (x.size ? ' · ' + x.size : ''), onOpen: () => openLb(x.src, x.name || 'Gambar', 'image') })))
+      .concat(vids.map(x => { const v = isVid(x); return { isImg: false, isFile: true, src: x.src, label: (x.name || 'Media') + (x.size ? ' · ' + x.size : ''), icon: v ? 'ph ph-video' : 'ph ph-image', tint: '#FBF9FE', color: '#7C3AED', onOpen: () => openLb(x.src, x.name || 'Media', v ? 'video' : 'image') }; }))
+      .concat(pdfs.map(x => ({ isImg: false, isFile: true, src: x.src, label: (x.name || 'PDF') + (x.size ? ' · ' + x.size : ''), icon: 'ph ph-file-pdf', tint: '#FEF6F6', color: '#DC2626', onOpen: () => window.open(x.src, '_blank') })));
+    const verifyMode = cur.status === 'review' || cur.status === 'done';
+    return {
+      nav, rows, tabs, stats,
+      allChecked: shown.length > 0 && shown.every(o => _chk[o.no]),
+      allCheckStyle: chkBox(shown.length > 0 && shown.every(o => _chk[o.no])),
+      toggleAll: () => { const nc = Object.assign({}, _chk); const ac = shown.length > 0 && shown.every(o => _chk[o.no]); if (ac) { shown.forEach(o => delete nc[o.no]); } else { shown.forEach(o => nc[o.no] = true); } set({ checkedRows: nc }); },
+      empty: shown.length === 0,
+      servisOpts: ['Semua Servis'].concat(uniq(all.map(o => servisOf(o.ibadah)))),
+      countryOpts: ['Semua Negara'].concat(uniq(all.map(o => o.country))),
+      vendorOpts: ['Semua Vendor'].concat(uniq(all.map(o => o.vendor))),
+      fServis, fCountry, fVendor,
+      onFServis: (e) => set({ fServis: e.target.value }),
+      onFCountry: (e) => set({ fCountry: e.target.value }),
+      onFVendor: (e) => set({ fVendor: e.target.value }),
+      hasFilter: fServis !== 'Semua Servis' || fCountry !== 'Semua Negara' || fVendor !== 'Semua Vendor',
+      clearFilter: () => set({ fServis: 'Semua Servis', fCountry: 'Semua Negara', fVendor: 'Semua Vendor' }),
+      exportExcel: () => {
+        if (typeof XLSX === 'undefined') { alert('Pustaka Excel belum dimuat. Sila cuba semula.'); return; }
+        const stTxt = { pending: 'Menunggu Pelaksanaan', review: 'Menunggu Semakan', done: 'Selesai' };
+        const aoa = [['No. Tempahan', 'Pelanggan', 'Ibadah', 'Pakej', 'Negara', 'Vendor', 'Status']];
+        shown.forEach(o => aoa.push([o.no, o.name, o.ibadah, o.pkg, o.country, o.vendor, stTxt[o.status]]));
+        const ws = XLSX.utils.aoa_to_sheet(aoa);
+        ws['!cols'] = [{ wch: 20 }, { wch: 24 }, { wch: 18 }, { wch: 12 }, { wch: 14 }, { wch: 26 }, { wch: 20 }];
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Pelaksanaan');
+        XLSX.writeFile(wb, 'Pelaksanaan-Laporan-Nadi-Qurban.xlsx');
+      },
+      emptyText: s.tab === 'pending' ? 'Tiada tempahan menunggu pelaksanaan.' : s.tab === 'review' ? 'Tiada laporan menunggu semakan.' : 'Belum ada laporan disahkan.',
+      showModal: s.showModal === true,
+      modalTitle: verifyMode ? 'Semak Laporan Pelaksanaan' : 'Upload Laporan Pelaksanaan',
+      mNo: cur.no || '', mVendor: cur.vendor || '', mName: cur.name || '', mIbadah: cur.ibadah || '', mCountry: cur.country || '',
+      mUploadMode: !verifyMode, mVerifyMode: verifyMode,
+      mCountImg: imgCount + ' fail', mCountVid: vidCount + ' fail', mCountPdf: pdfCount + ' fail',
+      mNotes: notes,
+      hasGallery: gallery.length > 0, gallery,
+      showLightbox: !!s.lb,
+      lbSrc: s.lb ? s.lb.src : '',
+      lbLabel: s.lb ? s.lb.label : '',
+      lbIsVideo: !!(s.lb && s.lb.kind === 'video'),
+      lbIsImage: !!(s.lb && s.lb.kind === 'image'),
+      closeLightbox: () => set({ lb: null }),
+      onImg: (e) => { readFiles(e.target.files, (arr) => set({ draft: { ...this.state.draft, imgs: arr } })); },
+      onVid: (e) => { readFiles(e.target.files, (arr) => set({ draft: { ...this.state.draft, vids: arr } })); },
+      onPdf: (e) => { readFiles(e.target.files, (arr) => set({ draft: { ...this.state.draft, pdfs: arr } })); },
+      onNotes: (e) => set({ draft: { ...d, notes: e.target.value } }),
+      closeModal: () => set({ showModal: false, cur: null, draft: {} }),
+      submitReport: () => set({ reports: { ...(s.reports || {}), [cur.no]: { submitted: true, imgs, vids, pdfs, notes, at: Date.now() } }, showModal: false, cur: null, draft: {}, tab: 'review' }),
+      verifyReport: () => { try { const p = JSON.parse(localStorage.getItem('nq_pipeline') || '{}'); if ((p[cur.no] || 0) < 4) { p[cur.no] = 4; localStorage.setItem('nq_pipeline', JSON.stringify(p)); } } catch (e) {} try { const r = JSON.parse(localStorage.getItem('nq_ready_awb') || '{}'); r[cur.no] = { no: cur.no, name: cur.name, ibadah: cur.ibadah, pkg: cur.pkg, country: cur.country, vendor: cur.vendor, at: Date.now() }; localStorage.setItem('nq_ready_awb', JSON.stringify(r)); } catch (e) {} set({ reports: { ...(s.reports || {}), [cur.no]: { ...(reports[cur.no] || {}), submitted: true, verified: true, imgs, vids, pdfs, notes } }, showModal: false, cur: null, draft: {}, tab: 'done' }); },
+    };
+  }
+}
+</script>
+</body>
+</html>

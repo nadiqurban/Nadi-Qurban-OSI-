@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; background:#F6F8F7; color:#1A1D21; -webkit-font-smoothing: antialiased; }
+  a { color:#42481c; text-decoration:none; } a:hover { color:#5a6127; }
+  ::-webkit-scrollbar { width:10px; height:10px; }
+  ::-webkit-scrollbar-thumb { background:#b3b79a; border-radius:6px; border:2px solid transparent; background-clip:padding-box; }
+</style>
+</helmet>
+
+<div style="display:flex; min-height:100vh; background:#F6F8F7;">
+
+  <!-- SIDEBAR -->
+  <aside style="width:260px; flex-shrink:0; background:#fff; border-right:1px solid #E2E8F0; display:flex; flex-direction:column; position:sticky; top:0; height:100vh;">
+    <div style="height:72px; display:flex; align-items:center; gap:12px; padding:0 22px; border-bottom:1px solid #E2E8F0; flex-shrink:0;">
+      <div style="width:38px; height:38px; border-radius:10px; overflow:hidden;"><img src="uploads/Untitled design (2).png" alt="Nadi Qurban" style="width:100%; height:100%; object-fit:cover; display:block; transform:scale(1.22);"></div>
+      <div style="line-height:1;"><div style="font-size:15px; font-weight:800; letter-spacing:.3px; color:#42481c;">NADI QURBAN</div><div style="font-size:10.5px; font-weight:600; letter-spacing:2px; color:#94A3AC; margin-top:3px;">OSI SYSTEM</div></div>
+    </div>
+    <nav style="flex:1; overflow-y:auto; padding:14px 12px;">
+      <sc-for list="{{ nav }}" as="item" hint-placeholder-count="12">
+        <sc-if value="{{ item.isSection }}" hint-placeholder-val="{{ false }}"><div style="font-size:10.5px; font-weight:700; letter-spacing:1.4px; color:#94A3AC; padding:16px 14px 8px;">{{ item.label }}</div></sc-if>
+        <sc-if value="{{ item.isItem }}" hint-placeholder-val="{{ true }}">
+          <div style="{{ item.rowStyle }}" onClick="{{ item.onClick }}">
+            <span style="position:absolute; left:0; top:8px; bottom:8px; width:3px; border-radius:0 3px 3px 0; background:{{ item.bar }};"></span>
+            <i class="{{ item.icon }}" style="font-size:19px; color:{{ item.iconColor }};"></i>
+            <span style="flex:1;">{{ item.label }}</span>
+            <sc-if value="{{ item.badge }}" hint-placeholder-val="{{ false }}"><span style="background:#C9A227; color:#fff; font-size:10.5px; font-weight:700; border-radius:20px; padding:2px 8px;">{{ item.badge }}</span></sc-if>
+          </div>
+        </sc-if>
+      </sc-for>
+    </nav>
+    <div style="padding:14px 16px; display:flex; align-items:center; gap:11px; border-top:1px solid #E2E8F0;">
+      <div style="width:38px; height:38px; border-radius:50%; background:#42481c; color:#C9A227; font-weight:800; font-size:13px; display:flex; align-items:center; justify-content:center;">MN</div>
+      <div style="min-width:0; flex:1;"><div style="font-size:13px; font-weight:700; color:#1A1D21;">Muhammad Nurfitkri</div><div style="font-size:11px; color:#64748B;">Superadmin</div></div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div style="flex:1; min-width:0; display:flex; flex-direction:column;">
+    <header style="height:72px; background:#fff; border-bottom:1px solid #E2E8F0; display:flex; align-items:center; padding:0 32px; gap:24px; position:sticky; top:0; z-index:20;">
+      <div style="flex:1; max-width:520px; margin:0 auto; display:flex; align-items:center; gap:11px; background:#F6F8F7; border:1px solid #E2E8F0; border-radius:10px; padding:10px 15px;">
+        <i class="ph ph-magnifying-glass" style="font-size:18px; color:#94A3AC;"></i>
+        <span style="font-size:13.5px; color:#94A3AC;">Cari notifikasi&hellip;</span>
+        <span style="margin-left:auto; font-size:11px; color:#94A3AC; border:1px solid #E2E8F0; border-radius:5px; padding:2px 7px; background:#fff;">&#8984;K</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <div style="position:relative; width:40px; height:40px; border-radius:10px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; color:#42481c; background:#edeee0;"><i class="ph-fill ph-bell" style="font-size:20px;"></i><span style="position:absolute; top:-4px; right:-4px; background:#DC2626; color:#fff; font-size:10px; font-weight:700; border-radius:20px; min-width:18px; height:18px; display:flex; align-items:center; justify-content:center; padding:0 4px; border:2px solid #fff;">7</span></div>
+        <div style="width:1px; height:30px; background:#E2E8F0; margin:0 4px;"></div>
+        <div style="width:40px; height:40px; border-radius:50%; background:#42481c; color:#C9A227; font-weight:800; font-size:13px; display:flex; align-items:center; justify-content:center;">MN</div>
+      </div>
+    </header>
+
+    <main style="flex:1; padding:28px 32px 56px; overflow-y:auto;">
+      <div style="display:flex; align-items:flex-end; gap:16px; margin-bottom:24px; flex-wrap:wrap;">
+        <div style="margin-right:auto;">
+          <div style="display:flex; align-items:center; gap:8px; font-size:12.5px; color:#94A3AC; margin-bottom:6px;"><span>Sistem</span><i class="ph ph-caret-right" style="font-size:12px;"></i><span style="color:#42481c; font-weight:600;">Notifikasi</span></div>
+          <h1 style="font-size:23px; font-weight:700;">Notifikasi</h1>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; background:#fff; border:1px solid #E2E8F0; border-radius:9px; padding:10px 14px; font-size:13.5px; font-weight:600; color:#334155; cursor:pointer;"><i class="ph ph-checks" style="font-size:17px; color:#42481c;"></i> Tanda semua dibaca</div>
+        <div onClick="{{ toggleSettings }}" style="{{ settingsBtnStyle }}"><i class="ph ph-gear-six" style="font-size:17px;"></i> Tetapan</div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:minmax(0,1.6fr) minmax(0,1fr); gap:20px; align-items:start;">
+        <!-- LEFT: feed -->
+        <div>
+          <!-- filter tabs -->
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px; flex-wrap:wrap;">
+            <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="5"><span onClick="{{ t.onClick }}" style="{{ t.style }}">{{ t.label }} <sc-if value="{{ t.count }}" hint-placeholder-val="{{ false }}"><span style="{{ t.countStyle }}">{{ t.count }}</span></sc-if></span></sc-for>
+          </div>
+
+          <div style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; overflow:hidden;">
+            <sc-for list="{{ notifs }}" as="n" hint-placeholder-count="8">
+              <div style="{{ n.rowStyle }}">
+                <div style="width:42px; height:42px; border-radius:11px; background:{{ n.tint }}; color:{{ n.color }}; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><i class="{{ n.icon }}" style="font-size:21px;"></i></div>
+                <div style="flex:1; min-width:0;">
+                  <div style="display:flex; align-items:center; gap:8px;"><span style="font-size:13.5px; font-weight:700; color:#1A1D21;">{{ n.title }}</span><sc-if value="{{ n.unread }}" hint-placeholder-val="{{ false }}"><span style="width:7px; height:7px; border-radius:50%; background:#42481c;"></span></sc-if></div>
+                  <div style="font-size:12.5px; color:#64748B; margin-top:3px; line-height:1.5;">{{ n.body }}</div>
+                  <div style="display:flex; align-items:center; gap:10px; margin-top:7px;"><span style="{{ n.tagStyle }}">{{ n.tag }}</span><span style="font-size:11.5px; color:#94A3AC;">{{ n.time }}</span></div>
+                </div>
+                <i class="ph ph-dots-three-vertical" style="font-size:18px; color:#CBD5D0; cursor:pointer;"></i>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <!-- RIGHT: settings or summary -->
+        <sc-if value="{{ showSettings }}" hint-placeholder-val="{{ false }}">
+          <section style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; padding:22px 24px;">
+            <h2 style="font-size:15px; font-weight:700; margin-bottom:4px;">Keutamaan Notifikasi</h2>
+            <p style="font-size:12.5px; color:#64748B; margin-bottom:18px;">Pilih saluran untuk setiap jenis</p>
+            <div style="display:grid; grid-template-columns:1.6fr repeat(3,auto); gap:10px 14px; align-items:center;">
+              <span></span>
+              <span style="font-size:11px; font-weight:700; color:#94A3AC; text-align:center;">App</span>
+              <span style="font-size:11px; font-weight:700; color:#94A3AC; text-align:center;">Emel</span>
+              <span style="font-size:11px; font-weight:700; color:#94A3AC; text-align:center;">WA</span>
+              <sc-for list="{{ prefs }}" as="p" hint-placeholder-count="6">
+                <span style="font-size:13px; color:#334155;">{{ p.label }}</span>
+                <span style="display:flex; justify-content:center;"><span style="{{ p.appStyle }}" onClick="{{ p.tApp }}"><span style="{{ p.appKnob }}"></span></span></span>
+                <span style="display:flex; justify-content:center;"><span style="{{ p.mailStyle }}" onClick="{{ p.tMail }}"><span style="{{ p.mailKnob }}"></span></span></span>
+                <span style="display:flex; justify-content:center;"><span style="{{ p.waStyle }}" onClick="{{ p.tWa }}"><span style="{{ p.waKnob }}"></span></span></span>
+              </sc-for>
+            </div>
+          </section>
+        </sc-if>
+        <sc-if value="{{ showSummary }}" hint-placeholder-val="{{ true }}">
+          <section style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; padding:22px 24px;">
+            <h2 style="font-size:15px; font-weight:700; margin-bottom:16px;">Ringkasan</h2>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <sc-for list="{{ summary }}" as="s" hint-placeholder-count="5">
+                <div style="display:flex; align-items:center; gap:12px;">
+                  <span style="width:36px; height:36px; border-radius:9px; background:{{ s.tint }}; color:{{ s.color }}; display:flex; align-items:center; justify-content:center;"><i class="{{ s.icon }}" style="font-size:18px;"></i></span>
+                  <span style="flex:1; font-size:13px; color:#334155;">{{ s.label }}</span>
+                  <span style="font-size:15px; font-weight:700; color:#1A1D21;">{{ s.count }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <div style="margin-top:20px; padding:16px; background:#edeee0; border-radius:10px; display:flex; gap:11px; align-items:flex-start;">
+              <i class="ph ph-info" style="font-size:19px; color:#42481c;"></i>
+              <span style="font-size:12.5px; color:#42481c; line-height:1.5;">Anda ada <b>7 notifikasi belum dibaca</b>. Notifikasi kritikal dihantar juga melalui emel & WhatsApp.</span>
+            </div>
+          </section>
+        </sc-if>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    tab: 'Semua', showSettings: false,
+    prefs: {
+      'Tempahan baharu': { app: true, mail: true, wa: false },
+      'Pengesahan bayaran': { app: true, mail: true, wa: true },
+      'Laporan pelaksanaan': { app: true, mail: false, wa: false },
+      'Sijil siap': { app: true, mail: true, wa: true },
+      'Bayaran tertunggak': { app: true, mail: true, wa: false },
+      'Amaran sistem': { app: true, mail: false, wa: false },
+    },
+  };
+  renderVals() {
+    const s = this.state;
+    const set = (o) => this.setState(o);
+
+    const navItem = (icon, label, active, badge) => ({
+      isItem: true, isSection: false, label, badge: badge || '',
+      icon, iconColor: active ? '#42481c' : '#94A3AC', bar: active ? '#42481c' : 'transparent',
+      onClick: () => { const m = { 'Dashboard': 'Dashboard Operasi.dc.html', 'Bayaran Ansuran': 'Bayaran Ansuran.dc.html', 'Tempahan & Pelanggan': 'Tempahan & Pelanggan.dc.html', 'Pengesahan Bayaran': 'Tempahan & Pelanggan.dc.html', 'Lafaz Akad': 'Lafaz Akad.dc.html', 'Agihan Negara': 'Agihan Negara.dc.html', 'Pelaksanaan & Laporan': 'Pelaksanaan & Laporan.dc.html', 'AWB & Postage': 'AWB & Postage.dc.html', 'Tempahan Selesai': 'Tempahan Selesai.dc.html', 'Vendor': 'Vendor.dc.html', 'Produk': 'Produk.dc.html', 'Dokumen': 'Dokumen.dc.html', 'Sales CRM': 'Sales CRM.dc.html', 'Kod Promosi': 'Kod Promosi.dc.html', 'Kewangan': 'Kewangan.dc.html', 'Pusat Laporan': 'Pusat Laporan.dc.html', 'Audit Log': 'Audit Log.dc.html', 'Notifikasi': 'Notifikasi.dc.html', 'Pengguna': 'Pengguna & Peranan.dc.html', 'Sijil': 'Tempahan & Pelanggan.dc.html', 'Tetapan': 'Tempahan & Pelanggan.dc.html' }; if (m[label] && !active) { try { location.href = (function(p){try{var u=new URL(p,location.href);new URLSearchParams(location.search).forEach(function(v,k){if(!u.searchParams.has(k))u.searchParams.set(k,v);});return u.href;}catch(e){return p;}})(m[label]); } catch (e) {} } },
+      rowStyle: 'position:relative; display:flex; align-items:center; gap:12px; padding:10px 14px; margin:2px 0; border-radius:9px; font-size:13.5px; cursor:pointer;' + (active ? 'background:#edeee0; color:#42481c; font-weight:700;' : 'color:#475569; font-weight:500;'),
+    });
+    const sec = (label) => ({ isSection: true, isItem: false, label });
+    const nav = [
+      sec('UTAMA'), navItem('ph ph-squares-four', 'Dashboard', false),
+      sec('OPERASI'), navItem('ph ph-calendar-check', 'Bayaran Ansuran', false), navItem('ph ph-shopping-cart-simple', 'Tempahan & Pelanggan', false, '34'), navItem('ph ph-seal-check', 'Pengesahan Bayaran', false, '5'), navItem('ph ph-hand-heart', 'Lafaz Akad', false), navItem('ph ph-globe-hemisphere-west', 'Agihan Negara', false), navItem('ph ph-shopping-bag', 'Pelaksanaan & Laporan', false), navItem('ph ph-package', 'AWB & Postage', false), navItem('ph ph-check-square-offset', 'Tempahan Selesai', false), navItem('ph ph-truck', 'Vendor', false), navItem('ph ph-cow', 'Produk', false), navItem('ph ph-folders', 'Dokumen', false),
+      sec('JUALAN & KEWANGAN'), navItem('ph ph-users-three', 'Sales CRM', false), navItem('ph ph-ticket', 'Kod Promosi', false), navItem('ph ph-wallet', 'Kewangan', false, '87'),
+      sec('LAPORAN'), navItem('ph ph-chart-bar', 'Pusat Laporan', false), navItem('ph ph-clock-counter-clockwise', 'Audit Log', false),
+      sec('SISTEM'), navItem('ph ph-bell', 'Notifikasi', true, '7'), navItem('ph ph-users', 'Pengguna', false), navItem('ph ph-certificate', 'Sijil', false), navItem('ph ph-gear-six', 'Tetapan', false),
+    ];
+
+    const tabDefs = [['Semua', '32'], ['Belum Dibaca', '7'], ['Tempahan', ''], ['Kewangan', ''], ['Sistem', '']];
+    const tabs = tabDefs.map(([label, count]) => {
+      const on = s.tab === label;
+      return { label, count, onClick: () => set({ tab: label }),
+        style: 'display:inline-flex; align-items:center; gap:7px; font-size:13px; font-weight:600; padding:9px 15px; border-radius:9px; cursor:pointer;' + (on ? 'background:#42481c; color:#fff;' : 'background:#fff; border:1px solid #E2E8F0; color:#334155;'),
+        countStyle: 'font-size:11px; font-weight:700; border-radius:20px; padding:1px 8px;' + (on ? 'background:rgba(255,255,255,.2); color:#fff;' : 'background:#edeee0; color:#42481c;') };
+    });
+
+    const tag = (bg, col) => 'font-size:10.5px; font-weight:700; border-radius:6px; padding:3px 8px; background:' + bg + '; color:' + col + ';';
+    const tags = {
+      Tempahan: tag('#edeee0', '#42481c'), Kewangan: tag('#EAF7EE', '#16A34A'),
+      Vendor: tag('#FBF3DC', '#9a7d16'), Sistem: tag('#FDECEC', '#DC2626'), Sijil: tag('#F3ECFB', '#7C3AED'),
+    };
+    const iconMap = {
+      Tempahan: ['ph ph-shopping-cart-simple', '#edeee0', '#42481c'],
+      Kewangan: ['ph ph-money', '#EAF7EE', '#16A34A'],
+      Vendor: ['ph ph-truck', '#FBF3DC', '#C9A227'],
+      Sistem: ['ph ph-warning', '#FDECEC', '#DC2626'],
+      Sijil: ['ph ph-certificate', '#F3ECFB', '#7C3AED'],
+    };
+    const raw = [
+      ['Tempahan', 'Tempahan baharu diterima', 'NQ-2027-001248 daripada Ahmad Zaki bin Hassan — Qurban Lembu (Uganda).', '5 minit lalu', true],
+      ['Kewangan', 'Bayaran disahkan', 'Deposit RM 1,225 untuk INV-2027-0891 telah diterima melalui FPX.', '22 minit lalu', true],
+      ['Vendor', 'Vendor terima PO', 'Al-Barakah Livestock mengesahkan PO-2027-0342 (25 unit).', '1 jam lalu', true],
+      ['Sistem', 'Bayaran tertunggak', '8 invois melebihi tempoh 30 hari — jumlah RM 42,000.', '2 jam lalu', true],
+      ['Sijil', 'Sijil siap dijana', '12 sijil Qurban sedia untuk dipos kepada pelanggan.', '3 jam lalu', true],
+      ['Kewangan', 'Laporan kewangan dijana', 'Aliran Tunai Jun 2027 telah siap dimuat turun.', '5 jam lalu', false],
+      ['Tempahan', 'Tempahan dibatalkan', 'NQ-2027-001243 dibatalkan oleh pelanggan — bayaran balik diproses.', 'Semalam', false],
+      ['Sistem', 'Log masuk baharu', 'Sesi baharu dari peranti tidak dikenali (Chrome, Windows).', 'Semalam', false],
+    ];
+    const notifs = raw.map(r => {
+      const im = iconMap[r[0]];
+      const unread = r[4];
+      return { tag: r[0], tagStyle: tags[r[0]], title: r[1], body: r[2], time: r[3], unread,
+        icon: im[0], tint: im[1], color: im[2],
+        rowStyle: 'display:flex; gap:14px; padding:16px 20px; align-items:flex-start; border-bottom:1px solid #F1F5F4;' + (unread ? 'background:#fbfcf9;' : '') };
+    });
+
+    // settings toggles
+    const toggle = (on) => ({
+      track: 'width:38px; height:22px; border-radius:20px; cursor:pointer; position:relative; transition:.15s; background:' + (on ? '#42481c' : '#CBD5D0') + ';',
+      knob: 'position:absolute; top:2px; left:' + (on ? '18px' : '2px') + '; width:18px; height:18px; border-radius:50%; background:#fff; transition:.15s;',
+    });
+    const setPref = (label, ch) => {
+      const p = { ...s.prefs };
+      p[label] = { ...p[label], [ch]: !p[label][ch] };
+      set({ prefs: p });
+    };
+    const prefs = Object.keys(s.prefs).map(label => {
+      const p = s.prefs[label];
+      const a = toggle(p.app), m = toggle(p.mail), w = toggle(p.wa);
+      return { label,
+        appStyle: a.track, appKnob: a.knob, tApp: () => setPref(label, 'app'),
+        mailStyle: m.track, mailKnob: m.knob, tMail: () => setPref(label, 'mail'),
+        waStyle: w.track, waKnob: w.knob, tWa: () => setPref(label, 'wa') };
+    });
+
+    const summary = [
+      { icon: 'ph ph-shopping-cart-simple', tint: '#edeee0', color: '#42481c', label: 'Tempahan', count: '12' },
+      { icon: 'ph ph-money', tint: '#EAF7EE', color: '#16A34A', label: 'Kewangan', count: '9' },
+      { icon: 'ph ph-truck', tint: '#FBF3DC', color: '#C9A227', label: 'Vendor', count: '5' },
+      { icon: 'ph ph-certificate', tint: '#F3ECFB', color: '#7C3AED', label: 'Sijil', count: '4' },
+      { icon: 'ph ph-warning', tint: '#FDECEC', color: '#DC2626', label: 'Sistem', count: '2' },
+    ];
+
+    return {
+      nav, tabs, notifs, prefs, summary,
+      showSettings: s.showSettings, showSummary: !s.showSettings,
+      toggleSettings: () => set({ showSettings: !s.showSettings }),
+      settingsBtnStyle: 'display:flex; align-items:center; gap:8px; border-radius:9px; padding:10px 14px; font-size:13.5px; font-weight:600; cursor:pointer;' + (s.showSettings ? 'background:#42481c; color:#fff;' : 'background:#fff; border:1px solid #E2E8F0; color:#334155;'),
+    };
+  }
+}
+</script>
+</body>
+</html>

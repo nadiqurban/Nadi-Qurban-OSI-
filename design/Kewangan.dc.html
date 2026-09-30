@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+  @media print { @page { margin: 10mm; } body * { visibility: hidden !important; } #inv-a4, #inv-a4 *, #po-rcpt-a4, #po-rcpt-a4 * { visibility: visible !important; } #inv-a4 { position: absolute !important; inset: 0 !important; box-shadow: none !important; } #po-rcpt-a4 { position: absolute !important; inset: 0 !important; box-shadow: none !important; border: none !important; } #po-rcpt-a4 .no-print { display: none !important; } }rtant; } .no-print { display: none !important; } }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; background:#F6F8F7; color:#1A1D21; -webkit-font-smoothing: antialiased; }
+  a { color:#42481c; text-decoration:none; } a:hover { color:#5a6127; }
+  ::-webkit-scrollbar { width:10px; height:10px; }
+  ::-webkit-scrollbar-thumb { background:#b3b79a; border-radius:6px; border:2px solid transparent; background-clip:padding-box; }
+</style>
+</helmet>
+
+<div style="display:flex; min-height:100vh; background:#F6F8F7;">
+
+  <!-- SIDEBAR -->
+  <aside style="width:260px; flex-shrink:0; background:#fff; border-right:1px solid #E2E8F0; display:flex; flex-direction:column; position:sticky; top:0; height:100vh;">
+    <div style="height:72px; display:flex; align-items:center; gap:12px; padding:0 22px; border-bottom:1px solid #E2E8F0; flex-shrink:0;">
+      <div style="width:38px; height:38px; border-radius:10px; overflow:hidden;"><img src="uploads/Untitled design (2).png" alt="Nadi Qurban" style="width:100%; height:100%; object-fit:cover; display:block; transform:scale(1.22);"></div>
+      <div style="line-height:1;"><div style="font-size:15px; font-weight:800; letter-spacing:.3px; color:#42481c;">NADI QURBAN</div><div style="font-size:10.5px; font-weight:600; letter-spacing:2px; color:#94A3AC; margin-top:3px;">OSI SYSTEM</div></div>
+    </div>
+    <nav style="flex:1; overflow-y:auto; padding:14px 12px;">
+      <sc-for list="{{ nav }}" as="item" hint-placeholder-count="12">
+        <sc-if value="{{ item.isSection }}" hint-placeholder-val="{{ false }}"><div style="font-size:10.5px; font-weight:700; letter-spacing:1.4px; color:#94A3AC; padding:16px 14px 8px;">{{ item.label }}</div></sc-if>
+        <sc-if value="{{ item.isItem }}" hint-placeholder-val="{{ true }}">
+          <div style="{{ item.rowStyle }}" onClick="{{ item.onClick }}">
+            <span style="position:absolute; left:0; top:8px; bottom:8px; width:3px; border-radius:0 3px 3px 0; background:{{ item.bar }};"></span>
+            <i class="{{ item.icon }}" style="font-size:19px; color:{{ item.iconColor }};"></i>
+            <span style="flex:1;">{{ item.label }}</span>
+            <sc-if value="{{ item.badge }}" hint-placeholder-val="{{ false }}"><span style="background:#C9A227; color:#fff; font-size:10.5px; font-weight:700; border-radius:20px; padding:2px 8px;">{{ item.badge }}</span></sc-if>
+          </div>
+        </sc-if>
+      </sc-for>
+    </nav>
+    <div style="padding:14px 16px; display:flex; align-items:center; gap:11px; border-top:1px solid #E2E8F0;">
+      <div style="width:38px; height:38px; border-radius:50%; background:#42481c; color:#C9A227; font-weight:800; font-size:13px; display:flex; align-items:center; justify-content:center;">FN</div>
+      <div style="min-width:0; flex:1;"><div style="font-size:13px; font-weight:700; color:#1A1D21;">Fatimah Noor</div><div style="font-size:11px; color:#64748B;">Pegawai Kewangan</div></div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div style="flex:1; min-width:0; display:flex; flex-direction:column;">
+    <header style="height:72px; background:#fff; border-bottom:1px solid #E2E8F0; display:flex; align-items:center; padding:0 32px; gap:24px; position:sticky; top:0; z-index:20;">
+      <div style="flex:1; max-width:520px; margin:0 auto; display:flex; align-items:center; gap:11px; background:#F6F8F7; border:1px solid #E2E8F0; border-radius:10px; padding:10px 15px;">
+        <i class="ph ph-magnifying-glass" style="font-size:18px; color:#94A3AC;"></i>
+        <span style="font-size:13.5px; color:#94A3AC;">Cari invois, resit, no. tempahan…</span>
+        <span style="margin-left:auto; font-size:11px; color:#94A3AC; border:1px solid #E2E8F0; border-radius:5px; padding:2px 7px; background:#fff;">⌘K</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <div style="position:relative; width:40px; height:40px; border-radius:10px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; color:#475569;"><i class="ph ph-bell" style="font-size:20px;"></i><span style="position:absolute; top:-4px; right:-4px; background:#DC2626; color:#fff; font-size:10px; font-weight:700; border-radius:20px; min-width:18px; height:18px; display:flex; align-items:center; justify-content:center; padding:0 4px; border:2px solid #fff;">7</span></div>
+        <div style="width:1px; height:30px; background:#E2E8F0; margin:0 4px;"></div>
+        <div style="width:40px; height:40px; border-radius:50%; background:#42481c; color:#C9A227; font-weight:800; font-size:13px; display:flex; align-items:center; justify-content:center;">FN</div>
+      </div>
+    </header>
+
+    <main style="flex:1; padding:28px 32px 56px; overflow-y:auto;">
+
+      <!-- ===== LIST VIEW ===== -->
+      <sc-if value="{{ isList }}" hint-placeholder-val="{{ true }}">
+        <div>
+          <div style="display:flex; align-items:flex-end; gap:16px; margin-bottom:24px; flex-wrap:wrap;">
+            <div style="margin-right:auto;">
+              <div style="display:flex; align-items:center; gap:8px; font-size:12.5px; color:#94A3AC; margin-bottom:6px;"><span>Jualan &amp; Kewangan</span><i class="ph ph-caret-right" style="font-size:12px;"></i><span style="color:#42481c; font-weight:600;">Kewangan</span></div>
+              <h1 style="font-size:23px; font-weight:700;">Pengurusan Kewangan</h1>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px; background:#fff; border:1px solid #E2E8F0; border-radius:9px; padding:10px 14px; font-size:13.5px; font-weight:600; color:#334155; cursor:pointer;"><i class="ph ph-download-simple" style="font-size:16px; color:#64748B;"></i> Eksport</div>
+            <button onClick="{{ openQuote }}" style="display:flex; align-items:center; gap:8px; background:#fff; color:#42481c; border:1px solid #42481c; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-file-text" style="font-size:17px;"></i> Quotation</button>
+            <button onClick="{{ openInvoice }}" style="display:flex; align-items:center; gap:8px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;" style-hover="background:#5a6127;"><i class="ph ph-plus" style="font-size:17px;"></i> Cipta Invois</button>
+          </div>
+
+          <!-- KPI -->
+          <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:18px; margin-bottom:22px;">
+            <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+              <div style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; padding:18px 20px; display:flex; flex-direction:column; gap:14px;">
+                <div style="display:flex; align-items:center; justify-content:space-between;">
+                  <div style="width:40px; height:40px; border-radius:10px; background:{{ k.tint }}; color:{{ k.color }}; display:flex; align-items:center; justify-content:center;"><i class="{{ k.icon }}" style="font-size:21px;"></i></div>
+                  <span style="{{ k.deltaStyle }}">{{ k.delta }}</span>
+                </div>
+                <div><div style="font-size:24px; font-weight:700; line-height:1;">{{ k.value }}</div><div style="font-size:12.5px; color:#64748B; margin-top:7px;">{{ k.label }}</div></div>
+              </div>
+            </sc-for>
+          </div>
+
+          <!-- cashflow bar + method split -->
+          <div style="display:grid; grid-template-columns:minmax(0,1.9fr) minmax(0,1fr); gap:18px; margin-bottom:22px;">
+            <section style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; padding:22px 24px;">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
+                <div><h2 style="font-size:15.5px; font-weight:700;">Aliran Tunai</h2><p style="font-size:12.5px; color:#64748B; margin-top:3px;">Kutipan vs bayaran vendor (RM '000)</p></div>
+                <div style="display:flex; align-items:center; gap:16px; font-size:12.5px; color:#64748B;">
+                  <span style="display:flex; align-items:center; gap:6px;"><span style="width:10px; height:10px; border-radius:3px; background:#42481c;"></span>Kutipan</span>
+                  <span style="display:flex; align-items:center; gap:6px;"><span style="width:10px; height:10px; border-radius:3px; background:#C9A227;"></span>Bayaran</span>
+                </div>
+              </div>
+              {{ cashChart }}
+            </section>
+            <section style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; padding:22px 24px;">
+              <h2 style="font-size:15.5px; font-weight:700; margin-bottom:4px;">Kaedah Bayaran</h2>
+              <p style="font-size:12.5px; color:#64748B; margin-bottom:16px;">Agihan transaksi masuk</p>
+              <div style="display:flex; align-items:center; gap:18px;">
+                <div style="flex-shrink:0;">{{ methodDonut }}</div>
+                <div style="flex:1; display:flex; flex-direction:column; gap:11px;">
+                  <sc-for list="{{ methods }}" as="m" hint-placeholder-count="4">
+                    <div style="display:flex; align-items:center; gap:10px; font-size:13px;"><span style="width:10px; height:10px; border-radius:3px; background:{{ m.color }};"></span><span style="flex:1; color:#334155;">{{ m.name }}</span><span style="font-weight:700;">{{ m.pct }}</span></div>
+                  </sc-for>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <!-- tabs + filter -->
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px; flex-wrap:wrap;">
+            <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3"><span onClick="{{ t.onClick }}" style="{{ t.style }}">{{ t.label }} <span style="{{ t.countStyle }}">{{ t.count }}</span></span></sc-for>
+            <div style="margin-left:auto; display:flex; gap:10px; flex-wrap:wrap;">
+              <div style="display:flex; align-items:center; gap:9px; background:#fff; border:1px solid #E2E8F0; border-radius:9px; padding:9px 13px; font-size:13px; color:#94A3AC; min-width:180px;"><i class="ph ph-magnifying-glass" style="font-size:16px;"></i><input placeholder="Cari invois / pelanggan" style="border:none; background:transparent; flex:1; font-size:13px; outline:none; color:#1A1D21;"></div>
+              <div style="display:flex; align-items:center; gap:9px; background:#fff; border:1px solid #E2E8F0; border-radius:9px; padding:9px 13px; font-size:13px; color:#334155; cursor:pointer;"><i class="ph ph-funnel" style="font-size:16px; color:#64748B;"></i> Status</div>
+              <button onClick="{{ exportExcel }}" style="display:inline-flex; align-items:center; gap:7px; background:#16A34A; color:#fff; border:none; border-radius:9px; padding:9px 15px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-microsoft-excel-logo" style="font-size:16px;"></i> Eksport Excel</button>
+            </div>
+          </div>
+
+          <!-- invoice table -->
+          <div style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; overflow:hidden;">
+            <div style="overflow-x:auto;"><div style="min-width:960px;">
+              <div style="display:grid; grid-template-columns:32px 1.1fr 1.4fr 1.2fr 1fr 1fr 1fr 1.1fr 0.6fr; padding:13px 20px; background:#F6F8F7; border-bottom:1px solid #E2E8F0; font-size:11px; font-weight:700; letter-spacing:.4px; color:#94A3AC; text-transform:uppercase;">
+                <span onClick="{{ toggleAllInv }}" style="{{ allInvCheckStyle }}"><sc-if value="{{ allInvChecked }}" hint-placeholder-val="{{ false }}"><i class="ph-fill ph-check" style="font-size:12px; color:#fff;"></i></sc-if></span><span>No. Invois</span><span>Pelanggan</span><span>No. Tempahan</span><span style="text-align:right;">Jumlah</span><span>Tarikh</span><span>Tarikh Tempoh</span><span style="text-align:center;">Status</span><span style="text-align:right;">Lihat</span>
+              </div>
+              <sc-for list="{{ invoices }}" as="v" hint-placeholder-count="8">
+                <div style="display:grid; grid-template-columns:32px 1.1fr 1.4fr 1.2fr 1fr 1fr 1fr 1.1fr 0.6fr; padding:14px 20px; align-items:center; border-bottom:1px solid #F1F5F4;">
+                  <span onClick="{{ v.onCheck }}" style="{{ v.checkStyle }}"><sc-if value="{{ v.checked }}" hint-placeholder-val="{{ false }}"><i class="ph-fill ph-check" style="font-size:12px; color:#fff;"></i></sc-if></span>
+                  <span style="font-size:12.5px; font-weight:700; color:#42481c;">{{ v.no }}</span>
+                  <span style="font-size:13px; color:#1A1D21;">{{ v.name }}</span>
+                  <span style="font-size:12.5px; color:#64748B;">{{ v.order }}</span>
+                  <span style="text-align:right; font-size:13px; font-weight:600; font-variant-numeric:tabular-nums;">{{ v.amount }}</span>
+                  <span style="font-size:12.5px; color:#64748B;">{{ v.date }}</span>
+                  <span style="font-size:12.5px; color:#64748B;">{{ v.due }}</span>
+                  <span style="display:flex; justify-content:center;"><span style="{{ v.badgeStyle }}">{{ v.status }}</span></span>
+                  <span style="display:flex; justify-content:flex-end;"><span onClick="{{ v.onView }}" style="width:30px; height:30px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#42481c;"><i class="ph ph-eye" style="font-size:16px;"></i></span></span>
+                </div>
+              </sc-for>
+            </div></div>
+          </div>
+
+          <!-- PO Payment Completed (rujukan finance) -->
+          <div style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; overflow:hidden; margin-top:22px;">
+            <div style="display:flex; align-items:center; gap:10px; padding:16px 20px; border-bottom:1px solid #F1F5F4;">
+              <span style="width:34px; height:34px; border-radius:9px; background:#EAF7EE; color:#16A34A; display:flex; align-items:center; justify-content:center;"><i class="ph ph-file-text" style="font-size:18px;"></i></span>
+              <div><h2 style="font-size:15px; font-weight:700;">Rekod PO — Payment Completed</h2><p style="font-size:12px; color:#94A3AC; margin-top:2px;">Purchase Order vendor yang telah dijelaskan (rujukan finance)</p></div>
+              <span style="margin-left:auto; display:flex; align-items:center; gap:10px;"><span style="font-size:12px; font-weight:600; color:#16A34A; background:#EAF7EE; border-radius:20px; padding:5px 12px;">{{ poCount }} PO</span><button onClick="{{ exportPoExcel }}" style="display:inline-flex; align-items:center; gap:7px; background:#16A34A; color:#fff; border:none; border-radius:9px; padding:8px 14px; font-size:12.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-microsoft-excel-logo" style="font-size:15px;"></i> Eksport Excel</button></span>
+            </div>
+            <div style="overflow-x:auto;"><div style="min-width:920px;">
+              <div style="display:grid; grid-template-columns:32px 1.1fr 1.4fr 1fr 1fr 1fr 1fr 0.8fr 0.8fr; padding:13px 20px; background:#F6F8F7; border-bottom:1px solid #E2E8F0; font-size:11px; font-weight:700; letter-spacing:.4px; color:#94A3AC; text-transform:uppercase;">
+                <span onClick="{{ toggleAllPo }}" style="{{ allPoCheckStyle }}"><sc-if value="{{ allPoChecked }}" hint-placeholder-val="{{ false }}"><i class="ph-fill ph-check" style="font-size:12px; color:#fff;"></i></sc-if></span><span>No. PO</span><span>Vendor</span><span style="text-align:right;">Jumlah</span><span>Tarikh PO</span><span>Tarikh Bayar</span><span>Rujukan Bank</span><span style="text-align:center;">Status</span><span style="text-align:right;">Resit</span>
+              </div>
+              <sc-for list="{{ poRecords }}" as="p" hint-placeholder-count="5">
+                <div style="display:grid; grid-template-columns:32px 1.1fr 1.4fr 1fr 1fr 1fr 1fr 0.8fr 0.8fr; padding:14px 20px; align-items:center; border-bottom:1px solid #F1F5F4;">
+                  <span onClick="{{ p.onCheck }}" style="{{ p.checkStyle }}"><sc-if value="{{ p.checked }}" hint-placeholder-val="{{ false }}"><i class="ph-fill ph-check" style="font-size:12px; color:#fff;"></i></sc-if></span>
+                  <span onClick="{{ p.onView }}" style="font-size:12.5px; font-weight:700; color:#42481c; cursor:pointer;">{{ p.no }}</span>
+                  <span style="font-size:13px; color:#1A1D21;">{{ p.vendor }}</span>
+                  <span style="text-align:right; font-size:13px; font-weight:600; font-variant-numeric:tabular-nums;">{{ p.amount }}</span>
+                  <span style="font-size:12.5px; color:#64748B;">{{ p.poDate }}</span>
+                  <span style="font-size:12.5px; color:#64748B;">{{ p.date }}</span>
+                  <span style="font-size:12.5px; color:#64748B; font-family:monospace;">{{ p.ref }}</span>
+                  <span style="display:flex; justify-content:center;"><span style="display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; color:#16A34A; background:#EAF7EE; border-radius:20px; padding:4px 11px;"><i class="ph-fill ph-check-circle" style="font-size:13px;"></i> Completed</span></span>
+                  <span style="display:flex; justify-content:flex-end;"><span onClick="{{ p.onViewReceipt }}" style="display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:600; color:#42481c; cursor:pointer;"><i class="ph ph-eye" style="font-size:15px;"></i> Resit</span></span>
+                </div>
+              </sc-for>
+            </div></div>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ isDetail }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <span onClick="{{ goList }}" style="display:inline-flex; align-items:center; gap:7px; font-size:13.5px; font-weight:600; color:#42481c; cursor:pointer; margin-bottom:18px;"><i class="ph ph-arrow-left" style="font-size:17px;"></i> Kembali ke senarai</span>
+          <div style="display:flex; align-items:flex-end; gap:16px; margin-bottom:22px; flex-wrap:wrap;">
+            <div style="margin-right:auto;"><h1 style="font-size:23px; font-weight:700;">Invois {{ cur.no }}</h1><p style="font-size:13.5px; color:#64748B; margin-top:4px;">{{ cur.order }} · {{ cur.name }}</p></div>
+            <span style="{{ cur.badgeStyle }}">{{ cur.status }}</span>
+            <div style="display:flex; align-items:center; gap:8px; background:#fff; border:1px solid #E2E8F0; border-radius:9px; padding:10px 15px; font-size:13.5px; font-weight:600; color:#334155; cursor:pointer;"><i class="ph ph-printer" style="font-size:16px; color:#64748B;"></i> Cetak</div>
+            <button style="display:flex; align-items:center; gap:8px; background:#16A34A; color:#fff; border:none; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-check-circle" style="font-size:16px;"></i> Sahkan Bayaran</button>
+          </div>
+
+          <div style="display:grid; grid-template-columns:minmax(0,1.6fr) minmax(0,1fr); gap:20px; align-items:start;">
+            <section style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; overflow:hidden;">
+              <div style="padding:22px 24px; border-bottom:1px solid #F1F5F4; display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">
+                <div><div style="font-size:11.5px; color:#94A3AC; text-transform:uppercase; letter-spacing:.4px;">Bil Kepada</div><div style="font-size:15px; font-weight:700; margin-top:5px;">{{ cur.name }}</div><div style="font-size:12.5px; color:#64748B; margin-top:3px;">No. 12, Jln Melati 3, 40150 Shah Alam</div></div>
+                <div style="text-align:right;"><div style="font-size:11.5px; color:#94A3AC; text-transform:uppercase; letter-spacing:.4px;">Tarikh Invois</div><div style="font-size:14px; font-weight:600; margin-top:5px;">{{ cur.date }}</div><div style="font-size:12.5px; color:#64748B; margin-top:3px;">Tempoh: 14 hari</div></div>
+              </div>
+              <div style="display:grid; grid-template-columns:2fr 0.7fr 1fr 1fr; padding:12px 24px; font-size:11px; font-weight:700; letter-spacing:.4px; color:#94A3AC; text-transform:uppercase; border-bottom:1px solid #F1F5F4;">
+                <span>Item</span><span style="text-align:center;">Kuantiti</span><span style="text-align:right;">Harga</span><span style="text-align:right;">Jumlah</span>
+              </div>
+              <sc-for list="{{ lineItems }}" as="li" hint-placeholder-count="3">
+                <div style="display:grid; grid-template-columns:2fr 0.7fr 1fr 1fr; padding:14px 24px; align-items:center; border-bottom:1px solid #F1F5F4;">
+                  <div><div style="font-size:13.5px; font-weight:600;">{{ li.name }}</div><div style="font-size:12px; color:#94A3AC; margin-top:2px;">{{ li.desc }}</div></div>
+                  <span style="text-align:center; font-size:13px; color:#334155;">{{ li.qty }}</span>
+                  <span style="text-align:right; font-size:13px; color:#334155; font-variant-numeric:tabular-nums;">{{ li.price }}</span>
+                  <span style="text-align:right; font-size:13px; font-weight:600; font-variant-numeric:tabular-nums;">{{ li.total }}</span>
+                </div>
+              </sc-for>
+              <div style="padding:16px 24px; display:flex; flex-direction:column; gap:8px; align-items:flex-end;">
+                <sc-for list="{{ totals }}" as="tr" hint-placeholder-count="3"><div style="{{ tr.rowStyle }}"><span style="color:#64748B;">{{ tr.label }}</span><span style="font-variant-numeric:tabular-nums;">{{ tr.value }}</span></div></sc-for>
+              </div>
+            </section>
+
+            <div style="display:flex; flex-direction:column; gap:20px;">
+              <section style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; padding:22px 24px;">
+                <h2 style="font-size:15px; font-weight:700; margin-bottom:16px;">Ringkasan Bayaran</h2>
+                <div style="display:flex; flex-direction:column; gap:14px;">
+                  <sc-for list="{{ payInfo }}" as="d" hint-placeholder-count="4"><div style="display:flex; justify-content:space-between; align-items:center;"><span style="font-size:13px; color:#64748B;">{{ d.k }}</span><span style="font-size:13.5px; font-weight:600;">{{ d.v }}</span></div></sc-for>
+                </div>
+              </section>
+              <section style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; padding:22px 24px;">
+                <h2 style="font-size:15px; font-weight:700; margin-bottom:16px;">Rekod Transaksi</h2>
+                <div style="display:flex; flex-direction:column;">
+                  <sc-for list="{{ txns }}" as="t" hint-placeholder-count="3">
+                    <div style="display:flex; gap:12px;">
+                      <div style="display:flex; flex-direction:column; align-items:center;"><span style="width:26px; height:26px; border-radius:50%; background:{{ t.tint }}; color:{{ t.color }}; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><i class="{{ t.icon }}" style="font-size:14px;"></i></span><span style="{{ t.lineStyle }}"></span></div>
+                      <div style="padding-bottom:14px;"><div style="font-size:13px; font-weight:600;">{{ t.title }}</div><div style="font-size:11.5px; color:#94A3AC; margin-top:2px;">{{ t.time }}</div></div>
+                    </div>
+                  </sc-for>
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showInvoice }}" hint-placeholder-val="{{ false }}">
+        <div style="position:fixed; inset:0; z-index:100; background:rgba(20,24,20,.55); display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; padding:32px 16px;">
+          <div style="width:100%; max-width:800px; background:#fff; border-radius:14px; box-shadow:0 24px 60px rgba(0,0,0,.3); overflow:hidden;">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 24px; border-bottom:1px solid #E2E8F0;">
+              <div style="display:flex; align-items:center; gap:11px;"><span style="width:36px; height:36px; border-radius:10px; background:#edeee0; color:#42481c; display:flex; align-items:center; justify-content:center;"><i class="ph ph-receipt" style="font-size:19px;"></i></span><div><h2 style="font-size:16px; font-weight:700;">Cipta Invois</h2><p style="font-size:12px; color:#94A3AC; margin-top:2px;">Invois baharu untuk pelanggan</p></div></div>
+              <span onClick="{{ closeInvoice }}" style="width:32px; height:32px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#64748B;"><i class="ph ph-x" style="font-size:16px;"></i></span>
+            </div>
+            <div style="padding:22px 24px; display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+              <div style="grid-column:1 / -1; padding:20px 22px; background:#F6F8F7; border-radius:12px; display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                <div style="grid-column:1 / -1; font-size:13px; font-weight:700; color:#42481c; letter-spacing:.3px; margin-bottom:2px;">MAKLUMAT SYARIKAT (boleh edit)</div>
+                <div><label style="display:block; font-size:11px; font-weight:600; color:#64748B; margin-bottom:5px;">Nama Syarikat</label><input value="{{ coName }}" onInput="{{ onCoName }}" style="width:100%; font-family:inherit; font-size:12.5px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:8px; padding:9px 11px; outline:none;"></div>
+                <div><label style="display:block; font-size:11px; font-weight:600; color:#64748B; margin-bottom:5px;">No. SSM</label><input value="{{ coSsm }}" onInput="{{ onCoSsm }}" style="width:100%; font-family:inherit; font-size:12.5px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:8px; padding:9px 11px; outline:none;"></div>
+                <div style="grid-column:1 / -1;"><label style="display:block; font-size:11px; font-weight:600; color:#64748B; margin-bottom:5px;">Alamat Syarikat</label><input value="{{ coAddr }}" onInput="{{ onCoAddr }}" style="width:100%; font-family:inherit; font-size:12.5px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:8px; padding:9px 11px; outline:none;"></div>
+                <div><label style="display:block; font-size:11px; font-weight:600; color:#64748B; margin-bottom:5px;">Telefon</label><input value="{{ coPhone }}" onInput="{{ onCoPhone }}" style="width:100%; font-family:inherit; font-size:12.5px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:8px; padding:9px 11px; outline:none;"></div>
+                <div><label style="display:block; font-size:11px; font-weight:600; color:#64748B; margin-bottom:5px;">Emel</label><input value="{{ coEmail }}" onInput="{{ onCoEmail }}" style="width:100%; font-family:inherit; font-size:12.5px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:8px; padding:9px 11px; outline:none;"></div>
+              </div>
+              <div style="grid-column:1 / -1;"><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Nama Pelanggan</label><input value="{{ invName }}" onInput="{{ onInvName }}" placeholder="Nama penuh" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+              <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">No. Telefon</label><input value="{{ invPhone }}" onInput="{{ onInvPhone }}" placeholder="0123345671" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+              <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">No. Tempahan</label><input value="{{ invOrder }}" onInput="{{ onInvOrder }}" placeholder="NQ-..." style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+              <div style="grid-column:1 / -1;"><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Emel Pelanggan</label><input value="{{ invEmail }}" onInput="{{ onInvEmail }}" type="email" placeholder="emel@contoh.com" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+              <div style="grid-column:1 / -1;"><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Alamat Pelanggan</label><input value="{{ invAddr }}" onInput="{{ onInvAddr }}" placeholder="No., Jalan, Poskod, Bandar, Negeri" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+              <div style="grid-column:1 / -1; border:1px solid #E2E8F0; border-radius:11px; padding:16px; background:#F9FAF7;">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;"><span style="font-size:12px; font-weight:700; letter-spacing:.4px; color:#42481c; text-transform:uppercase;">Item Invois</span><button onClick="{{ addInvItem }}" style="display:inline-flex; align-items:center; gap:6px; background:#42481c; color:#fff; border:none; border-radius:8px; padding:7px 13px; font-size:12px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-plus" style="font-size:14px;"></i> Tambah Item</button></div>
+                <div style="display:grid; grid-template-columns:2.4fr 0.8fr 1.2fr 30px; gap:10px; font-size:10.5px; font-weight:700; letter-spacing:.3px; color:#94A3AC; text-transform:uppercase; padding:0 4px 8px;"><span>Perkara</span><span style="text-align: left">Kuantiti</span><span style="text-align:right;">Harga (RM)</span><span></span></div>
+                <sc-for list="{{ invItems }}" as="it" hint-placeholder-count="1">
+                  <div style="display:grid; grid-template-columns:2.4fr 0.8fr 1.2fr 30px; gap:10px; margin-bottom:9px; align-items:center;">
+                    <input value="{{ it.service }}" onInput="{{ it.onService }}" placeholder="cth. Qurban Lembu — Delima" style="font-family:inherit; font-size:12.5px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:8px; padding:9px 11px; outline:none; background:#fff;">
+                    <input value="{{ it.qty }}" onInput="{{ it.onQty }}" type="number" style="font-family:inherit; font-size:12.5px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:8px; padding:9px 11px; outline:none; text-align:center; background:#fff;">
+                    <input value="{{ it.price }}" onInput="{{ it.onPrice }}" placeholder="3500" style="font-family:inherit; font-size:12.5px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:8px; padding:9px 11px; outline:none; text-align:right; background:#fff;">
+                    <span onClick="{{ it.onRemove }}" style="width:30px; height:36px; border-radius:8px; border:1px solid #F0DADA; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#DC2626; background:#fff;"><i class="ph ph-trash" style="font-size:15px;"></i></span>
+                  </div>
+                </sc-for>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; padding-top:12px; border-top:1px solid #E2E8F0;"><span style="font-size:12.5px; font-weight:600; color:#64748B;">Jumlah Keseluruhan</span><span style="font-size:16px; font-weight:800; color:#42481c;">RM {{ invItemsTotal }}</span></div>
+              </div>
+              <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Tarikh Tempoh</label><input value="{{ invDue }}" onInput="{{ onInvDue }}" type="date" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+              <div style="grid-column:1 / -1;"><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Nota Tambahan</label><textarea value="{{ invNote }}" onInput="{{ onInvNote }}" rows="3" placeholder="Terma bayaran, arahan khas, dsb." style="width:100%; resize:vertical; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></textarea></div>
+            </div>
+            <div style="padding:0 24px 22px; display:flex; gap:10px; justify-content:flex-end;">
+              <button onClick="{{ closeInvoice }}" style="background:#fff; color:#334155; border:1px solid #E2E8F0; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;">Batal</button>
+              <button onClick="{{ openInvPreview }}" style="display:inline-flex; align-items:center; gap:7px; background:#fff; color:#42481c; border:1px solid #42481c; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-file-pdf" style="font-size:16px;"></i> Pratonton PDF</button>
+              <button onClick="{{ closeInvoice }}" style="display:inline-flex; align-items:center; gap:7px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-check" style="font-size:16px;"></i> Cipta Invois</button>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showQuote }}" hint-placeholder-val="{{ false }}">
+        <div style="position:fixed; inset:0; z-index:100; background:rgba(20,24,20,.55); display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; padding:32px 16px;">
+          <div style="width:100%; max-width:800px; background:#fff; border-radius:14px; box-shadow:0 24px 60px rgba(0,0,0,.3); overflow:hidden;">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 24px; border-bottom:1px solid #E2E8F0;">
+              <div style="display:flex; align-items:center; gap:11px;"><span style="width:36px; height:36px; border-radius:10px; background:#edeee0; color:#42481c; display:flex; align-items:center; justify-content:center;"><i class="ph ph-file-text" style="font-size:19px;"></i></span><div><h2 style="font-size:16px; font-weight:700;">Quotation Baharu</h2><p style="font-size:12px; color:#94A3AC; margin-top:2px;">Sebut harga untuk pelanggan</p></div></div>
+              <span onClick="{{ closeQuote }}" style="width:32px; height:32px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#64748B;"><i class="ph ph-x" style="font-size:16px;"></i></span>
+            </div>
+            <div style="padding:22px 24px; display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+              <div style="grid-column:1 / -1; padding:20px 22px; background:#F6F8F7; border-radius:12px; display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                <div style="grid-column:1 / -1; font-size:13px; font-weight:700; color:#42481c; letter-spacing:.3px; margin-bottom:2px;">MAKLUMAT SYARIKAT (boleh edit)</div>
+                <div><label style="display:block; font-size:11px; font-weight:600; color:#64748B; margin-bottom:5px;">Nama Syarikat</label><input value="{{ coName }}" onInput="{{ onCoName }}" style="width:100%; font-family:inherit; font-size:12.5px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:8px; padding:9px 11px; outline:none;"></div>
+                <div><label style="display:block; font-size:11px; font-weight:600; color:#64748B; margin-bottom:5px;">No. SSM</label><input value="{{ coSsm }}" onInput="{{ onCoSsm }}" style="width:100%; font-family:inherit; font-size:12.5px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:8px; padding:9px 11px; outline:none;"></div>
+                <div style="grid-column:1 / -1;"><label style="display:block; font-size:11px; font-weight:600; color:#64748B; margin-bottom:5px;">Alamat Syarikat</label><input value="{{ coAddr }}" onInput="{{ onCoAddr }}" style="width:100%; font-family:inherit; font-size:12.5px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:8px; padding:9px 11px; outline:none;"></div>
+                <div><label style="display:block; font-size:11px; font-weight:600; color:#64748B; margin-bottom:5px;">Telefon</label><input value="{{ coPhone }}" onInput="{{ onCoPhone }}" style="width:100%; font-family:inherit; font-size:12.5px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:8px; padding:9px 11px; outline:none;"></div>
+                <div><label style="display:block; font-size:11px; font-weight:600; color:#64748B; margin-bottom:5px;">Emel</label><input value="{{ coEmail }}" onInput="{{ onCoEmail }}" style="width:100%; font-family:inherit; font-size:12.5px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:8px; padding:9px 11px; outline:none;"></div>
+              </div>
+              <div style="grid-column:1 / -1;"><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Nama Pelanggan</label><input value="{{ quoName }}" onInput="{{ onQuoName }}" placeholder="Nama penuh" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+              <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">No. Telefon</label><input value="{{ quoPhone }}" onInput="{{ onQuoPhone }}" placeholder="0123345671" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+              <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Emel Pelanggan</label><input value="{{ quoEmail }}" onInput="{{ onQuoEmail }}" type="email" placeholder="emel@contoh.com" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+              <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Alamat Pelanggan</label><input value="{{ quoAddr }}" onInput="{{ onQuoAddr }}" placeholder="No., Jalan, Poskod, Bandar" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+              <div style="grid-column:1 / -1; border:1px solid #E2E8F0; border-radius:11px; padding:16px; background:#F9FAF7;">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;"><span style="font-size:12px; font-weight:700; letter-spacing:.4px; color:#42481c; text-transform:uppercase;">Item Sebut Harga</span><button onClick="{{ addQuoItem }}" style="display:inline-flex; align-items:center; gap:6px; background:#42481c; color:#fff; border:none; border-radius:8px; padding:7px 13px; font-size:12px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-plus" style="font-size:14px;"></i> Tambah Item</button></div>
+                <div style="display: grid; grid-template-columns: 2.4fr 0.8fr 1.2fr 30px; gap: 10px; font-size: 10.5px; font-weight: 700; letter-spacing: .3px; color: #94A3AC; text-transform: uppercase; padding: 0 2px 8px; justify-content: flex-end; text-align: left"><span>Servis / Pakej</span><span style="text-align: left">Kuantiti</span><span style="text-align:right;">Harga Seunit (RM)</span><span></span></div>
+                <sc-for list="{{ quoItems }}" as="it" hint-placeholder-count="1">
+                  <div style="display:grid; grid-template-columns:2.4fr 0.8fr 1.2fr 30px; gap:10px; margin-bottom:9px; align-items:center;">
+                    <input value="{{ it.service }}" onInput="{{ it.onService }}" placeholder="cth. Qurban Lembu — Delima" style="font-family:inherit; font-size:12.5px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:8px; padding:9px 11px; outline:none; background:#fff;">
+                    <input value="{{ it.qty }}" onInput="{{ it.onQty }}" type="number" style="font-family:inherit; font-size:12.5px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:8px; padding:9px 11px; outline:none; text-align:center; background:#fff;">
+                    <input value="{{ it.price }}" onInput="{{ it.onPrice }}" placeholder="3500" style="font-family:inherit; font-size:12.5px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:8px; padding:9px 11px; outline:none; text-align:right; background:#fff;">
+                    <span onClick="{{ it.onRemove }}" style="width:30px; height:36px; border-radius:8px; border:1px solid #F0DADA; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#DC2626; background:#fff;"><i class="ph ph-trash" style="font-size:15px;"></i></span>
+                  </div>
+                </sc-for>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; padding-top:12px; border-top:1px solid #E2E8F0;"><span style="font-size:12.5px; font-weight:600; color:#64748B;">Jumlah Keseluruhan</span><span style="font-size:16px; font-weight:800; color:#42481c;">RM {{ quoItemsTotal }}</span></div>
+              </div>
+              <div style="grid-column:1 / -1;"><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Nota Tambahan</label><textarea value="{{ quoNote }}" onInput="{{ onQuoNote }}" rows="3" placeholder="Terma sebut harga, syarat, dsb." style="width:100%; resize:vertical; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></textarea></div>
+            </div>
+            <div style="padding:0 24px 22px; display:flex; gap:10px; justify-content:flex-end;">
+              <button onClick="{{ closeQuote }}" style="background:#fff; color:#334155; border:1px solid #E2E8F0; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;">Batal</button>
+              <button onClick="{{ openQuotePreview }}" style="display:inline-flex; align-items:center; gap:7px; background:#fff; color:#42481c; border:1px solid #42481c; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-file-pdf" style="font-size:16px;"></i> Pratonton PDF</button>
+              <button onClick="{{ closeQuote }}" style="display:inline-flex; align-items:center; gap:7px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-check" style="font-size:16px;"></i> Cipta Quotation</button>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showInvPreview }}" hint-placeholder-val="{{ false }}">
+        <div style="position:fixed; inset:0; z-index:110; background:rgba(20,24,20,.6); display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; padding:32px 16px;">
+          <div style="width:100%; max-width:820px;">
+            <div class="no-print" style="display:flex; align-items:center; justify-content:flex-end; gap:8px; margin-bottom:14px;">
+              <button onClick="{{ printInv }}" style="display:inline-flex; align-items:center; gap:7px; background:#42481c; color:#fff; border:none; border-radius:8px; padding:9px 15px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-printer" style="font-size:16px;"></i> Cetak</button>
+              <button onClick="{{ downloadInv }}" style="display:inline-flex; align-items:center; gap:7px; background:#C9A227; color:#fff; border:none; border-radius:8px; padding:9px 15px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-download-simple" style="font-size:16px;"></i> Muat Turun PDF</button>
+              <button onClick="{{ closeInvPreview }}" style="display:inline-flex; align-items:center; gap:7px; background:#fff; color:#334155; border:1px solid #E2E8F0; border-radius:8px; padding:9px 13px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-x" style="font-size:15px;"></i> Tutup</button>
+            </div>
+            <div id="inv-a4" style="width:210mm; max-width:100%; min-height:297mm; margin:0 auto; background:#fff; box-shadow:0 10px 30px rgba(0,0,0,.18); box-sizing:border-box; padding:22mm 20mm; font-family:Inter,Arial,sans-serif;">
+              <div style="display:flex; align-items:flex-start; justify-content:space-between; border-bottom:2px solid #42481c; padding-bottom:20px;">
+                <div style="display:flex; align-items:center; gap:12px;"><img src="uploads/Untitled design.png" style="width:52px; height:52px; border-radius:11px; object-fit:cover;"><div><div style="font-size:17px; font-weight:800; color:#42481c;">{{ coName }}</div><div style="font-size:11px; color:#94A3AC; margin-top:2px;">No. SSM: {{ coSsm }}</div><div style="font-size:11px; color:#64748B; margin-top:4px; line-height:1.5;">{{ coAddr }}<br>{{ coPhone }} · {{ coEmail }}</div></div></div>
+                <div style="text-align:right;"><div style="font-size:24px; font-weight:800; letter-spacing:1px; color:#1A1D21;">INVOIS</div><div style="font-size:13px; font-weight:700; color:#42481c; margin-top:4px;">{{ invNo }}</div><div style="font-size:12px; color:#64748B; margin-top:2px;">Tarikh: 23-07-2026</div></div>
+              </div>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:24px;">
+                <div><div style="font-size:11px; font-weight:700; letter-spacing:.5px; color:#94A3AC; text-transform:uppercase; margin-bottom:7px;">Kepada</div><div style="font-size:13.5px; color:#334155; line-height:1.6;"><b>{{ invName }}</b><br>{{ invPhone }}<br>{{ invEmail }}<br>{{ invAddr }}<br>No. Tempahan: {{ invOrder }}</div></div>
+                <div><div style="font-size:11px; font-weight:700; letter-spacing:.5px; color:#94A3AC; text-transform:uppercase; margin-bottom:7px;">Butiran</div><div style="font-size:13.5px; color:#334155; line-height:1.6;">Tarikh Tempoh: {{ invDue }}</div></div>
+              </div>
+              <table style="width:100%; border-collapse:collapse; margin-top:26px;">
+                <thead><tr><th style="background:#42481c; color:#fff; text-align:left; font-size:11px; letter-spacing:.4px; text-transform:uppercase; padding:11px 14px;">Perkara</th><th style="background:#42481c; color:#fff; text-align:center; font-size:11px; text-transform:uppercase; padding:11px 14px;">Kuantiti</th><th style="background:#42481c; color:#fff; text-align:right; font-size:11px; text-transform:uppercase; padding:11px 14px;">Harga Seunit</th><th style="background:#42481c; color:#fff; text-align:right; font-size:11px; text-transform:uppercase; padding:11px 14px;">Jumlah</th></tr></thead>
+                <tbody><sc-for list="{{ invItemsView }}" as="it" hint-placeholder-count="1"><tr><td style="padding:13px 14px; font-size:13px; border-bottom:1px solid #E2E8F0;">{{ it.service }}</td><td style="padding:13px 14px; font-size:13px; border-bottom:1px solid #E2E8F0; text-align:center;">{{ it.qty }}</td><td style="padding:13px 14px; font-size:13px; border-bottom:1px solid #E2E8F0; text-align:right;">RM {{ it.priceFmt }}</td><td style="padding:13px 14px; font-size:13px; border-bottom:1px solid #E2E8F0; text-align:right; font-weight:600;">RM {{ it.lineFmt }}</td></tr></sc-for></tbody>
+              </table>
+              <div style="display:flex; justify-content:flex-end; margin-top:18px;"><div style="width:280px;">
+                <div style="display:flex; justify-content:space-between; font-size:13px; color:#64748B;"><span>Subjumlah</span><span>RM {{ invItemsTotal }}</span></div>
+                <div style="display:flex; justify-content:space-between; font-size:13px; color:#64748B; margin-top:8px;"><span>Cukai (0%)</span><span>RM 0.00</span></div>
+                <div style="display:flex; justify-content:space-between; font-size:16px; font-weight:800; color:#42481c; border-top:2px solid #42481c; padding-top:10px; margin-top:10px;"><span>Jumlah</span><span>RM {{ invItemsTotal }}</span></div>
+              </div></div>
+              <div style="margin-top:30px; padding-top:16px; border-top:1px solid #E2E8F0;"><div style="font-size:11px; font-weight:700; letter-spacing:.5px; color:#94A3AC; text-transform:uppercase; margin-bottom:6px;">Nota</div><div style="font-size:12.5px; color:#475569; line-height:1.6; white-space:pre-line;">{{ invNote }}</div></div>
+              <div style="margin-top:36px; text-align:center; font-size:11px; color:#94A3AC;">Dijana oleh Nadi Qurban Sdn Bhd · nadiqurban.com · Sah tanpa tandatangan basah.</div>
+          </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showQuotePreview }}" hint-placeholder-val="{{ false }}">
+        <div style="position:fixed; inset:0; z-index:110; background:rgba(20,24,20,.6); display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; padding:32px 16px;">
+          <div style="width:100%; max-width:820px;">
+            <div class="no-print" style="display:flex; align-items:center; justify-content:flex-end; gap:8px; margin-bottom:14px;">
+              <button onClick="{{ printInv }}" style="display:inline-flex; align-items:center; gap:7px; background:#42481c; color:#fff; border:none; border-radius:8px; padding:9px 15px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-printer" style="font-size:16px;"></i> Cetak</button>
+              <button onClick="{{ downloadQuote }}" style="display:inline-flex; align-items:center; gap:7px; background:#C9A227; color:#fff; border:none; border-radius:8px; padding:9px 15px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-download-simple" style="font-size:16px;"></i> Muat Turun PDF</button>
+              <button onClick="{{ closeQuotePreview }}" style="display:inline-flex; align-items:center; gap:7px; background:#fff; color:#334155; border:1px solid #E2E8F0; border-radius:8px; padding:9px 13px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-x" style="font-size:15px;"></i> Tutup</button>
+            </div>
+            <div id="quote-a4" style="width:210mm; max-width:100%; min-height:297mm; margin:0 auto; background:#fff; box-shadow:0 10px 30px rgba(0,0,0,.18); box-sizing:border-box; padding:22mm 20mm; font-family:Inter,Arial,sans-serif;">
+              <div style="display:flex; align-items:flex-start; justify-content:space-between; border-bottom:2px solid #42481c; padding-bottom:20px;">
+                <div style="display:flex; align-items:center; gap:12px;"><img src="uploads/Untitled design.png" style="width:52px; height:52px; border-radius:11px; object-fit:cover;"><div><div style="font-size:17px; font-weight:800; color:#42481c;">{{ coName }}</div><div style="font-size:11px; color:#94A3AC; margin-top:2px;">No. SSM: {{ coSsm }}</div><div style="font-size:11px; color:#64748B; margin-top:4px; line-height:1.5;">{{ coAddr }}<br>{{ coPhone }} · {{ coEmail }}</div></div></div>
+                <div style="text-align:right;"><div style="font-size:24px; font-weight:800; letter-spacing:1px; color:#1A1D21;">QUOTATION</div><div style="font-size:13px; font-weight:700; color:#42481c; margin-top:4px;">{{ quoNo }}</div></div>
+              </div>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:24px;">
+                <div><div style="font-size:11px; font-weight:700; letter-spacing:.5px; color:#94A3AC; text-transform:uppercase; margin-bottom:7px;">Kepada</div><div style="font-size:13.5px; color:#334155; line-height:1.6;"><b>{{ quoName }}</b><br>{{ quoPhone }}<br>{{ quoEmail }}<br>{{ quoAddr }}</div></div>
+              </div>
+              <table style="width:100%; border-collapse:collapse; margin-top:26px;">
+                <thead><tr><th style="background:#42481c; color:#fff; text-align:left; font-size:11px; letter-spacing:.4px; text-transform:uppercase; padding:11px 14px;">Servis / Pakej</th><th style="background:#42481c; color:#fff; text-align:center; font-size:11px; text-transform:uppercase; padding:11px 14px;">Kuantiti</th><th style="background:#42481c; color:#fff; text-align:right; font-size:11px; text-transform:uppercase; padding:11px 14px;">Harga Seunit</th><th style="background:#42481c; color:#fff; text-align:right; font-size:11px; text-transform:uppercase; padding:11px 14px;">Jumlah</th></tr></thead>
+                <tbody><sc-for list="{{ quoItemsView }}" as="it" hint-placeholder-count="1"><tr><td style="padding:13px 14px; font-size:13px; border-bottom:1px solid #E2E8F0;">{{ it.service }}</td><td style="padding:13px 14px; font-size:13px; border-bottom:1px solid #E2E8F0; text-align:center;">{{ it.qty }}</td><td style="padding:13px 14px; font-size:13px; border-bottom:1px solid #E2E8F0; text-align:right;">RM {{ it.priceFmt }}</td><td style="padding:13px 14px; font-size:13px; border-bottom:1px solid #E2E8F0; text-align:right; font-weight:600;">RM {{ it.lineFmt }}</td></tr></sc-for></tbody>
+              </table>
+              <div style="display:flex; justify-content:flex-end; margin-top:18px;"><div style="width:280px;">
+                <div style="display:flex; justify-content:space-between; font-size:16px; font-weight:800; color:#42481c; border-top:2px solid #42481c; padding-top:10px;"><span>Jumlah Sebut Harga</span><span>RM {{ quoItemsTotal }}</span></div>
+              </div></div>
+              <div style="margin-top:30px; padding-top:16px; border-top:1px solid #E2E8F0;"><div style="font-size:11px; font-weight:700; letter-spacing:.5px; color:#94A3AC; text-transform:uppercase; margin-bottom:6px;">Nota</div><div style="font-size:12.5px; color:#475569; line-height:1.6; white-space:pre-line;">{{ quoNote }}</div></div>
+              <div style="margin-top:36px; text-align:center; font-size:11px; color:#94A3AC;">Dijana oleh Nadi Qurban Sdn Bhd · nadiqurban.com · Sah tanpa tandatangan basah.</div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+    </main>
+  </div>
+
+  <sc-if value="{{ showReceiptViewer }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeReceiptViewer }}" style="position:fixed; inset:0; z-index:130; background:rgba(12,14,12,.82); display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; padding:32px 16px;">
+      <div id="po-rcpt-a4" style="width:100%; max-width:620px; background:#fff; border-radius:14px; box-shadow:0 24px 60px rgba(0,0,0,.4); overflow:hidden;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 22px; background:#F6F8F7; border-bottom:1px solid #E2E8F0;">
+          <span style="font-size:13px; font-weight:700; color:#334155; display:inline-flex; align-items:center; gap:8px; min-width:0;"><i class="ph ph-file-text" style="font-size:17px; color:#42481c; flex-shrink:0;"></i><span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ rvName }}</span></span>
+          <span onClick="{{ closeReceiptViewer }}" style="width:30px; height:30px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#64748B; flex-shrink:0;"><i class="ph ph-x" style="font-size:15px;"></i></span>
+        </div>
+        <div style="background:#EEF1EC; padding:24px; max-height:72vh; overflow-y:auto;">
+          <div style="background:#fff; border-radius:10px; box-shadow:0 4px 16px rgba(0,0,0,.1); padding:32px;">
+            <sc-if value="{{ rvIsImage }}" hint-placeholder-val="{{ false }}">
+              <div style="border:1px dashed #CBD5E1; border-radius:10px; padding:26px; text-align:center; background:#FBFCFA;">
+                <div style="width:56px; height:56px; border-radius:50%; background:#EAF7EE; color:#16A34A; display:flex; align-items:center; justify-content:center; margin:0 auto;"><i class="ph ph-image" style="font-size:28px;"></i></div>
+                <div style="font-size:13px; font-weight:700; color:#1A1D21; margin-top:12px;">Imej Resit Bank</div>
+                <div style="font-size:12px; color:#94A3AC; margin-top:3px;">{{ rvName }}</div>
+              </div>
+            </sc-if>
+            <div style="display:flex; justify-content:space-between; border-bottom:2px solid #42481c; padding-bottom:14px; margin-top:4px;">
+              <div style="font-size:15px; font-weight:800; color:#42481c;">Nadi Qurban Sdn Bhd<div style="font-size:10px; color:#94A3AC; font-weight:600;">1677511-A</div></div>
+              <div style="text-align:right;"><div style="font-size:16px; font-weight:800;">RESIT BAYARAN</div><div style="font-size:12px; color:#64748B;">{{ rvRef }}</div></div>
+            </div>
+            <div style="margin-top:16px;">
+              <sc-for list="{{ rvRows }}" as="d" hint-placeholder-count="7"><div style="display:flex; justify-content:space-between; padding:9px 0; border-bottom:1px solid #F1F5F4; font-size:13px;"><span style="color:#64748B;">{{ d.k }}</span><span style="font-weight:600; color:#1A1D21;">{{ d.v }}</span></div></sc-for>
+            </div>
+            <div style="margin-top:18px; text-align:center; font-size:11px; color:#94A3AC;">Dijana oleh Nadi Qurban Sdn Bhd</div>
+          </div>
+        </div>
+        <div class="no-print" style="padding:14px 22px; display:flex; gap:10px; justify-content:flex-end; border-top:1px solid #E2E8F0;">
+          <button onClick="{{ closeReceiptViewer }}" style="background:#fff; color:#334155; border:1px solid #E2E8F0; border-radius:9px; padding:10px 16px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit;">Tutup</button>
+          <button onClick="{{ printPoReceipt }}" style="display:inline-flex; align-items:center; gap:7px; background:#fff; color:#42481c; border:1px solid #42481c; border-radius:9px; padding:10px 16px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-printer" style="font-size:16px;"></i> Cetak</button>
+          <button onClick="{{ downloadPoReceipt }}" style="display:inline-flex; align-items:center; gap:7px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:10px 16px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-download-simple" style="font-size:16px;"></i> Muat Turun</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showPoView }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; inset:0; z-index:110; background:rgba(20,24,20,.55); display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; padding:32px 16px;">
+      <div style="width:100%; max-width:480px; background:#fff; border-radius:14px; box-shadow:0 24px 60px rgba(0,0,0,.3); overflow:hidden;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 24px; border-bottom:1px solid #E2E8F0;">
+          <div style="display:flex; align-items:center; gap:11px;"><span style="width:36px; height:36px; border-radius:10px; background:#EAF7EE; color:#16A34A; display:flex; align-items:center; justify-content:center;"><i class="ph-fill ph-check-circle" style="font-size:19px;"></i></span><div><h2 style="font-size:16px; font-weight:700;">Rekod Bayaran PO</h2><p style="font-size:12px; color:#94A3AC; margin-top:2px;">Payment Completed</p></div></div>
+          <span onClick="{{ closePoView }}" style="width:32px; height:32px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#64748B;"><i class="ph ph-x" style="font-size:16px;"></i></span>
+        </div>
+        <div style="padding:14px 24px;">
+          <sc-for list="{{ poRows }}" as="d" hint-placeholder-count="8">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:11px 0; border-bottom:1px solid #F1F5F4;"><span style="font-size:12.5px; color:#94A3AC;">{{ d.k }}</span><span style="font-size:13px; font-weight:600; color:#1A1D21; text-align:right;">{{ d.v }}</span></div>
+          </sc-for>
+          <div onClick="{{ openReceiptViewer }}" style="margin-top:16px; display:flex; align-items:center; gap:12px; padding:14px; background:#F6F8F7; border-radius:10px; cursor:pointer;">
+            <span style="width:42px; height:42px; border-radius:9px; background:#FDECEC; color:#DC2626; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><i class="ph ph-file-pdf" style="font-size:22px;"></i></span>
+            <div style="flex:1; min-width:0;"><div style="font-size:12.5px; font-weight:600; color:#1A1D21; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ poReceiptName }}</div><div style="font-size:11px; color:#94A3AC; margin-top:2px;">Bukti bayaran dimuat naik HQ · klik untuk lihat</div></div>
+            <span style="display:inline-flex; align-items:center; gap:5px; color:#42481c; font-size:12.5px; font-weight:600; flex-shrink:0;"><i class="ph ph-eye" style="font-size:16px;"></i> Lihat</span>
+          </div>
+        </div>
+        <div style="padding:0 24px 22px; display:flex; gap:10px; justify-content:flex-end;">
+          <button onClick="{{ closePoView }}" style="background:#fff; color:#334155; border:1px solid #E2E8F0; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;">Tutup</button>
+          <button onClick="{{ downloadPoReceipt }}" style="display:inline-flex; align-items:center; gap:7px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-download-simple" style="font-size:16px;"></i> Muat Turun Resit</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { view: 'list', tab: 'Semua', cur: 0 };
+  renderVals() {
+    const s = this.state;
+    const set = (o) => this.setState(o);
+    const pdfOne = function (elId, fname) {
+      const el = document.getElementById(elId);
+      if (!el || typeof html2pdf === 'undefined') { window.print(); return; }
+      const pxToMm = 25.4 / 96;
+      const hMm = el.scrollHeight * pxToMm;
+      const scale = hMm > 297 ? (297 / hMm) : 1;
+      const pv = { t: el.style.transform, to: el.style.transformOrigin, sh: el.style.boxShadow, br: el.style.borderRadius };
+      el.style.boxShadow = 'none'; el.style.borderRadius = '0';
+      if (scale < 1) { el.style.transform = 'scale(' + scale + ')'; el.style.transformOrigin = 'top left'; }
+      const restore = function () { el.style.transform = pv.t; el.style.transformOrigin = pv.to; el.style.boxShadow = pv.sh; el.style.borderRadius = pv.br; };
+      html2pdf().set({ margin: 0, filename: fname, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' }, pagebreak: { mode: ['avoid-all'] }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(el).save().then(restore).catch(restore);
+    };
+    const E = React.createElement;
+
+    const navItem = (icon, label, active, badge) => ({
+      isItem: true, isSection: false, label, badge: badge || '',
+      icon, iconColor: active ? '#42481c' : '#94A3AC', bar: active ? '#42481c' : 'transparent',
+      onClick: () => { const m = { 'Dashboard': 'Dashboard Operasi.dc.html', 'Bayaran Ansuran': 'Bayaran Ansuran.dc.html', 'Tempahan & Pelanggan': 'Tempahan & Pelanggan.dc.html', 'Pengesahan Bayaran': 'Tempahan & Pelanggan.dc.html', 'Lafaz Akad': 'Lafaz Akad.dc.html', 'Agihan Negara': 'Agihan Negara.dc.html', 'Pelaksanaan & Laporan': 'Pelaksanaan & Laporan.dc.html', 'AWB & Postage': 'AWB & Postage.dc.html', 'Tempahan Selesai': 'Tempahan Selesai.dc.html', 'Vendor': 'Vendor.dc.html', 'Produk': 'Produk.dc.html', 'Dokumen': 'Dokumen.dc.html', 'Sales CRM': 'Sales CRM.dc.html', 'Kod Promosi': 'Kod Promosi.dc.html', 'Kewangan': 'Kewangan.dc.html', 'Pusat Laporan': 'Pusat Laporan.dc.html', 'Audit Log': 'Audit Log.dc.html', 'Notifikasi': 'Notifikasi.dc.html', 'Pengguna': 'Pengguna & Peranan.dc.html', 'Sijil': 'Tempahan & Pelanggan.dc.html', 'Tetapan': 'Tempahan & Pelanggan.dc.html' }; if (m[label] && !active) { try { location.href = (function(p){try{var u=new URL(p,location.href);new URLSearchParams(location.search).forEach(function(v,k){if(!u.searchParams.has(k))u.searchParams.set(k,v);});return u.href;}catch(e){return p;}})(m[label]); } catch (e) {} } },
+      rowStyle: 'position:relative; display:flex; align-items:center; gap:12px; padding:10px 14px; margin:2px 0; border-radius:9px; font-size:13.5px; cursor:pointer;' + (active ? 'background:#edeee0; color:#42481c; font-weight:700;' : 'color:#475569; font-weight:500;'),
+    });
+    const sec = (label) => ({ isSection: true, isItem: false, label });
+    const nav = [
+      sec('UTAMA'), navItem('ph ph-squares-four', 'Dashboard', false),
+      sec('OPERASI'), navItem('ph ph-calendar-check', 'Bayaran Ansuran', false), navItem('ph ph-shopping-cart-simple', 'Tempahan & Pelanggan', false, '34'), navItem('ph ph-seal-check', 'Pengesahan Bayaran', false, '5'), navItem('ph ph-hand-heart', 'Lafaz Akad', false), navItem('ph ph-globe-hemisphere-west', 'Agihan Negara', false), navItem('ph ph-shopping-bag', 'Pelaksanaan & Laporan', false), navItem('ph ph-package', 'AWB & Postage', false), navItem('ph ph-check-square-offset', 'Tempahan Selesai', false), navItem('ph ph-truck', 'Vendor', false), navItem('ph ph-cow', 'Produk', false), navItem('ph ph-folders', 'Dokumen', false),
+      sec('JUALAN & KEWANGAN'), navItem('ph ph-users-three', 'Sales CRM', false), navItem('ph ph-ticket', 'Kod Promosi', false), navItem('ph ph-wallet', 'Kewangan', true, '87'),
+      sec('LAPORAN'), navItem('ph ph-chart-bar', 'Pusat Laporan', false), navItem('ph ph-clock-counter-clockwise', 'Audit Log', false),
+      sec('SISTEM'), navItem('ph ph-bell', 'Notifikasi', false, '7'), navItem('ph ph-users', 'Pengguna', false), navItem('ph ph-certificate', 'Sijil', false), navItem('ph ph-gear-six', 'Tetapan', false),
+    ];
+
+    const up = 'font-size:12px; font-weight:700; color:#16A34A; background:#EAF7EE; border-radius:20px; padding:3px 9px;';
+    const dn = 'font-size:12px; font-weight:700; color:#DC2626; background:#FDECEC; border-radius:20px; padding:3px 9px;';
+    const kpis = [
+      { icon: 'ph ph-trend-up', tint: '#edeee0', color: '#42481c', value: 'RM 3.82j', label: 'Jumlah Kutipan', delta: '\u2191 15.2%', deltaStyle: up },
+      { icon: 'ph ph-arrow-circle-down', tint: '#FBF3DC', color: '#C9A227', value: 'RM 2.14j', label: 'Bayaran Vendor', delta: '\u2191 9.4%', deltaStyle: up },
+      { icon: 'ph ph-hourglass-medium', tint: '#FEF3E2', color: '#D97706', value: 'RM 168k', label: 'Belum Dijelaskan', delta: '87 invois', deltaStyle: 'font-size:12px; font-weight:700; color:#D97706; background:#FEF3E2; border-radius:20px; padding:3px 9px;' },
+      { icon: 'ph ph-warning-circle', tint: '#FDECEC', color: '#DC2626', value: 'RM 42k', label: 'Tertunggak > 30 hari', delta: '\u2193 4.5%', deltaStyle: dn },
+    ];
+
+    // cashflow grouped bars
+    const months = ['Jan','Feb','Mac','Apr','Mei','Jun','Jul','Ogo'];
+    const inflow = [280,320,300,410,390,540,600,470];
+    const outflow = [160,190,180,240,230,320,360,290];
+    const W = 720, H = 250, padL = 44, padB = 30, padT = 14, padR = 14;
+    const plotW = W - padL - padR, plotH = H - padT - padB, yMax = 700, n = months.length;
+    const slot = plotW / n, bw = slot * 0.26;
+    const yOf = (v) => padT + plotH - plotH * v / yMax;
+    const g = [];
+    for (let t = 0; t <= yMax; t += 175) {
+      const y = yOf(t);
+      g.push(E('line', { key: 'gy' + t, x1: padL, y1: y, x2: W - padR, y2: y, stroke: '#EEF0E4', strokeWidth: 1 }));
+      g.push(E('text', { key: 'ty' + t, x: padL - 10, y: y + 4, textAnchor: 'end', fontSize: 11, fill: '#94A3AC', fontFamily: 'Inter,sans-serif' }, t));
+    }
+    months.forEach((m, i) => {
+      const cx = padL + slot * (i + 0.5);
+      const yi = yOf(inflow[i]), yo = yOf(outflow[i]);
+      g.push(E('rect', { key: 'i' + i, x: cx - bw - 2, y: yi, width: bw, height: padT + plotH - yi, rx: 3, fill: '#42481c' }));
+      g.push(E('rect', { key: 'o' + i, x: cx + 2, y: yo, width: bw, height: padT + plotH - yo, rx: 3, fill: '#C9A227' }));
+      g.push(E('text', { key: 'mx' + i, x: cx, y: H - padB + 18, textAnchor: 'middle', fontSize: 11, fill: '#94A3AC', fontFamily: 'Inter,sans-serif' }, m));
+    });
+    const cashChart = E('svg', { viewBox: '0 0 ' + W + ' ' + H, style: { width: '100%', height: 'auto', marginTop: '8px' } }, g);
+
+    // method donut
+    const mData = [
+      { name: 'FPX Online', value: 46, color: '#42481c', pct: '46%' },
+      { name: 'Kad Kredit', value: 28, color: '#C9A227', pct: '28%' },
+      { name: 'DuitNow QR', value: 18, color: '#8a924e', pct: '18%' },
+      { name: 'Pindahan Bank', value: 8, color: '#b1b67c', pct: '8%' },
+    ];
+    const ds = 150, dth = 28, dr = ds / 2, din = dr - dth;
+    let a0 = -Math.PI / 2; const tot = mData.reduce((a, d) => a + d.value, 0);
+    const arcs = mData.map((d, i) => {
+      const frac = d.value / tot, a1 = a0 + frac * Math.PI * 2, large = frac > 0.5 ? 1 : 0;
+      const pt = (ang, r) => [dr + r * Math.cos(ang), dr + r * Math.sin(ang)];
+      const [x0, y0] = pt(a0, dr), [x1, y1] = pt(a1, dr), [x2, y2] = pt(a1, din), [x3, y3] = pt(a0, din);
+      const dd = 'M' + x0 + ' ' + y0 + ' A' + dr + ' ' + dr + ' 0 ' + large + ' 1 ' + x1 + ' ' + y1 + ' L' + x2 + ' ' + y2 + ' A' + din + ' ' + din + ' 0 ' + large + ' 0 ' + x3 + ' ' + y3 + ' Z';
+      a0 = a1; return E('path', { key: 'a' + i, d: dd, fill: d.color });
+    });
+    arcs.push(E('text', { key: 't1', x: dr, y: dr - 3, textAnchor: 'middle', fontSize: 18, fontWeight: 700, fill: '#1A1D21', fontFamily: 'Inter,sans-serif' }, 'RM 3.8j'));
+    arcs.push(E('text', { key: 't2', x: dr, y: dr + 15, textAnchor: 'middle', fontSize: 10.5, fill: '#64748B', fontFamily: 'Inter,sans-serif' }, 'kutipan'));
+    const methodDonut = E('svg', { viewBox: '0 0 ' + ds + ' ' + ds, style: { width: ds, height: ds } }, arcs);
+    const methods = mData.map(d => ({ name: d.name, color: d.color, pct: d.pct }));
+
+    const tabDefs = [['Semua', '256'], ['Dibayar', '169'], ['Tertunggak', '87']];
+    const tabs = tabDefs.map(([label, count]) => {
+      const on = s.tab === label;
+      return { label, count, onClick: () => set({ tab: label }),
+        style: 'display:inline-flex; align-items:center; gap:8px; font-size:13.5px; font-weight:600; padding:9px 16px; border-radius:9px; cursor:pointer;' + (on ? 'background:#42481c; color:#fff;' : 'background:#fff; border:1px solid #E2E8F0; color:#334155;'),
+        countStyle: 'font-size:11px; font-weight:700; border-radius:20px; padding:1px 8px;' + (on ? 'background:rgba(255,255,255,.2); color:#fff;' : 'background:#edeee0; color:#42481c;') };
+    });
+
+    const badge = (bg, col) => 'display:inline-block; font-size:11.5px; font-weight:600; border-radius:20px; padding:4px 12px; background:' + bg + '; color:' + col + ';';
+    const st = { 'Dibayar': badge('#EAF7EE', '#16A34A'), 'Tertunggak': badge('#FEF3E2', '#D97706'), 'Lewat': badge('#FDECEC', '#DC2626'), 'Deposit': badge('#E8F0FB', '#2563EB') };
+    const raw = [
+      ['INV-2027-0891', 'Ahmad Zaki bin Hassan', 'NQ-2027-001248', 'RM 2,450', '12 Jun 2027', 'Deposit', '26 Jun 2027'],
+      ['INV-2027-0890', 'Nurul Aina binti Rahim', 'NQ-2027-001247', 'RM 850', '12 Jun 2027', 'Dibayar', '12 Jun 2027'],
+      ['INV-2027-0889', 'Mohd Firdaus bin Omar', 'NQ-2027-001246', 'RM 5,200', '11 Jun 2027', 'Tertunggak', '25 Jun 2027'],
+      ['INV-2027-0888', 'Siti Khadijah bt Yusof', 'NQ-2027-001245', 'RM 720', '11 Jun 2027', 'Dibayar', '11 Jun 2027'],
+      ['INV-2027-0887', 'Zulhilmi bin Abdullah', 'NQ-2027-001244', 'RM 1,960', '10 Jun 2027', 'Tertunggak', '24 Jun 2027'],
+      ['INV-2027-0886', 'Rosmah binti Idris', 'NQ-2027-001243', 'RM 2,300', '09 Jun 2027', 'Lewat', '19 Jun 2027'],
+      ['INV-2027-0885', 'Aminah binti Salleh', 'NQ-2027-001241', 'RM 2,150', '08 Jun 2027', 'Dibayar', '08 Jun 2027'],
+      ['INV-2027-0884', 'Ibrahim bin Musa', 'NQ-2027-001240', 'RM 980', '08 Jun 2027', 'Dibayar', '08 Jun 2027'],
+    ];
+    const _ic = s.invChecked || {};
+    const _icBox = (on) => 'width:20px; height:20px; border-radius:6px; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;' + (on ? 'background:#42481c; border:1px solid #42481c;' : 'border:1.5px solid #CBD5E1;');
+    const invoices = raw.map((r, i) => ({ no: r[0], name: r[1], order: r[2], amount: r[3], date: r[4], due: r[6] || r[4], status: r[5], badgeStyle: st[r[5]], checked: !!_ic[r[0]], checkStyle: _icBox(!!_ic[r[0]]), onCheck: () => set({ invChecked: Object.assign({}, _ic, { [r[0]]: !_ic[r[0]] }) }), onView: () => set({ view: 'detail', cur: i }) }));
+    const poRecords = ((function () {
+      try { const x = JSON.parse(localStorage.getItem('nq_po_completed') || 'null'); if (x && x.length) return x; } catch (e) {}
+      return [
+        { no: 'NQ-PO-2027-0148', vendor: 'Uganda Charity Ltd', amount: 'RM 612,500', poDate: '15 Jul 2026', date: '20 Jul 2026', ref: 'MBB8842019', bank: 'Maybank', pic: 'Haliza Mohamad', receipt: 'Resit-Bank-MBB8842019.pdf' },
+        { no: 'NQ-PO-2027-0146', vendor: 'Qurban Nusantara Sdn Bhd', amount: 'RM 88,000', poDate: '14 Jul 2026', date: '18 Jul 2026', ref: 'CIMB771204', bank: 'CIMB Bank', pic: 'Haliza Mohamad', receipt: 'Resit-Bayaran-CIMB771204.png' },
+        { no: 'NQ-PO-2027-0142', vendor: 'Sahara Cattle Trading Co', amount: 'RM 245,000', poDate: '10 Jul 2026', date: '15 Jul 2026', ref: 'MBB8830772', bank: 'Maybank', pic: 'Muhammad Nurfitri', receipt: 'Resit-Bank-MBB8830772.pdf' },
+      ];
+    })()).map((p, i) => ({ ...p, checked: !!(s.poChecked || {})[p.no], checkStyle: _icBox(!!(s.poChecked || {})[p.no]), onCheck: () => set({ poChecked: Object.assign({}, s.poChecked, { [p.no]: !(s.poChecked || {})[p.no] }) }), onView: () => set({ poView: i }), onViewReceipt: () => set({ receiptViewer: p }) }));
+    const poCount = String(poRecords.length);
+    const poCur = s.poView != null ? poRecords[s.poView] : null;
+
+    const cur = invoices[s.cur] || invoices[0];
+    const lineItems = [
+      { name: 'Qurban Lembu (1 bahagian)', desc: 'Pelaksanaan: Uganda', qty: '1', price: 'RM 1,800', total: 'RM 1,800' },
+      { name: 'Yuran Pengurusan & Logistik', desc: 'Termasuk pengangkutan', qty: '1', price: 'RM 450', total: 'RM 450' },
+      { name: 'Sijil & Penghantaran', desc: 'Sijil fizikal + video', qty: '1', price: 'RM 200', total: 'RM 200' },
+    ];
+    const totRow = 'display:flex; justify-content:space-between; width:230px; font-size:13.5px;';
+    const totals = [
+      { label: 'Subjumlah', value: 'RM 2,450', rowStyle: totRow },
+      { label: 'SST (0%)', value: 'RM 0.00', rowStyle: totRow },
+      { label: 'Jumlah', value: 'RM 2,450', rowStyle: totRow + 'font-weight:800; font-size:16px; color:#42481c; border-top:1px solid #E2E8F0; padding-top:8px; margin-top:4px;' },
+    ];
+    const payInfo = [
+      { k: 'Kaedah', v: 'FPX Online' }, { k: 'Deposit Dibayar', v: 'RM 1,225' },
+      { k: 'Baki', v: 'RM 1,225' }, { k: 'Tarikh Akhir', v: '26 Jun 2027' },
+    ];
+    const txns = [
+      { icon: 'ph-fill ph-check', tint: '#EAF7EE', color: '#16A34A', title: 'Deposit RM 1,225 diterima', time: '12 Jun, 14:20', last: false },
+      { icon: 'ph ph-receipt', tint: '#edeee0', color: '#42481c', title: 'Invois dijana', time: '12 Jun, 09:14', last: false },
+      { icon: 'ph ph-hourglass-medium', tint: '#FEF3E2', color: '#D97706', title: 'Menunggu baki RM 1,225', time: 'Tempoh 26 Jun', last: true },
+    ];
+    const txnsOut = txns.map(t => ({ ...t, lineStyle: 'flex:1; width:2px; background:' + (t.last ? 'transparent' : '#E2E8F0') + '; margin:3px 0; min-height:12px;' }));
+
+    return {
+      nav, kpis, cashChart, methodDonut, methods, tabs, invoices, poRecords, poCount,
+      allInvChecked: raw.length > 0 && raw.every(r => _ic[r[0]]),
+      allInvCheckStyle: _icBox(raw.length > 0 && raw.every(r => _ic[r[0]])),
+      toggleAllInv: () => { const nc = Object.assign({}, _ic); const ac = raw.length > 0 && raw.every(r => _ic[r[0]]); if (ac) { raw.forEach(r => delete nc[r[0]]); } else { raw.forEach(r => nc[r[0]] = true); } set({ invChecked: nc }); },
+      exportExcel: () => {
+        if (typeof XLSX === 'undefined') { alert('Pustaka Excel belum dimuat. Sila cuba semula.'); return; }
+        const aoa = [['No. Invois', 'Pelanggan', 'No. Tempahan', 'Jumlah', 'Tarikh', 'Tarikh Tempoh', 'Status']];
+        raw.forEach(r => aoa.push([r[0], r[1], r[2], r[3], r[4], r[6] || r[4], r[5]]));
+        const ws = XLSX.utils.aoa_to_sheet(aoa);
+        ws['!cols'] = [{ wch: 16 }, { wch: 24 }, { wch: 18 }, { wch: 12 }, { wch: 14 }, { wch: 14 }, { wch: 14 }];
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Invois');
+        XLSX.writeFile(wb, 'Invois-Kewangan-Nadi-Qurban.xlsx');
+      },
+      allPoChecked: poRecords.length > 0 && poRecords.every(p => (s.poChecked || {})[p.no]),
+      allPoCheckStyle: _icBox(poRecords.length > 0 && poRecords.every(p => (s.poChecked || {})[p.no])),
+      toggleAllPo: () => { const nc = Object.assign({}, s.poChecked); const ac = poRecords.length > 0 && poRecords.every(p => (s.poChecked || {})[p.no]); if (ac) { poRecords.forEach(p => delete nc[p.no]); } else { poRecords.forEach(p => nc[p.no] = true); } set({ poChecked: nc }); },
+      exportPoExcel: () => {
+        if (typeof XLSX === 'undefined') { alert('Pustaka Excel belum dimuat. Sila cuba semula.'); return; }
+        const aoa = [['No. PO', 'Vendor', 'Jumlah', 'Tarikh PO', 'Tarikh Bayar', 'Bank', 'No. Rujukan', 'Diluluskan Oleh', 'Status']];
+        poRecords.forEach(p => aoa.push([p.no, p.vendor, p.amount, p.poDate, p.date, p.bank, p.ref, p.pic, 'Payment Completed']));
+        const ws = XLSX.utils.aoa_to_sheet(aoa);
+        ws['!cols'] = [{ wch: 18 }, { wch: 26 }, { wch: 12 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 20 }, { wch: 18 }];
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Rekod PO');
+        XLSX.writeFile(wb, 'Rekod-PO-Payment-Completed.xlsx');
+      },
+      showPoView: poCur != null,
+      poRows: poCur ? [
+        { k: 'No. PO', v: poCur.no }, { k: 'Vendor', v: poCur.vendor },
+        { k: 'Jumlah Bayaran', v: poCur.amount }, { k: 'Tarikh Bayar', v: poCur.date },
+        { k: 'Bank', v: poCur.bank }, { k: 'No. Rujukan', v: poCur.ref },
+        { k: 'Diluluskan Oleh', v: poCur.pic }, { k: 'Status', v: 'Payment Completed' },
+      ] : [],
+      poReceiptName: poCur ? poCur.receipt : '',
+      showReceiptViewer: !!s.receiptViewer,
+      rvName: s.receiptViewer ? s.receiptViewer.receipt : '',
+      rvIsImage: s.receiptViewer ? /\.(png|jpe?g|webp)$/i.test(s.receiptViewer.receipt || '') : false,
+      rvIsPdf: s.receiptViewer ? /\.pdf$/i.test(s.receiptViewer.receipt || '') : false,
+      rvVendor: s.receiptViewer ? s.receiptViewer.vendor : '',
+      rvNo: s.receiptViewer ? s.receiptViewer.no : '',
+      rvAmount: s.receiptViewer ? s.receiptViewer.amount : '',
+      rvDate: s.receiptViewer ? s.receiptViewer.date : '',
+      rvBank: s.receiptViewer ? s.receiptViewer.bank : '',
+      rvRef: s.receiptViewer ? s.receiptViewer.ref : '',
+      rvPic: s.receiptViewer ? s.receiptViewer.pic : '',
+      openReceiptViewer: () => set({ receiptViewer: poCur }),
+      rvRows: s.receiptViewer ? [
+        { k: 'No. PO', v: s.receiptViewer.no }, { k: 'Vendor', v: s.receiptViewer.vendor },
+        { k: 'Jumlah', v: s.receiptViewer.amount }, { k: 'Tarikh Bayar', v: s.receiptViewer.date },
+        { k: 'Bank', v: s.receiptViewer.bank }, { k: 'No. Rujukan', v: s.receiptViewer.ref },
+        { k: 'Diluluskan Oleh', v: s.receiptViewer.pic }, { k: 'Status', v: 'Payment Completed' },
+      ] : [],
+      closeReceiptViewer: () => set({ receiptViewer: null }),
+      printPoReceipt: () => { window.print(); },
+      closePoView: () => set({ poView: null }),
+      downloadPoReceipt: () => {
+        const p = poCur; if (!p) return;
+        const html = '<!doctype html><meta charset="utf-8"><div style="font-family:Inter,Arial,sans-serif;max-width:640px;margin:24px auto;padding:32px;border:1px solid #E2E8F0;border-radius:12px;color:#1A1D21;">'
+          + '<div style="display:flex;justify-content:space-between;border-bottom:2px solid #42481c;padding-bottom:16px;"><div style="font-size:16px;font-weight:800;color:#42481c;">Nadi Qurban Sdn Bhd<div style="font-size:10px;color:#94A3AC;">1677511-A</div></div><div style="text-align:right;"><div style="font-size:18px;font-weight:800;">RESIT BAYARAN</div><div style="font-size:12px;color:#64748B;">' + p.ref + '</div></div></div>'
+          + '<table style="width:100%;border-collapse:collapse;margin-top:20px;font-size:13px;">'
+          + ['No. PO:' + p.no, 'Vendor:' + p.vendor, 'Jumlah:' + p.amount, 'Tarikh Bayar:' + p.date, 'Bank:' + p.bank, 'No. Rujukan:' + p.ref, 'Diluluskan Oleh:' + p.pic, 'Status:Payment Completed'].map(x => { const a = x.split(':'); return '<tr><td style="padding:9px 0;color:#64748B;border-bottom:1px solid #F1F5F4;">' + a[0] + '</td><td style="padding:9px 0;text-align:right;font-weight:600;border-bottom:1px solid #F1F5F4;">' + a[1] + '</td></tr>'; }).join('')
+          + '</table><div style="margin-top:24px;text-align:center;font-size:11px;color:#94A3AC;">Dijana oleh Nadi Qurban Sdn Bhd · nadiqurban.com</div></div>';
+        const blob = new Blob([html], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = p.receipt; document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1500);
+      },
+      showInvoice: s.showInvoice === true,
+      invNo: 'INV-2027-' + String(149 + ((s.invSeq || 0))).padStart(4, '0'),
+      quoNo: 'QUO-2027-' + String(76 + ((s.quoSeq || 0))).padStart(4, '0'),
+      coName: s.coName || 'Nadi Qurban Sdn Bhd', onCoName: (e) => set({ coName: e.target.value }),
+      coSsm: s.coSsm || '1677511-A', onCoSsm: (e) => set({ coSsm: e.target.value }),
+      coAddr: s.coAddr || 'Aras 8, Menara Ilham, Jalan Binjai, 50450 Kuala Lumpur', onCoAddr: (e) => set({ coAddr: e.target.value }),
+      coPhone: s.coPhone || '03-2181 8000', onCoPhone: (e) => set({ coPhone: e.target.value }),
+      coEmail: s.coEmail || 'finance@nadiqurban.com', onCoEmail: (e) => set({ coEmail: e.target.value }),
+      invName: s.invName || 'Ahmad Zaki bin Hassan', onInvName: (e) => set({ invName: e.target.value }),
+      invOrder: s.invOrder || 'NQ-QB-LE-001243', onInvOrder: (e) => set({ invOrder: e.target.value }),
+      invPhone: s.invPhone || '0123345671', onInvPhone: (e) => set({ invPhone: e.target.value }),
+      invEmail: s.invEmail || 'ahmad.zaki@gmail.com', onInvEmail: (e) => set({ invEmail: e.target.value }),
+      invAddr: s.invAddr || 'No. 12, Jalan Melati 3, 40150 Shah Alam, Selangor', onInvAddr: (e) => set({ invAddr: e.target.value }),
+      invAmount: s.invAmount || '3,500.00', onInvAmount: (e) => set({ invAmount: e.target.value }),
+      invItem: s.invItem || 'Qurban Lembu — Pakej Delima', onInvItem: (e) => set({ invItem: e.target.value }),
+      invItems: (s.invItems || [{ service: 'Qurban Lembu — Delima', qty: '1', price: '3500' }]).map((it, idx) => ({
+        service: it.service, qty: it.qty, price: it.price,
+        onService: (e) => { const a = (s.invItems || [{ service: 'Qurban Lembu — Delima', qty: '1', price: '3500' }]).slice(); a[idx] = Object.assign({}, a[idx], { service: e.target.value }); set({ invItems: a }); },
+        onQty: (e) => { const a = (s.invItems || [{ service: 'Qurban Lembu — Delima', qty: '1', price: '3500' }]).slice(); a[idx] = Object.assign({}, a[idx], { qty: e.target.value }); set({ invItems: a }); },
+        onPrice: (e) => { const a = (s.invItems || [{ service: 'Qurban Lembu — Delima', qty: '1', price: '3500' }]).slice(); a[idx] = Object.assign({}, a[idx], { price: e.target.value }); set({ invItems: a }); },
+        onRemove: () => { const a = (s.invItems || [{ service: 'Qurban Lembu — Delima', qty: '1', price: '3500' }]).slice(); if (a.length > 1) { a.splice(idx, 1); set({ invItems: a }); } },
+      })),
+      addInvItem: () => { const a = (s.invItems || [{ service: 'Qurban Lembu — Delima', qty: '1', price: '3500' }]).slice(); a.push({ service: '', qty: '1', price: '' }); set({ invItems: a }); },
+      invItemsTotal: (s.invItems || [{ service: 'Qurban Lembu — Delima', qty: '1', price: '3500' }]).reduce((sum, it) => sum + (parseFloat(String(it.price).replace(/[^0-9.]/g, '')) || 0) * (parseInt(it.qty, 10) || 0), 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+      invItemsView: (s.invItems || [{ service: 'Qurban Lembu — Delima', qty: '1', price: '3500' }]).map((it) => { const pr = parseFloat(String(it.price).replace(/[^0-9.]/g, '')) || 0; const q = parseInt(it.qty, 10) || 0; return { service: it.service || '-', qty: it.qty || '0', priceFmt: pr.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), lineFmt: (pr * q).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }; }),
+      invDue: s.invDue || '06-08-2026', onInvDue: (e) => set({ invDue: e.target.value }),
+      invNote: s.invNote != null ? s.invNote : 'Sila jelaskan bayaran sebelum tarikh tempoh. Terima kasih.', onInvNote: (e) => set({ invNote: e.target.value }),
+      openInvoice: () => set({ showInvoice: true }),
+      closeInvoice: () => set({ showInvoice: false }),
+      showQuote: s.showQuote === true,
+      quoName: s.quoName || 'Ahmad Zaki bin Hassan', onQuoName: (e) => set({ quoName: e.target.value }),
+      quoPhone: s.quoPhone || '0123345671', onQuoPhone: (e) => set({ quoPhone: e.target.value }),
+      quoEmail: s.quoEmail || 'ahmad.zaki@gmail.com', onQuoEmail: (e) => set({ quoEmail: e.target.value }),
+      quoAddr: s.quoAddr || 'No. 12, Jalan Melati 3, 40150 Shah Alam, Selangor', onQuoAddr: (e) => set({ quoAddr: e.target.value }),
+      quoService: s.quoService || 'Qurban Lembu — Pakej Delima', onQuoService: (e) => set({ quoService: e.target.value }),
+      quoItems: (s.quoItems || [{ service: 'Qurban Lembu — Delima', qty: '1', price: '3500' }]).map((it, idx) => ({
+        service: it.service, qty: it.qty, price: it.price,
+        onService: (e) => { const a = (s.quoItems || [{ service: 'Qurban Lembu — Delima', qty: '1', price: '3500' }]).slice(); a[idx] = Object.assign({}, a[idx], { service: e.target.value }); set({ quoItems: a }); },
+        onQty: (e) => { const a = (s.quoItems || [{ service: 'Qurban Lembu — Delima', qty: '1', price: '3500' }]).slice(); a[idx] = Object.assign({}, a[idx], { qty: e.target.value }); set({ quoItems: a }); },
+        onPrice: (e) => { const a = (s.quoItems || [{ service: 'Qurban Lembu — Delima', qty: '1', price: '3500' }]).slice(); a[idx] = Object.assign({}, a[idx], { price: e.target.value }); set({ quoItems: a }); },
+        onRemove: () => { const a = (s.quoItems || [{ service: 'Qurban Lembu — Delima', qty: '1', price: '3500' }]).slice(); if (a.length > 1) { a.splice(idx, 1); set({ quoItems: a }); } },
+      })),
+      addQuoItem: () => { const a = (s.quoItems || [{ service: 'Qurban Lembu — Delima', qty: '1', price: '3500' }]).slice(); a.push({ service: '', qty: '1', price: '' }); set({ quoItems: a }); },
+      quoItemsTotal: (s.quoItems || [{ service: 'Qurban Lembu — Delima', qty: '1', price: '3500' }]).reduce((sum, it) => sum + (parseFloat(String(it.price).replace(/[^0-9.]/g, '')) || 0) * (parseInt(it.qty, 10) || 0), 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+      quoItemsView: (s.quoItems || [{ service: 'Qurban Lembu — Delima', qty: '1', price: '3500' }]).map((it) => { const pr = parseFloat(String(it.price).replace(/[^0-9.]/g, '')) || 0; const q = parseInt(it.qty, 10) || 0; return { service: it.service || '-', qty: it.qty || '0', priceFmt: pr.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), lineFmt: (pr * q).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }; }),
+      quoQty: s.quoQty || '1', onQuoQty: (e) => set({ quoQty: e.target.value }),
+      quoPrice: s.quoPrice || '3,500.00', onQuoPrice: (e) => set({ quoPrice: e.target.value }),
+      quoValid: s.quoValid || '06-08-2026', onQuoValid: (e) => set({ quoValid: e.target.value }),
+      quoNote: s.quoNote != null ? s.quoNote : 'Sebut harga ini sah untuk tempoh yang dinyatakan. Harga tertakluk pada perubahan selepas tarikh luput.', onQuoNote: (e) => set({ quoNote: e.target.value }),
+      quoTotal: (function () { const p = parseFloat(String(s.quoPrice || '3500').replace(/[^0-9.]/g, '')) || 0; const q = parseInt(s.quoQty || '1', 10) || 1; return (p * q).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); })(),
+      openQuote: () => set({ showQuote: true }),
+      closeQuote: () => set({ showQuote: false }),
+      showInvPreview: s.showInvPreview === true,
+      openInvPreview: () => set({ showInvoice: false, showInvPreview: true }),
+      closeInvPreview: () => set({ showInvPreview: false, showInvoice: true }),
+      printInv: () => { window.print(); },
+      showQuotePreview: s.showQuotePreview === true,
+      openQuotePreview: () => set({ showQuote: false, showQuotePreview: true }),
+      closeQuotePreview: () => set({ showQuotePreview: false, showQuote: true }),
+      downloadQuote: () => { pdfOne('quote-a4', 'Quotation-Nadi-Qurban.pdf'); },
+      downloadInv: () => { pdfOne('inv-a4', 'Invois-Nadi-Qurban.pdf'); },
+      isList: s.view === 'list', isDetail: s.view === 'detail', goList: () => set({ view: 'list' }),
+      cur, lineItems, totals, payInfo, txns: txnsOut,
+    };
+  }
+}
+</script>
+</body>
+</html>

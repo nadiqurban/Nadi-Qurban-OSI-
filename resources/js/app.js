@@ -61,6 +61,35 @@ document.addEventListener('alpine:init', () => {
         },
     }));
 
+    // Payment-proof preview: images inline, PDFs render page 1 with pdf.js (loaded on demand).
+    Alpine.data('proofPreview', (url, isPdf) => ({
+        loading: isPdf,
+        failed: false,
+        async init() {
+            if (!isPdf || !url) return;
+            try {
+                const pdfjs = await import('pdfjs-dist');
+                const worker = await import('pdfjs-dist/build/pdf.worker.min.mjs?url');
+                pdfjs.GlobalWorkerOptions.workerSrc = worker.default;
+                const pdf = await pdfjs.getDocument({ url, withCredentials: true }).promise;
+                const page = await pdf.getPage(1);
+                const dpr = Math.max(2, window.devicePixelRatio || 1);
+                const base = page.getViewport({ scale: 1 });
+                const scale = (Math.min(this.$el.clientWidth || 480, 520) / base.width) * dpr;
+                const viewport = page.getViewport({ scale });
+                const canvas = this.$refs.canvas;
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+                canvas.style.width = viewport.width / dpr + 'px';
+                await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+            } catch (e) {
+                this.failed = true;
+            } finally {
+                this.loading = false;
+            }
+        },
+    }));
+
     // Scales an A4/A5 preview down to fit its container on small screens.
     Alpine.data('docScale', (pageWidthPx) => ({
         scale: 1,

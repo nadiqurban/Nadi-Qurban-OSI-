@@ -1,7 +1,9 @@
 <?php
 
 use Database\Seeders\DemoCatalogSeeder;
+use Database\Seeders\DemoOrderSeeder;
 use Database\Seeders\MasterDataSeeder;
+use Database\Seeders\SettingsSeeder;
 
 /*
 | Verification loop (CLAUDE.md §2): each page at 1440×900 and 390×844,
@@ -9,14 +11,14 @@ use Database\Seeders\MasterDataSeeder;
 */
 
 $appPages = [
-    '/dashboard', '/tempahan', '/pengguna', '/pengguna?tab=peranan', '/produk', '/kod-promosi',
+    '/dashboard', '/tempahan', '/pengguna', '/pengguna?tab=peranan', '/produk', '/kod-promosi', '/pengesahan-bayaran', '/tempahan/1',
     '/tetapan/profil', '/tetapan/syarikat', '/tetapan/keselamatan', '/sejarah-log-masuk',
     '/_design/components',
 ];
 
 $guestPages = ['/login', '/lupa-kata-laluan', '/_design/public'];
 
-beforeEach(fn () => $this->seed([MasterDataSeeder::class, DemoCatalogSeeder::class]));
+beforeEach(fn () => $this->seed([SettingsSeeder::class, MasterDataSeeder::class, DemoCatalogSeeder::class, DemoOrderSeeder::class]));
 
 it('has no JS errors or horizontal overflow on desktop', function (string $uri) {
     $this->actingAs(superAdmin());

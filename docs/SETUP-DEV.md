@@ -34,3 +34,10 @@ Pertama kali pada mesin baharu: `npx playwright install chromium`.
 - Pengguna demo (cth. `nurfitri@nadiqurban.com` — Super Admin) guna kata laluan `SEED_USER_PASSWORD` dalam `.env`.
 - Produksi: tetapkan `SUPERADMIN_EMAIL` / `SUPERADMIN_PASSWORD` sebelum `db:seed`; pengguna demo tidak dicipta dalam produksi.
 - Log masuk gagal tanpa ralat jelas? Biasanya MySQL (port 3307) tidak berjalan — jalankan `scripts\mysql-start.cmd`.
+
+## PDF (resit, waybill, senarai peserta)
+- Dijana di server dengan spatie/laravel-pdf + Browsershot (Puppeteer, `npm i` sudah memasangnya tanpa memuat turun Chrome).
+- Local Windows: `.env` menghala `LARAVEL_PDF_CHROME_PATH` ke *chrome-headless-shell* Playwright (`npx playwright install chromium`) dan `LARAVEL_PDF_NO_SANDBOX=true`.
+- Forge/Ubuntu: pasang Chromium (`apt install chromium-browser` atau Chrome for Testing), set `LARAVEL_PDF_CHROME_PATH`, `LARAVEL_PDF_NODE_BINARY`, `LARAVEL_PDF_NPM_BINARY`.
+- Pratonton HTML templat PDF (local sahaja): `/_design/pdf/resit/{id}`, `/_design/pdf/waybill/{id}`, `/_design/pdf/peserta/{id}`.
+- Bukti bayaran disimpan pada disk peribadi `local` (`storage/app/private`) dan hanya dibuka melalui URL bertandatangan 30 minit.

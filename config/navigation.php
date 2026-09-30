@@ -1,5 +1,8 @@
 <?php
 
+use App\Navigation\Badges\ActiveOrders;
+use App\Navigation\Badges\PendingPayments;
+
 /*
 |--------------------------------------------------------------------------
 | Sidebar navigation (single source of truth)
@@ -23,8 +26,8 @@ return [
         'section' => 'OPERASI',
         'items' => [
             ['label' => 'Bayaran Ansuran', 'icon' => 'calendar-check', 'route' => 'installments.index', 'module' => 'installments'],
-            ['label' => 'Tempahan & Pelanggan', 'icon' => 'shopping-cart-simple', 'route' => 'orders.index', 'active' => ['orders.index', 'orders.show'], 'module' => 'orders', 'badge' => null],
-            ['label' => 'Pengesahan Bayaran', 'icon' => 'seal-check', 'route' => 'payments.verify', 'module' => 'payments', 'badge' => null],
+            ['label' => 'Tempahan & Pelanggan', 'icon' => 'shopping-cart-simple', 'route' => 'orders.index', 'active' => ['orders.index', 'orders.show'], 'module' => 'orders', 'badge' => ActiveOrders::class],
+            ['label' => 'Pengesahan Bayaran', 'icon' => 'seal-check', 'route' => 'payments.verify', 'module' => 'payments', 'badge' => PendingPayments::class],
             ['label' => 'Lafaz Akad', 'icon' => 'hand-heart', 'route' => 'akad.index', 'module' => 'akad'],
             ['label' => 'Agihan Negara', 'icon' => 'globe-hemisphere-west', 'route' => 'allocation.index', 'module' => 'allocation'],
             ['label' => 'Pelaksanaan & Laporan', 'icon' => 'shopping-bag', 'route' => 'execution.index', 'module' => 'execution'],

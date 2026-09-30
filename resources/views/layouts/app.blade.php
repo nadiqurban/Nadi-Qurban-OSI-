@@ -28,6 +28,7 @@
     </div>
 
     <x-app.search-overlay />
+    <x-app.toast />
 
     @auth
         {{-- Auto-logout after SESSION_LIFETIME idle minutes (server session expires at the same time). --}}

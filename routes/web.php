@@ -1,7 +1,9 @@
 <?php
 
+use App\Enums\Courier;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\OrderDocumentController;
 use App\Livewire\Auth\ForceChangePassword;
 use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\Locked;
@@ -9,6 +11,9 @@ use App\Livewire\Auth\Login;
 use App\Livewire\Auth\LoginHistory;
 use App\Livewire\Auth\ResetPassword;
 use App\Livewire\Auth\TwoFactorChallenge;
+use App\Livewire\Orders\Index as OrdersIndex;
+use App\Livewire\Orders\Show as OrdersShow;
+use App\Livewire\Payments\Verify as PaymentsVerify;
 use App\Livewire\Products\Index as ProductsIndex;
 use App\Livewire\Promo\Index as PromoIndex;
 use App\Livewire\Settings\Company;
@@ -16,6 +21,8 @@ use App\Livewire\Settings\Profile;
 use App\Livewire\Settings\Security;
 use App\Livewire\Users\Index as UsersIndex;
 use App\Livewire\Users\RoleShow;
+use App\Models\Order;
+use App\Support\ParticipantGroups;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -59,9 +66,15 @@ Route::middleware('auth')->group(function () {
 
     // Operasi
     $placeholder('/ansuran', 'installments.index', 'installments', 'Bayaran Ansuran', ['Operasi', 'Bayaran Ansuran'], 5, 'calendar-check');
-    $placeholder('/tempahan', 'orders.index', 'orders', 'Senarai Tempahan', ['Operasi', 'Tempahan & Pelanggan'], 3, 'shopping-cart-simple');
-    $placeholder('/tempahan/{order}', 'orders.show', 'orders', 'Butiran Tempahan', ['Operasi', 'Tempahan & Pelanggan'], 3, 'shopping-cart-simple');
-    $placeholder('/pengesahan-bayaran', 'payments.verify', 'payments', 'Pengesahan Bayaran', ['Operasi', 'Pengesahan Bayaran'], 3, 'seal-check');
+    Route::middleware('can:orders.view')->group(function () {
+        Route::livewire('/tempahan', OrdersIndex::class)->name('orders.index');
+        Route::get('/tempahan/waybill.pdf', [OrderDocumentController::class, 'waybill'])->name('orders.waybill.pdf');
+        Route::get('/tempahan/senarai-peserta.pdf', [OrderDocumentController::class, 'participants'])->name('orders.participants.pdf');
+        Route::livewire('/tempahan/{order}', OrdersShow::class)->name('orders.show');
+        Route::get('/tempahan/{order}/resit.pdf', [OrderDocumentController::class, 'receipt'])->name('orders.receipt');
+    });
+    Route::get('/bukti-bayaran/{payment}', [OrderDocumentController::class, 'proof'])->middleware('signed')->name('payments.proof');
+    Route::livewire('/pengesahan-bayaran', PaymentsVerify::class)->middleware('can:payments.view')->name('payments.verify');
     $placeholder('/lafaz-akad', 'akad.index', 'akad', 'Lafaz Akad', ['Operasi', 'Lafaz Akad'], 4, 'hand-heart');
     $placeholder('/agihan-negara', 'allocation.index', 'allocation', 'Agihan Negara', ['Operasi', 'Agihan Negara'], 4, 'globe-hemisphere-west');
     $placeholder('/pelaksanaan', 'execution.index', 'execution', 'Pelaksanaan & Laporan', ['Operasi', 'Pelaksanaan & Laporan'], 4, 'shopping-bag');
@@ -103,4 +116,15 @@ if (app()->environment('local', 'testing')) {
     Route::view('/_design/components', 'design.components')->name('design.components');
     Route::view('/_design/auth', 'design.auth')->name('design.auth');
     Route::view('/_design/public', 'design.public')->name('design.public');
+
+    // HTML previews of the PDF templates (same Blade as the PDF), for visual review.
+    Route::middleware('auth')->group(function () {
+        Route::get('/_design/pdf/resit/{order}', fn (Order $order) => view('pdf.order-receipt', ['order' => $order->load(['customer', 'country', 'participants'])]));
+        Route::get('/_design/pdf/waybill/{order}', fn (Order $order) => view('pdf.waybill', ['orders' => collect([$order->load(['customer', 'country'])]), 'courier' => Courier::PosLaju]));
+        Route::get('/_design/pdf/peserta/{order}', fn (Order $order) => view('pdf.participant-groups', [
+            'groups' => ParticipantGroups::for(collect([$order->load(['customer', 'country', 'participants'])])),
+            'date' => '18-06-2027',
+            'tag' => ParticipantGroups::tag(collect([$order])),
+        ]));
+    });
 }

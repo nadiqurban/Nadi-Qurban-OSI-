@@ -13,6 +13,6 @@
 @endphp
 
 <span {{ $attributes->merge(['class' => 'inline-flex items-center gap-1 whitespace-nowrap '.$shape.' '.\App\Support\Tone::classes($tone)]) }}>
-    @if ($icon)<i class="ph ph-{{ $icon }} text-[11px]"></i>@endif
+    @if ($icon)<i class="{{ str_starts_with($icon, 'fill ') ? 'ph-fill ph-'.substr($icon, 5).' text-[13px]' : 'ph ph-'.$icon.' text-[11px]' }}"></i>@endif
     {{ $slot }}
 </span>

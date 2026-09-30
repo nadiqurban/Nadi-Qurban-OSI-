@@ -8,7 +8,12 @@
 
 @php
     $name = $attributes->get('name') ?? $attributes->wire('model')->value();
-    $message = $error ?? ($name && isset($errors) ? $errors->first($name) : null);
+    // `error` is a validation key (looked up in $errors) or, if it contains a space, a literal message.
+    $message = match (true) {
+        $error !== null && str_contains($error, ' ') => $error,
+        $error !== null => isset($errors) ? ($errors->first($error) ?: null) : null,
+        default => $name && isset($errors) ? ($errors->first($name) ?: null) : null,
+    };
     $id = $attributes->get('id') ?? ($name ? 'f-'.str_replace(['.', '[', ']'], '-', $name) : null);
     $control = 'w-full rounded-[9px] border bg-surface px-3 py-[10px] text-[13px] text-ink outline-none placeholder:text-faint focus:border-primary max-md:min-h-11 '
         .($message ? 'border-danger' : 'border-border');

@@ -2,6 +2,7 @@
     'hasFilters' => false,   // show "Reset" chip
     'resetAction' => null,   // wire:click / @click expression for Reset
     'activeCount' => 0,      // badge on the mobile "Tapis" button
+    'plain' => false,        // pipeline screens: bare row (no card) with a "Tapis:" label and mini selects
 ])
 
 {{--
@@ -9,13 +10,17 @@
     then search + filters inline. On phones the `filters` slot moves into a
     bottom sheet opened by a "Tapis" button (same DOM, so bindings are shared).
 --}}
-<div x-data="{ sheet: false }" {{ $attributes->merge(['class' => 'mb-5 rounded-[12px] border border-border bg-surface px-4 py-4 md:px-5 md:py-[18px]']) }}>
+<div x-data="{ sheet: false }" {{ $attributes->merge(['class' => $plain ? 'mb-[14px]' : 'mb-5 rounded-[12px] border border-border bg-surface px-4 py-4 md:px-5 md:py-[18px]']) }}>
     @isset($tabs)
         <div class="mb-[14px]">{{ $tabs }}</div>
     @endisset
 
-    <div class="flex flex-wrap items-center gap-3">
+    <div @class(['flex flex-wrap items-center', 'gap-[10px]' => $plain, 'gap-3' => ! $plain])>
         {{ $search ?? '' }}
+
+        @if ($plain)
+            <span class="hidden items-center gap-1.5 text-[12px] font-semibold text-faint md:inline-flex"><i class="ph ph-funnel text-[15px]"></i> Tapis:</span>
+        @endif
 
         <button type="button" @click="sheet = true"
                 class="relative flex min-h-11 items-center gap-2 rounded-[9px] border border-border bg-surface px-[14px] text-[13.5px] font-semibold text-ink-2 md:hidden">
@@ -47,7 +52,11 @@
             </div>
         </div>
 
-        @if ($hasFilters && $resetAction)
+        @if ($hasFilters && $resetAction && $plain)
+            <button type="button" x-on:click="{{ $resetAction }}" class="hidden items-center gap-[5px] text-[12px] font-semibold text-danger md:inline-flex">
+                <i class="ph ph-x text-[13px]"></i> Reset
+            </button>
+        @elseif ($hasFilters && $resetAction)
             <button type="button" x-on:click="{{ $resetAction }}"
                     class="hidden items-center gap-[7px] rounded-[9px] bg-danger-soft px-[14px] py-[10px] text-[13px] font-semibold text-danger md:flex">
                 <i class="ph ph-x text-[15px]"></i> Reset

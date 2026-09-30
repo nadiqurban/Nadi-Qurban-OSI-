@@ -8,7 +8,7 @@
     to the printed PDF.
 --}}
 <div x-data="docScale(794)" class="w-full overflow-hidden" :style="`height: ${1123 * scale}px`">
-    <div :style="`transform: scale(${scale}); transform-origin: top left`"
+    <div :style="{ transform: `scale(${scale})`, transformOrigin: 'top left' }"
          style="width: 794px; min-height: 1123px; padding: {{ $padding }}"
          {{ $attributes->merge(['class' => 'bg-white text-[#1A1D21] shadow-[0_4px_16px_rgba(0,0,0,.12)]']) }}>
         {{ $slot }}

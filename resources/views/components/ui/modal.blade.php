@@ -41,7 +41,7 @@
                 <div class="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-border bg-surface px-4 py-[14px] md:static md:px-6 md:py-[18px]">
                     <div class="flex min-w-0 items-center gap-[11px]">
                         @if ($icon)
-                            <span class="flex size-9 shrink-0 items-center justify-center rounded-[10px] {{ \App\Support\Tone::classes($tone) }}"><i class="ph ph-{{ $icon }} text-[19px]"></i></span>
+                            <span class="flex size-9 shrink-0 items-center justify-center rounded-[10px] {{ \App\Support\Tone::classes($tone) }}"><i class="{{ str_starts_with($icon, 'fill ') ? 'ph-fill ph-'.substr($icon, 5) : 'ph ph-'.$icon }} text-[19px]"></i></span>
                         @endif
                         <div class="min-w-0">
                             <h2 class="truncate text-[16px] font-bold text-ink">{{ $title }}</h2>

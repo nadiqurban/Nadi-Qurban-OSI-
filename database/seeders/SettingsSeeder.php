@@ -13,6 +13,8 @@ class SettingsSeeder extends Seeder
     {
         $defaults = Settings::COMPANY_DEFAULTS + [
             'season.year' => '2027',
+            'support.phone' => '6011-3763 9921',
+            'support.whatsapp' => '601137639921',
         ];
 
         foreach ($defaults as $key => $value) {

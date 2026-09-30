@@ -22,6 +22,9 @@
         @if ($subtitle)
             <p class="mt-1 text-[13.5px] text-muted">{{ $subtitle }}</p>
         @endif
+        @isset($note)
+            <div class="mt-2.5">{{ $note }}</div>
+        @endisset
     </div>
     @isset($actions)
         <div class="flex flex-wrap items-center gap-2 max-md:w-full">

@@ -2,8 +2,11 @@
 
 use App\Enums\Courier;
 use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\ExecutionMediaController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderDocumentController;
+use App\Livewire\Akad\Index as AkadIndex;
+use App\Livewire\Allocation\Index as AllocationIndex;
 use App\Livewire\Auth\ForceChangePassword;
 use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\Locked;
@@ -11,14 +14,19 @@ use App\Livewire\Auth\Login;
 use App\Livewire\Auth\LoginHistory;
 use App\Livewire\Auth\ResetPassword;
 use App\Livewire\Auth\TwoFactorChallenge;
+use App\Livewire\Certificates\Editor as CertificateEditor;
+use App\Livewire\Execution\Index as ExecutionIndex;
+use App\Livewire\Orders\Completed as OrdersCompleted;
 use App\Livewire\Orders\Index as OrdersIndex;
 use App\Livewire\Orders\Show as OrdersShow;
 use App\Livewire\Payments\Verify as PaymentsVerify;
 use App\Livewire\Products\Index as ProductsIndex;
 use App\Livewire\Promo\Index as PromoIndex;
+use App\Livewire\Public\Tracking;
 use App\Livewire\Settings\Company;
 use App\Livewire\Settings\Profile;
 use App\Livewire\Settings\Security;
+use App\Livewire\Shipping\Index as ShippingIndex;
 use App\Livewire\Users\Index as UsersIndex;
 use App\Livewire\Users\RoleShow;
 use App\Models\Order;
@@ -30,6 +38,9 @@ use Illuminate\Support\Facades\Route;
 | Authentication (Login.dc.html — 6 views)
 |--------------------------------------------------------------------------
 */
+
+// Public: customer tracking (masked names unless ?t=token), rate-limited in the component.
+Route::livewire('/jejak', Tracking::class)->name('tracking');
 
 Route::middleware('guest')->group(function () {
     Route::livewire('/login', Login::class)->name('login');
@@ -66,20 +77,25 @@ Route::middleware('auth')->group(function () {
 
     // Operasi
     $placeholder('/ansuran', 'installments.index', 'installments', 'Bayaran Ansuran', ['Operasi', 'Bayaran Ansuran'], 5, 'calendar-check');
+    // Participant groups PDF: Tempahan (orders.view) and Agihan Negara (allocation.view); checked in the controller.
+    Route::get('/tempahan/senarai-peserta.pdf', [OrderDocumentController::class, 'participants'])->name('orders.participants.pdf');
     Route::middleware('can:orders.view')->group(function () {
         Route::livewire('/tempahan', OrdersIndex::class)->name('orders.index');
         Route::get('/tempahan/waybill.pdf', [OrderDocumentController::class, 'waybill'])->name('orders.waybill.pdf');
-        Route::get('/tempahan/senarai-peserta.pdf', [OrderDocumentController::class, 'participants'])->name('orders.participants.pdf');
         Route::livewire('/tempahan/{order}', OrdersShow::class)->name('orders.show');
         Route::get('/tempahan/{order}/resit.pdf', [OrderDocumentController::class, 'receipt'])->name('orders.receipt');
     });
     Route::get('/bukti-bayaran/{payment}', [OrderDocumentController::class, 'proof'])->middleware('signed')->name('payments.proof');
     Route::livewire('/pengesahan-bayaran', PaymentsVerify::class)->middleware('can:payments.view')->name('payments.verify');
-    $placeholder('/lafaz-akad', 'akad.index', 'akad', 'Lafaz Akad', ['Operasi', 'Lafaz Akad'], 4, 'hand-heart');
-    $placeholder('/agihan-negara', 'allocation.index', 'allocation', 'Agihan Negara', ['Operasi', 'Agihan Negara'], 4, 'globe-hemisphere-west');
-    $placeholder('/pelaksanaan', 'execution.index', 'execution', 'Pelaksanaan & Laporan', ['Operasi', 'Pelaksanaan & Laporan'], 4, 'shopping-bag');
-    $placeholder('/awb', 'shipping.index', 'shipping', 'AWB & Postage', ['Operasi', 'AWB & Postage'], 4, 'package');
-    $placeholder('/tempahan-selesai', 'orders.completed', 'completed', 'Tempahan Selesai', ['Operasi', 'Tempahan Selesai'], 4, 'check-square-offset');
+    Route::livewire('/lafaz-akad', AkadIndex::class)->middleware('can:akad.view')->name('akad.index');
+    Route::livewire('/agihan-negara', AllocationIndex::class)->middleware('can:allocation.view')->name('allocation.index');
+    Route::livewire('/pelaksanaan', ExecutionIndex::class)->middleware('can:execution.view')->name('execution.index');
+    Route::get('/bukti-pelaksanaan/{media}', ExecutionMediaController::class)->middleware('signed')->name('execution.media');
+    Route::middleware('can:shipping.view')->group(function () {
+        Route::livewire('/awb', ShippingIndex::class)->name('shipping.index');
+        Route::get('/awb/airway-bill.pdf', [OrderDocumentController::class, 'airwayBill'])->name('shipping.awb.pdf');
+    });
+    Route::livewire('/tempahan-selesai', OrdersCompleted::class)->middleware('can:completed.view')->name('orders.completed');
     $placeholder('/vendor', 'vendors.index', 'vendors', 'Vendor', ['Operasi', 'Vendor'], 6, 'truck');
     $placeholder('/vendor/{vendor}', 'vendors.show', 'vendors', 'Profil Vendor', ['Operasi', 'Vendor'], 6, 'truck');
     Route::livewire('/produk', ProductsIndex::class)->middleware('can:products.view')->name('products.index');
@@ -100,7 +116,7 @@ Route::middleware('auth')->group(function () {
     $placeholder('/notifikasi', 'notifications.index', 'notifications', 'Notifikasi', ['Sistem', 'Notifikasi'], 7, 'bell');
     Route::livewire('/pengguna', UsersIndex::class)->middleware('can:users.view')->name('users.index');
     Route::livewire('/pengguna/peranan/{role}', RoleShow::class)->middleware('can:users.view')->name('users.role');
-    $placeholder('/sijil', 'certificates.editor', 'certificates', 'Editor Sijil', ['Sistem', 'Sijil'], 4, 'certificate');
+    Route::livewire('/sijil', CertificateEditor::class)->middleware('can:certificates.view')->name('certificates.editor');
 
     // Tetapan — profile & security are personal (every user); company needs settings.view.
     Route::livewire('/tetapan/profil', Profile::class)->name('settings.profile');

@@ -4,19 +4,23 @@ namespace App\Livewire\Orders;
 
 use App\Actions\Orders\CreateOrder;
 use App\Actions\Orders\UpdateOrderStatus;
+use App\Actions\Pipeline\IssueCertificates;
 use App\Enums\Animal;
 use App\Enums\Courier;
 use App\Enums\Module;
+use App\Enums\OrderStage;
 use App\Enums\OrderStatus;
 use App\Enums\Service;
 use App\Exports\CustomersExport;
 use App\Exports\OrdersExport;
 use App\Livewire\Forms\OrderForm;
+use App\Models\Certificate;
 use App\Models\Country;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\PromoCode;
 use App\Models\User;
+use App\Support\CertificateTemplate;
 use App\Support\ParticipantGroups;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -32,6 +36,7 @@ use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * Senarai Tempahan (Tempahan & Pelanggan.dc.html list view): stats, period pills,
@@ -257,9 +262,25 @@ class Index extends Component
         $this->showGroups = true;
     }
 
-    public function generateCertificates(): void
+    /** "Generate Sijil": issue one certificate per participant, then download the A5 PDF. */
+    public function generateCertificates(IssueCertificates $issue, CertificateTemplate $template): ?StreamedResponse
     {
-        $this->dispatch('toast', message: 'Penjanaan sijil pukal akan tersedia bersama Editor Sijil (Fasa 4).', tone: 'info');
+        $this->authorize(Module::Certificates->managePermission());
+
+        $orders = $this->selectedOrders->filter(fn (Order $o) => $o->status !== OrderStatus::Cancelled && $o->stage->position() >= OrderStage::PaymentVerified->position());
+
+        if ($orders->isEmpty()) {
+            $this->dispatch('toast', message: 'Sijil hanya boleh dijana untuk tempahan yang bayarannya telah disahkan.', tone: 'danger');
+
+            return null;
+        }
+
+        /** @var User $user */
+        $user = auth()->user();
+        $pages = $issue->handle($orders->values(), $user)
+            ->map(fn (Certificate $c) => $template->render(CertificateTemplate::valuesFor($c)))->values()->all();
+
+        return $template->download($pages, $orders->count() === 1 ? 'Sijil-'.$orders->first()->order_no.'.pdf' : 'Sijil-Nadi-Qurban.pdf');
     }
 
     public function viewProof(int $orderId): void

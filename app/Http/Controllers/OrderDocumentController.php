@@ -7,6 +7,7 @@ use App\Enums\Module;
 use App\Enums\Severity;
 use App\Models\Order;
 use App\Models\Payment;
+use App\Models\Shipment;
 use App\Support\Audit;
 use App\Support\ParticipantGroups;
 use Illuminate\Http\Request;
@@ -45,9 +46,24 @@ class OrderDocumentController extends Controller
         return $this->respond($request, Pdf::view('pdf.waybill', ['orders' => $orders, 'courier' => $courier]), 'Waybill-Nadi-Qurban.pdf');
     }
 
+    /** AWB & Postage "Cetak / PDF": one Airway Bill page per generated shipment. */
+    public function airwayBill(Request $request): PdfBuilder
+    {
+        Gate::authorize(Module::Shipping->viewPermission());
+
+        $shipments = Shipment::query()->with(['order.customer', 'order.country'])
+            ->whereIn('order_id', $this->selected($request)->pluck('id'))
+            ->orderBy('consignment_no')->get();
+
+        abort_if($shipments->isEmpty(), 404);
+
+        return $this->respond($request, Pdf::view('pdf.airway-bill', ['shipments' => $shipments]),
+            $shipments->count() === 1 ? 'AWB-'.$shipments->first()->consignment_no.'.pdf' : 'AWB-Nadi-Qurban.pdf');
+    }
+
     public function participants(Request $request): PdfBuilder
     {
-        Gate::authorize(Module::Orders->viewPermission());
+        abort_unless($request->user()?->canAny([Module::Orders->viewPermission(), Module::Allocation->viewPermission()]), 403);
 
         $orders = $this->selected($request);
         $date = $request->filled('tarikh') ? Carbon::parse((string) $request->query('tarikh')) : ($orders->first()->implementation_date ?? now());

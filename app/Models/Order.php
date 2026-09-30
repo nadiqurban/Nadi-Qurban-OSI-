@@ -53,6 +53,11 @@ use Illuminate\Support\Collection;
  * @property-read Payment|null $payment
  * @property-read \Illuminate\Database\Eloquent\Collection<int, OrderParticipant> $participants
  * @property-read \Illuminate\Database\Eloquent\Collection<int, OrderStageHistory> $stageHistories
+ * @property-read AkadRecord|null $akad
+ * @property-read Allocation|null $allocation
+ * @property-read ExecutionReport|null $executionReport
+ * @property-read Shipment|null $shipment
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Certificate> $certificates
  */
 class Order extends Model
 {
@@ -138,6 +143,36 @@ class Order extends Model
         return $this->hasMany(OrderStageHistory::class)->orderBy('created_at')->orderBy('id');
     }
 
+    /** @return HasOne<AkadRecord, $this> */
+    public function akad(): HasOne
+    {
+        return $this->hasOne(AkadRecord::class);
+    }
+
+    /** @return HasOne<Allocation, $this> */
+    public function allocation(): HasOne
+    {
+        return $this->hasOne(Allocation::class);
+    }
+
+    /** @return HasOne<ExecutionReport, $this> */
+    public function executionReport(): HasOne
+    {
+        return $this->hasOne(ExecutionReport::class);
+    }
+
+    /** @return HasOne<Shipment, $this> */
+    public function shipment(): HasOne
+    {
+        return $this->hasOne(Shipment::class);
+    }
+
+    /** @return HasMany<Certificate, $this> */
+    public function certificates(): HasMany
+    {
+        return $this->hasMany(Certificate::class)->orderBy('position');
+    }
+
     /**
      * Participant names, one per share; falls back to the customer's name for the first.
      *
@@ -162,6 +197,21 @@ class Order extends Model
     public function ibadahLabel(): string
     {
         return $this->service->label().' — '.$this->animal->label();
+    }
+
+    /**
+     * Vendor PIC users only see orders allocated to their own vendor.
+     *
+     * @param  Builder<self>  $query
+     * @return Builder<self>
+     */
+    public function scopeVisibleTo(Builder $query, ?User $user): Builder
+    {
+        if (! $user?->isVendorPic()) {
+            return $query;
+        }
+
+        return $query->whereHas('allocation', fn (Builder $a) => $a->where('vendor_id', $user->vendor_id));
     }
 
     /**

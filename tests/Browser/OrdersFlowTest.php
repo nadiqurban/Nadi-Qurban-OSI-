@@ -16,7 +16,7 @@ beforeEach(function () {
 it('selects orders, shows the bulk bar and opens participant groups', function () {
     $this->actingAs(superAdmin());
 
-    visit('/tempahan')
+    visit('/tempahan?tempoh=tahunan&q=001249')
         ->resize(...DESKTOP)
         ->assertSee('Senarai Tempahan')
         ->assertSee('NQ-QB-LE-001249')
@@ -34,7 +34,7 @@ it('selects orders, shows the bulk bar and opens participant groups', function (
 it('keeps the bulk bar at the bottom of the screen on phones', function () {
     $this->actingAs(superAdmin());
 
-    visit('/tempahan')
+    visit('/tempahan?tempoh=tahunan&q=001249')
         ->resize(...PHONE)
         ->click('[aria-label="Pilih NQ-QB-LE-001249"]')
         ->wait(0.6)

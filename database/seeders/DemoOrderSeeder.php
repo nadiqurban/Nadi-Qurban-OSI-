@@ -2,16 +2,28 @@
 
 namespace Database\Seeders;
 
+use App\Actions\Pipeline\IssueCertificates;
+use App\Enums\AkadMethod;
+use App\Enums\Courier;
 use App\Enums\OrderStage;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentMethod;
 use App\Enums\PaymentStatus;
+use App\Enums\PostType;
+use App\Enums\ReportStatus;
+use App\Models\AkadRecord;
+use App\Models\Allocation;
 use App\Models\Customer;
+use App\Models\ExecutionReport;
 use App\Models\Order;
 use App\Models\OrderStageHistory;
 use App\Models\Payment;
 use App\Models\Product;
+use App\Models\Shipment;
+use App\Models\User;
+use App\Models\Vendor;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -19,12 +31,30 @@ use Illuminate\Support\Str;
  * Local/demo only: the orders from Tempahan & Pelanggan.dc.html (NQ-…-001240 → 001248)
  * plus three "Diterima" orders waiting in Pengesahan Bayaran. Prices come from the
  * product catalogue (PRD §12.4), so they differ from the prototype's hard-coded ones.
+ * Orders 1252–1260 (names from the Phase 4 screens) sit at every pipeline stage so
+ * Lafaz Akad, Agihan Negara, Pelaksanaan, AWB and Tempahan Selesai all have data.
  */
 class DemoOrderSeeder extends Seeder
 {
     private const EXTRA_NAMES = [
         'Ahmad bin Ismail', 'Siti Fatimah binti Ali', 'Mohd Hafiz bin Razak', 'Nur Aisyah binti Kamal',
         'Zainal bin Abidin', 'Rohana binti Yusof', 'Faizal bin Sulaiman', 'Halimah binti Daud',
+    ];
+
+    /** Pipeline stage per order; other orders derive it from their status. */
+    private const STAGES = [
+        1240 => OrderStage::Executing,
+        1244 => OrderStage::ReportUploaded,
+        1248 => OrderStage::Executing,
+        1252 => OrderStage::PaymentVerified,
+        1253 => OrderStage::PaymentVerified,
+        1254 => OrderStage::PaymentVerified,
+        1255 => OrderStage::AkadDone,
+        1256 => OrderStage::AkadDone,
+        1257 => OrderStage::Executing,
+        1258 => OrderStage::ReportUploaded,
+        1259 => OrderStage::FinalReport,
+        1260 => OrderStage::FinalReport,
     ];
 
     public function run(): void
@@ -38,7 +68,10 @@ class DemoOrderSeeder extends Seeder
         $channels = ['FPX Maybank', 'FPX CIMB', 'DuitNow QR', 'FPX Bank Islam', 'Kad Kredit'];
         $products = Product::query()->with('package')->get()->keyBy('name');
 
-        DB::transaction(function () use ($rows, $channels, $products) {
+        $vendors = Vendor::query()->orderBy('code')->get()->unique('country_id')->keyBy('country_id');
+        $pic = User::query()->where('email', 'nurfitri@nadiqurban.com')->first();
+
+        DB::transaction(function () use ($rows, $channels, $products, $vendors, $pic) {
             foreach (array_reverse($rows) as $i => [$seq, $name, $phone, $productName, $qty, $status, $method, $fpx, $address, $postcode, $city, $state]) {
                 /** @var Product $product */
                 $product = $products[$productName];
@@ -48,7 +81,7 @@ class DemoOrderSeeder extends Seeder
                     'email' => Str::of($name)->before(' ')->lower()->append('@email.com')->toString(),
                 ]);
 
-                $stage = match ($status) {
+                $stage = self::STAGES[$seq] ?? match ($status) {
                     OrderStatus::Completed => OrderStage::Completed,
                     OrderStatus::InProgress => OrderStage::Executing,
                     default => OrderStage::Received,
@@ -117,9 +150,11 @@ class DemoOrderSeeder extends Seeder
                         'created_at' => $created->copy()->addHours($n * 20),
                     ]);
                 }
+
+                $this->pipeline($order, $stage, $created, $vendors->get($order->country_id), $pic);
             }
 
-            DB::table('sequences')->updateOrInsert(['name' => 'order'], ['next_value' => 1252, 'created_at' => now(), 'updated_at' => now()]);
+            DB::table('sequences')->updateOrInsert(['name' => 'order'], ['next_value' => 1261, 'created_at' => now(), 'updated_at' => now()]);
         });
     }
 
@@ -143,7 +178,110 @@ class DemoOrderSeeder extends Seeder
             [1249, 'Farid bin Kassim', '012-7788990', 'Qurban Lembu Uganda', 7, OrderStatus::Accepted, PaymentMethod::Fpx, 'berjaya', 'No. 30, Jalan Tulip 7', '47301', 'Petaling Jaya', 'Selangor'],
             [1250, 'Nor Azlina binti Hamid', '013-2233445', 'Aqiqah Kambing Malaysia', 2, OrderStatus::Accepted, PaymentMethod::BankTransfer, null, 'No. 14, Jalan Kemboja', '70200', 'Seremban', 'Negeri Sembilan'],
             [1251, 'Hafiz bin Rahman', '017-8899001', 'Dam Kambing Makkah', 1, OrderStatus::Accepted, PaymentMethod::Cheque, null, 'No. 2, Jalan Melur', '05100', 'Alor Setar', 'Kedah'],
+            [1252, 'Syed Farid Aljunied', '019-6650128', 'Qurban Lembu Uganda', 7, OrderStatus::InProgress, PaymentMethod::Fpx, 'berjaya', 'A-2-8, Residensi Damai, Jalan Ampang', '50450', 'Kuala Lumpur', 'Kuala Lumpur'],
+            [1253, 'Tan Abdullah', '017-3320990', 'Qurban Unta Somalia', 3, OrderStatus::InProgress, PaymentMethod::BankTransfer, null, 'No. 45, Jalan Bukit Bintang', '55100', 'Kuala Lumpur', 'Kuala Lumpur'],
+            [1254, 'Faridah binti Omar', '011-2245778', 'Qurban Kambing Nigeria', 1, OrderStatus::InProgress, PaymentMethod::Fpx, 'berjaya', 'No. 3, Jalan Seri Gombak 7', '68100', 'Batu Caves', 'Selangor'],
+            [1255, 'Nurul Ain binti Rahman', '013-9921044', 'Qurban Kambing Nigeria', 1, OrderStatus::InProgress, PaymentMethod::Fpx, 'berjaya', 'No. 8, Lorong Kenanga 2', '43000', 'Kajang', 'Selangor'],
+            [1256, 'Iskandar bin Yusof', '014-8890213', 'Qurban Lembu Uganda', 2, OrderStatus::InProgress, PaymentMethod::BankTransfer, null, 'No. 20, Persiaran Kayangan', '40000', 'Shah Alam', 'Selangor'],
+            [1257, 'Rosli bin Ahmad', '012-6612004', 'Qurban Lembu Uganda', 1, OrderStatus::InProgress, PaymentMethod::Fpx, 'berjaya', 'No. 11, Jalan Pinang 3', '08000', 'Sungai Petani', 'Kedah'],
+            [1258, 'Hakim bin Sulaiman', '016-5540199', 'Nazar Lembu Chad', 1, OrderStatus::InProgress, PaymentMethod::Cheque, null, 'No. 5, Jalan Seri Kembangan', '43300', 'Seri Kembangan', 'Selangor'],
+            [1259, 'Sofea binti Kamal', '017-7781220', 'Qurban Lembu Uganda', 1, OrderStatus::InProgress, PaymentMethod::Fpx, 'berjaya', 'No. 77, Jalan Kenari 5', '47100', 'Puchong', 'Selangor'],
+            [1260, 'Nur Hidayah binti Salleh', '019-4401287', 'Aqiqah Kambing Malaysia', 2, OrderStatus::InProgress, PaymentMethod::BankTransfer, null, 'No. 19, Jalan Seri Impian', '81100', 'Johor Bahru', 'Johor'],
         ];
+    }
+
+    /** Akad → allocation → report → shipment records matching the order's stage. */
+    private function pipeline(Order $order, OrderStage $stage, Carbon $created, ?Vendor $vendor, ?User $pic): void
+    {
+        $reached = fn (OrderStage $s) => $stage->position() >= $s->position();
+        $at = fn (OrderStage $s) => $created->copy()->addHours($s->position() * 20);
+        $seq = (int) substr($order->order_no, -6);
+
+        if (! $reached(OrderStage::AkadDone)) {
+            return;
+        }
+
+        AkadRecord::query()->create([
+            'order_id' => $order->id,
+            'method' => [AkadMethod::Phone, AkadMethod::WhatsApp, AkadMethod::InPerson, AkadMethod::Phone][$seq % 4],
+            'witness_id' => $pic?->id,
+            'consented' => true,
+            'recorded_at' => $at(OrderStage::AkadDone),
+        ]);
+
+        if (! $reached(OrderStage::VendorAssigned) || ! $vendor) {
+            return;
+        }
+
+        Allocation::query()->create([
+            'order_id' => $order->id,
+            'country_id' => $order->country_id,
+            'vendor_id' => $vendor->id,
+            'allocated_by' => $pic?->id,
+            'sent_at' => $at(OrderStage::VendorAssigned),
+        ]);
+
+        if (! $reached(OrderStage::ReportUploaded)) {
+            return;
+        }
+
+        $verified = $reached(OrderStage::ReportVerified);
+        $report = ExecutionReport::query()->create([
+            'order_id' => $order->id,
+            'vendor_id' => $vendor->id,
+            'status' => $verified ? ReportStatus::Verified : ReportStatus::Review,
+            'notes' => 'Penyembelihan selesai mengikut syariat. Daging diagihkan kepada penerima di '.$order->country->name.'.',
+            'submitted_at' => $at(OrderStage::ReportUploaded),
+            'verified_by' => $verified ? $pic?->id : null,
+            'verified_at' => $verified ? $at(OrderStage::ReportVerified) : null,
+        ]);
+
+        foreach (['Sembelihan', 'Agihan daging'] as $n => $caption) {
+            $report->addMediaFromString($this->evidencePng($order->order_no, $caption, $n))
+                ->usingFileName(sprintf('bukti-%s-%d.png', $order->order_no, $n + 1))
+                ->toMediaCollection('images');
+        }
+
+        if (! $reached(OrderStage::AwbGenerated)) {
+            return;
+        }
+
+        $courier = [Courier::PosLaju, Courier::JntExpress, Courier::Gdex][$seq % 3];
+        $customer = $order->customer;
+
+        Shipment::query()->create([
+            'order_id' => $order->id,
+            'courier' => $courier,
+            'post_type' => PostType::Registered,
+            'consignment_no' => $courier->consignmentFor($order->order_no),
+            'recipient_name' => $customer->name,
+            'phone' => $customer->phone,
+            'address' => (string) $customer->address,
+            'postcode' => $customer->postcode,
+            'city' => $customer->city,
+            'state' => $customer->state,
+            'generated_by' => $pic?->id,
+            'generated_at' => $at(OrderStage::AwbGenerated),
+            'delivered_at' => $seq % 4 === 1 ? $at(OrderStage::Completed)->addDays(3) : null,
+        ]);
+
+        app(IssueCertificates::class)->handle(collect([$order]), $pic);
+    }
+
+    /** Placeholder "execution evidence" photo (GD). */
+    private function evidencePng(string $orderNo, string $caption, int $variant): string
+    {
+        $img = imagecreatetruecolor(800, 600);
+        [$r, $g, $b] = $variant === 0 ? [120, 132, 70] : [158, 128, 62];
+        imagefilledrectangle($img, 0, 0, 800, 600, (int) imagecolorallocate($img, $r, $g, $b));
+        imagefilledrectangle($img, 0, 470, 800, 600, (int) imagecolorallocate($img, 66, 72, 28));
+        $white = (int) imagecolorallocate($img, 255, 255, 255);
+        imagestring($img, 5, 30, 500, mb_strtoupper($caption), $white);
+        imagestring($img, 4, 30, 530, $orderNo.' - Bukti Pelaksanaan', $white);
+        ob_start();
+        imagepng($img);
+
+        return (string) ob_get_clean();
     }
 
     /** A simple bank-receipt style PNG for the proof viewer (GD). */

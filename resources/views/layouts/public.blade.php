@@ -35,6 +35,10 @@
         <main class="mx-auto w-full max-w-(--page-max) flex-1 px-4 pt-6 pb-14 md:px-6 md:pt-8">
             {{ $slot }}
         </main>
+
+        <footer class="border-t border-border bg-surface px-6 py-[18px] text-center text-[12px] text-faint">
+            &copy; {{ app(\App\Support\Settings::class)->get('season.year', now()->year) }} Nadi Qurban Sdn. Bhd. &middot; Sistem Operasi Ibadah Qurban &amp; Aqiqah
+        </footer>
     </div>
     @livewireScripts
 </body>

@@ -8,7 +8,9 @@
     'show' => false,
     'bodyClass' => 'px-4 py-5 md:px-6 md:py-[22px]',
     'footerBorder' => true,  // design: settings modal has a divider; form modals use "padding:0 24px 22px"
+    'variant' => 'light',    // light | dark (olive header — Vendor register/edit modals)
 ])
+@php $dark = $variant === 'dark'; @endphp
 
 {{--
     Desktop: centred card (radius 14, shadow 0 24px 60px rgba(0,0,0,.3)) on
@@ -38,20 +40,20 @@
              style="--modal-max: {{ $maxWidth }}"
              {{ $attributes->whereDoesntStartWith(['wire:model', 'x-model'])->merge(['class' => 'flex w-full flex-col overflow-hidden bg-surface max-md:min-h-full md:max-w-(--modal-max) md:rounded-[14px] md:shadow-modal']) }}>
             @if ($title)
-                <div class="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-border bg-surface px-4 py-[14px] md:static md:px-6 md:py-[18px]">
+                <div @class(['sticky top-0 z-10 flex items-center justify-between gap-3 border-b px-4 py-[14px] md:static md:px-6 md:py-[18px]', 'border-border bg-surface' => ! $dark, 'border-primary bg-primary' => $dark])>
                     <div class="flex min-w-0 items-center gap-[11px]">
                         @if ($icon)
-                            <span class="flex size-9 shrink-0 items-center justify-center rounded-[10px] {{ \App\Support\Tone::classes($tone) }}"><i class="{{ str_starts_with($icon, 'fill ') ? 'ph-fill ph-'.substr($icon, 5) : 'ph ph-'.$icon }} text-[19px]"></i></span>
+                            <span class="flex size-9 shrink-0 items-center justify-center rounded-[10px] {{ $dark ? 'bg-white/20 text-white' : \App\Support\Tone::classes($tone) }}"><i class="{{ str_starts_with($icon, 'fill ') ? 'ph-fill ph-'.substr($icon, 5) : 'ph ph-'.$icon }} text-[19px]"></i></span>
                         @endif
                         <div class="min-w-0">
-                            <h2 class="truncate text-[16px] font-bold text-ink">{{ $title }}</h2>
+                            <h2 @class(['truncate text-[16px] font-bold', 'text-ink' => ! $dark, 'text-white' => $dark])>{{ $title }}</h2>
                             @if ($subtitle)
-                                <p class="mt-0.5 text-[12px] text-faint">{{ $subtitle }}</p>
+                                <p @class(['mt-0.5 text-[12px]', 'text-faint' => ! $dark, 'text-white/70' => $dark])>{{ $subtitle }}</p>
                             @endif
                         </div>
                     </div>
                     <button type="button" @click="open = false"
-                            class="flex size-11 shrink-0 items-center justify-center rounded-[8px] border border-border text-muted md:size-8" aria-label="Tutup">
+                            @class(['flex size-11 shrink-0 items-center justify-center rounded-[8px] border md:size-8', 'border-border text-muted' => ! $dark, 'border-white/30 text-white' => $dark]) aria-label="Tutup">
                         <i class="ph ph-x text-[16px]"></i>
                     </button>
                 </div>

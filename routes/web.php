@@ -7,6 +7,7 @@ use App\Http\Controllers\ExecutionMediaController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InstallmentDocumentController;
 use App\Http\Controllers\OrderDocumentController;
+use App\Http\Controllers\VendorDocumentController;
 use App\Livewire\Akad\Index as AkadIndex;
 use App\Livewire\Allocation\Index as AllocationIndex;
 use App\Livewire\Auth\ForceChangePassword;
@@ -34,6 +35,8 @@ use App\Livewire\Settings\Security;
 use App\Livewire\Shipping\Index as ShippingIndex;
 use App\Livewire\Users\Index as UsersIndex;
 use App\Livewire\Users\RoleShow;
+use App\Livewire\Vendors\Index as VendorsIndex;
+use App\Livewire\Vendors\Show as VendorsShow;
 use App\Models\Order;
 use App\Support\ParticipantGroups;
 use Illuminate\Support\Facades\Route;
@@ -110,8 +113,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/awb/airway-bill.pdf', [OrderDocumentController::class, 'airwayBill'])->name('shipping.awb.pdf');
     });
     Route::livewire('/tempahan-selesai', OrdersCompleted::class)->middleware('can:completed.view')->name('orders.completed');
-    $placeholder('/vendor', 'vendors.index', 'vendors', 'Vendor', ['Operasi', 'Vendor'], 6, 'truck');
-    $placeholder('/vendor/{vendor}', 'vendors.show', 'vendors', 'Profil Vendor', ['Operasi', 'Vendor'], 6, 'truck');
+    Route::middleware('can:vendors.view')->group(function () {
+        Route::livewire('/vendor', VendorsIndex::class)->name('vendors.index');
+        Route::livewire('/vendor/{vendor}', VendorsShow::class)->name('vendors.show');
+        Route::get('/vendor/po/{po}/resit.pdf', [VendorDocumentController::class, 'purchaseOrder'])->name('vendors.po.pdf');
+        Route::get('/fail-vendor/{media}', [VendorDocumentController::class, 'media'])->middleware('signed')->name('vendors.media');
+    });
     Route::livewire('/produk', ProductsIndex::class)->middleware('can:products.view')->name('products.index');
     $placeholder('/dokumen', 'documents.index', 'documents', 'Dokumen', ['Operasi', 'Dokumen'], 7, 'folders');
 

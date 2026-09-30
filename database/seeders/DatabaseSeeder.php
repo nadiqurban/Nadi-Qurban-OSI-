@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         if (! app()->isProduction()) {
-            $this->call([DemoUserSeeder::class, DemoVendorSeeder::class, DemoCatalogSeeder::class, DemoOrderSeeder::class, DemoInstallmentSeeder::class]);
+            $this->call([DemoUserSeeder::class, DemoVendorSeeder::class, DemoCatalogSeeder::class, DemoOrderSeeder::class, DemoInstallmentSeeder::class, DemoPurchaseOrderSeeder::class]);
         }
     }
 }

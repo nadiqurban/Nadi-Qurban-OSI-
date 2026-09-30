@@ -14,6 +14,7 @@ class SettingsSeeder extends Seeder
         $defaults = Settings::COMPANY_DEFAULTS + [
             'season.year' => '2027',
             'support.phone' => '6011-3763 9921',
+            'finance.usd_rate' => '4.70',               // RM per USD for vendor POs (snapshot per PO)
             'support.whatsapp' => '601137639921',
         ];
 

@@ -1,17 +1,22 @@
 <?php
 
+use Database\Seeders\DemoCatalogSeeder;
+use Database\Seeders\MasterDataSeeder;
+
 /*
 | Verification loop (CLAUDE.md §2): each page at 1440×900 and 390×844,
 | no JS errors and no horizontal page overflow.
 */
 
 $appPages = [
-    '/dashboard', '/tempahan', '/pengguna', '/pengguna?tab=peranan',
+    '/dashboard', '/tempahan', '/pengguna', '/pengguna?tab=peranan', '/produk', '/kod-promosi',
     '/tetapan/profil', '/tetapan/syarikat', '/tetapan/keselamatan', '/sejarah-log-masuk',
     '/_design/components',
 ];
 
 $guestPages = ['/login', '/lupa-kata-laluan', '/_design/public'];
+
+beforeEach(fn () => $this->seed([MasterDataSeeder::class, DemoCatalogSeeder::class]));
 
 it('has no JS errors or horizontal overflow on desktop', function (string $uri) {
     $this->actingAs(superAdmin());

@@ -9,6 +9,8 @@ use App\Livewire\Auth\Login;
 use App\Livewire\Auth\LoginHistory;
 use App\Livewire\Auth\ResetPassword;
 use App\Livewire\Auth\TwoFactorChallenge;
+use App\Livewire\Products\Index as ProductsIndex;
+use App\Livewire\Promo\Index as PromoIndex;
 use App\Livewire\Settings\Company;
 use App\Livewire\Settings\Profile;
 use App\Livewire\Settings\Security;
@@ -67,13 +69,13 @@ Route::middleware('auth')->group(function () {
     $placeholder('/tempahan-selesai', 'orders.completed', 'completed', 'Tempahan Selesai', ['Operasi', 'Tempahan Selesai'], 4, 'check-square-offset');
     $placeholder('/vendor', 'vendors.index', 'vendors', 'Vendor', ['Operasi', 'Vendor'], 6, 'truck');
     $placeholder('/vendor/{vendor}', 'vendors.show', 'vendors', 'Profil Vendor', ['Operasi', 'Vendor'], 6, 'truck');
-    $placeholder('/produk', 'products.index', 'products', 'Produk', ['Operasi', 'Produk'], 2, 'cow');
+    Route::livewire('/produk', ProductsIndex::class)->middleware('can:products.view')->name('products.index');
     $placeholder('/dokumen', 'documents.index', 'documents', 'Dokumen', ['Operasi', 'Dokumen'], 7, 'folders');
 
     // Jualan & Kewangan
     $placeholder('/crm', 'crm.index', 'crm', 'Sales CRM', ['Jualan & Kewangan', 'Sales CRM'], 7, 'users-three');
     $placeholder('/crm/{lead}', 'crm.show', 'crm', 'Butiran Lead', ['Jualan & Kewangan', 'Sales CRM'], 7, 'users-three');
-    $placeholder('/kod-promosi', 'promo.index', 'promo', 'Kod Promosi', ['Jualan & Kewangan', 'Kod Promosi'], 2, 'ticket');
+    Route::livewire('/kod-promosi', PromoIndex::class)->middleware('can:promo.view')->name('promo.index');
     $placeholder('/kewangan', 'finance.index', 'finance', 'Kewangan', ['Jualan & Kewangan', 'Kewangan'], 7, 'wallet');
     $placeholder('/kewangan/invois/{invoice}', 'finance.invoice', 'finance', 'Butiran Invois', ['Jualan & Kewangan', 'Kewangan'], 7, 'wallet');
 

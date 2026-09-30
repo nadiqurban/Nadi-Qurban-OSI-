@@ -23,7 +23,7 @@ class BrandStats
             $season = (int) $this->settings->get('season.year', 2027);
 
             return [
-                ['value' => number_format($this->count('countries', ['is_active' => true]) ?? 7), 'label' => 'Negara Pelaksanaan'],
+                ['value' => number_format($this->implementationCountries() ?? 7), 'label' => 'Negara Pelaksanaan'],
                 ['value' => number_format($this->count('vendors', ['status' => 'aktif']) ?? 42), 'label' => 'Rakan Vendor'],
                 ['value' => number_format($this->participants($season) ?? 6540), 'label' => 'Peserta '.$season],
             ];
@@ -48,6 +48,16 @@ class BrandStats
         }
 
         return $query->count();
+    }
+
+    /** Countries that have at least one active product. */
+    private function implementationCountries(): ?int
+    {
+        if (! Schema::hasTable('products')) {
+            return null;
+        }
+
+        return DB::table('products')->whereNull('deleted_at')->where('is_active', true)->distinct()->count('country_id');
     }
 
     private function participants(int $season): ?int

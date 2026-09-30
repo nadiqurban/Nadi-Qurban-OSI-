@@ -18,6 +18,28 @@ if (! function_exists('rm')) {
     }
 }
 
+if (! function_exists('parse_rm')) {
+    /**
+     * Parse a ringgit input ("3500", "3,500.50", "RM 850") into sen. Null when not a valid amount.
+     */
+    function parse_rm(string|int|float|null $input): ?int
+    {
+        if ($input === null || $input === '') {
+            return null;
+        }
+
+        $clean = str_replace([',', ' '], '', preg_replace('/^\s*RM/i', '', (string) $input) ?? '');
+
+        if (! preg_match('/^\d+(\.\d{1,2})?$/', $clean)) {
+            return null;
+        }
+
+        [$ringgit, $cents] = array_pad(explode('.', $clean), 2, '0');
+
+        return (int) $ringgit * 100 + (int) str_pad($cents, 2, '0');
+    }
+}
+
 if (! function_exists('rm_short')) {
     /**
      * Compact money: "RM 3.82j" (juta), "RM 168k" (ribu), "RM 850" otherwise.

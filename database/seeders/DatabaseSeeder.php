@@ -14,11 +14,12 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RolesAndPermissionsSeeder::class,
             SettingsSeeder::class,
+            MasterDataSeeder::class,
             SuperAdminSeeder::class,
         ]);
 
         if (! app()->isProduction()) {
-            $this->call(DemoUserSeeder::class);
+            $this->call([DemoUserSeeder::class, DemoCatalogSeeder::class]);
         }
     }
 }

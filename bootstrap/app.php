@@ -17,6 +17,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(append: [EnsureAccountIsUsable::class]);
 
+        // Gateway callbacks are verified by RSA signature instead of a CSRF token.
+        $middleware->validateCsrfTokens(except: ['webhooks/*']);
+
         $middleware->alias([
             'role' => RoleMiddleware::class,
             'permission' => PermissionMiddleware::class,

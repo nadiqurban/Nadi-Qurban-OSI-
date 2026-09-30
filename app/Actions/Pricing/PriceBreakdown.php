@@ -24,8 +24,9 @@ final readonly class PriceBreakdown
     }
 
     /**
-     * Monthly instalments for the balance: equal floor amounts, with the leftover
-     * sen added to the final month (PRD §6.10). Sum always equals the balance.
+     * Monthly instalments for the balance: equal amounts rounded down to whole ringgit
+     * (RM 3,500 ÷ 6 → RM 583), with the leftover added to the final month (PRD §6.10).
+     * Sum always equals the balance.
      *
      * @return list<int>
      */
@@ -36,7 +37,7 @@ final readonly class PriceBreakdown
         }
 
         $balance = $this->balanceSen();
-        $monthly = intdiv($balance, $months);
+        $monthly = intdiv($balance, $months * 100) * 100;
         $schedule = array_fill(0, $months, $monthly);
         $schedule[$months - 1] += $balance - $monthly * $months;
 

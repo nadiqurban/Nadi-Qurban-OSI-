@@ -3,6 +3,7 @@
 namespace App\Actions\Orders;
 
 use App\Actions\Pricing\CalculatePrice;
+use App\Actions\Pricing\PriceBreakdown;
 use App\Enums\OrderStage;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentMethod;
@@ -33,8 +34,10 @@ class CreateOrder
 
     /**
      * @param  array{name: string, phone: string, email?: ?string, address?: ?string, postcode?: ?string, city?: ?string, state?: ?string}  $customer
-     * @param  array{product_id: int, quantity: int, year: int, implementation_date?: ?string, promo_code?: ?string, payment_method: string, notes?: ?string, is_instalment?: bool}  $order
+     * @param  array{product_id: int, quantity: int, year: int, implementation_date?: ?string, promo_code?: ?string, payment_method: string, notes?: ?string, is_instalment?: bool, order_no?: string, price?: PriceBreakdown, country_id?: int}  $order
      * @param  list<string>  $participants
+     *
+     * order_no / price / country_id: a reserved number and price snapshot (instalment plans "Hantar").
      */
     public function handle(array $customer, array $order, array $participants, ?UploadedFile $proof, ?User $actor): Order
     {
@@ -51,7 +54,7 @@ class CreateOrder
 
             $promo = null;
 
-            if (! empty($order['promo_code'])) {
+            if (! empty($order['promo_code']) && ! isset($order['price'])) {
                 $promo = PromoCode::findUsable($order['promo_code']);
 
                 if (! $promo) {
@@ -59,13 +62,13 @@ class CreateOrder
                 }
             }
 
-            $price = $this->pricing->handle($product, $order['quantity'], $promo);
+            $price = $order['price'] ?? $this->pricing->handle($product, $order['quantity'], $promo);
             $client = $this->resolveCustomer($customer);
-            $seq = Sequence::next('order', 1249);
+            $seq = isset($order['order_no']) ? (int) substr($order['order_no'], -6) : Sequence::next('order', 1249);
             $method = PaymentMethod::from($order['payment_method']);
 
             $model = Order::query()->create([
-                'order_no' => sprintf('NQ-%s-%s-%06d', $product->service->code(), $product->animal->code(), $seq),
+                'order_no' => $order['order_no'] ?? sprintf('NQ-%s-%s-%06d', $product->service->code(), $product->animal->code(), $seq),
                 'tracking_no' => sprintf('NQT-%d-%06d', $order['year'], $seq),
                 'tracking_token' => Str::random(40),
                 'customer_id' => $client->id,
@@ -74,7 +77,7 @@ class CreateOrder
                 'service' => $product->service,
                 'animal' => $product->animal,
                 'package_name' => $product->package->name,
-                'country_id' => $product->country_id,
+                'country_id' => $order['country_id'] ?? $product->country_id,
                 'quantity' => $order['quantity'],
                 'year' => $order['year'],
                 'implementation_date' => $order['implementation_date'] ?? null,
@@ -83,7 +86,7 @@ class CreateOrder
                 'discount_sen' => $price->discountSen,
                 'total_sen' => $price->totalSen,
                 'promo_code_id' => $promo?->id,
-                'promo_code' => $promo?->code,
+                'promo_code' => $promo->code ?? $price->promoCode,
                 'payment_method' => $method,
                 'is_instalment' => (bool) ($order['is_instalment'] ?? false),
                 'status' => OrderStatus::Draft,
@@ -115,16 +118,7 @@ class CreateOrder
     /** @param  array{name: string, phone: string, email?: ?string, address?: ?string, postcode?: ?string, city?: ?string, state?: ?string}  $data */
     private function resolveCustomer(array $data): Customer
     {
-        $digits = Customer::normalisePhone($data['phone']);
-
-        $customer = Customer::query()
-            ->whereRaw("REPLACE(REPLACE(REPLACE(phone, '-', ''), ' ', ''), '+', '') = ?", [$digits])
-            ->first() ?? new Customer;
-
-        // Keep existing details unless new ones were given.
-        $customer->fill(array_filter($data, fn ($v) => $v !== null && $v !== ''))->save();
-
-        return $customer;
+        return Customer::resolve($data);
     }
 
     /** @param  list<string>  $names */

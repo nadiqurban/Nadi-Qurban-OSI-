@@ -2,8 +2,10 @@
 
 use App\Enums\Courier;
 use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\ChipWebhookController;
 use App\Http\Controllers\ExecutionMediaController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\InstallmentDocumentController;
 use App\Http\Controllers\OrderDocumentController;
 use App\Livewire\Akad\Index as AkadIndex;
 use App\Livewire\Allocation\Index as AllocationIndex;
@@ -16,14 +18,17 @@ use App\Livewire\Auth\ResetPassword;
 use App\Livewire\Auth\TwoFactorChallenge;
 use App\Livewire\Certificates\Editor as CertificateEditor;
 use App\Livewire\Execution\Index as ExecutionIndex;
+use App\Livewire\Installments\Index as InstallmentsIndex;
 use App\Livewire\Orders\Completed as OrdersCompleted;
 use App\Livewire\Orders\Index as OrdersIndex;
 use App\Livewire\Orders\Show as OrdersShow;
 use App\Livewire\Payments\Verify as PaymentsVerify;
 use App\Livewire\Products\Index as ProductsIndex;
 use App\Livewire\Promo\Index as PromoIndex;
+use App\Livewire\Public\InstallmentPortal;
 use App\Livewire\Public\Tracking;
 use App\Livewire\Settings\Company;
+use App\Livewire\Settings\Integrations;
 use App\Livewire\Settings\Profile;
 use App\Livewire\Settings\Security;
 use App\Livewire\Shipping\Index as ShippingIndex;
@@ -41,6 +46,12 @@ use Illuminate\Support\Facades\Route;
 
 // Public: customer tracking (masked names unless ?t=token), rate-limited in the component.
 Route::livewire('/jejak', Tracking::class)->name('tracking');
+
+// Public: instalment portal (one permanent token link per plan) + CHIP Collect callback.
+Route::livewire('/bayar/{token}', InstallmentPortal::class)->where('token', '[A-Za-z0-9]{32,64}')->name('installments.portal');
+Route::get('/bayar/{token}/resit/{reference}.pdf', [InstallmentDocumentController::class, 'portalReceipt'])
+    ->where(['token' => '[A-Za-z0-9]{32,64}', 'reference' => 'NQPAY[0-9]+'])->middleware('throttle:30,1')->name('installments.portal.receipt');
+Route::post('/webhooks/chip', ChipWebhookController::class)->middleware('throttle:120,1')->name('webhooks.chip');
 
 Route::middleware('guest')->group(function () {
     Route::livewire('/login', Login::class)->name('login');
@@ -76,7 +87,10 @@ Route::middleware('auth')->group(function () {
     $placeholder('/dashboard', 'dashboard', 'dashboard', 'Dashboard', ['Utama', 'Dashboard'], 8, 'squares-four');
 
     // Operasi
-    $placeholder('/ansuran', 'installments.index', 'installments', 'Bayaran Ansuran', ['Operasi', 'Bayaran Ansuran'], 5, 'calendar-check');
+    Route::middleware('can:installments.view')->group(function () {
+        Route::livewire('/ansuran', InstallmentsIndex::class)->name('installments.index');
+        Route::get('/ansuran/{plan}/resit.pdf', [InstallmentDocumentController::class, 'receipt'])->name('installments.receipt');
+    });
     // Participant groups PDF: Tempahan (orders.view) and Agihan Negara (allocation.view); checked in the controller.
     Route::get('/tempahan/senarai-peserta.pdf', [OrderDocumentController::class, 'participants'])->name('orders.participants.pdf');
     Route::middleware('can:orders.view')->group(function () {
@@ -123,7 +137,7 @@ Route::middleware('auth')->group(function () {
     Route::livewire('/tetapan/keselamatan', Security::class)->name('settings.security');
     Route::livewire('/tetapan/syarikat', Company::class)->middleware('can:settings.view')->name('settings.company');
     Route::view('/tetapan/notifikasi', 'pages.placeholder', ['title' => 'Notifikasi', 'breadcrumb' => ['Tetapan', 'Notifikasi'], 'phase' => 7, 'icon' => 'bell'])->name('settings.notifications');
-    $placeholder('/tetapan/integrasi', 'settings.integrations', 'api', 'Integrasi API', ['Tetapan', 'Integrasi API'], 9, 'plugs-connected');
+    Route::livewire('/tetapan/integrasi', Integrations::class)->middleware('can:api.view')->name('settings.integrations');
     $placeholder('/tetapan/webhooks', 'settings.webhooks', 'webhooks', 'Webhooks', ['Tetapan', 'Webhooks'], 9, 'webhooks-logo');
 });
 

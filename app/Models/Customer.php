@@ -35,4 +35,21 @@ class Customer extends Model
     {
         return preg_replace('/\D+/', '', $phone) ?? '';
     }
+
+    /**
+     * Find the customer by phone (ignoring formatting) or create one; keeps existing
+     * details unless new ones are given.
+     *
+     * @param  array{name: string, phone: string, email?: ?string, address?: ?string, postcode?: ?string, city?: ?string, state?: ?string}  $data
+     */
+    public static function resolve(array $data): self
+    {
+        $customer = self::query()
+            ->whereRaw("REPLACE(REPLACE(REPLACE(phone, '-', ''), ' ', ''), '+', '') = ?", [self::normalisePhone($data['phone'])])
+            ->first() ?? new self;
+
+        $customer->fill(array_filter($data, fn ($v) => $v !== null && $v !== ''))->save();
+
+        return $customer;
+    }
 }

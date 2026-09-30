@@ -62,8 +62,10 @@ it('deducts the deposit and splits instalments with the remainder in the last mo
     $six = $b->instalments(6);
     expect($six)->toHaveCount(6)
         ->and(array_sum($six))->toBe(295000)
-        ->and($six[0])->toBe(49166)
-        ->and($six[5])->toBe(49170);
+        ->and($six[0])->toBe(49100)
+        ->and($six[5])->toBe(49500);
+
+    expect((new CalculatePrice)->fromUnitPrice(350000, 1)->instalments(6))->toBe([58300, 58300, 58300, 58300, 58300, 58500]);
 
     foreach ([3, 9, 12] as $months) {
         expect(array_sum($b->instalments($months)))->toBe(295000);

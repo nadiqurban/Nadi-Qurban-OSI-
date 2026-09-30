@@ -4,6 +4,9 @@ namespace App\Providers;
 
 use App\Enums\RoleName;
 use App\Models\User;
+use App\Services\Chip\ChipClient;
+use App\Services\Chip\ChipGateway;
+use App\Services\Chip\FakeChipGateway;
 use App\Support\Settings;
 use Carbon\Carbon;
 use Illuminate\Auth\Notifications\ResetPassword;
@@ -21,6 +24,10 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(Settings::class);
+
+        $this->app->singleton(ChipGateway::class, fn ($app) => config('services.chip.fake') && ! $app->isProduction()
+            ? new FakeChipGateway
+            : new ChipClient($app->make(Settings::class)));
     }
 
     /**

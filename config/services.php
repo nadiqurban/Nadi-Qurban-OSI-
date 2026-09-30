@@ -35,4 +35,13 @@ return [
         ],
     ],
 
+    // CHIP Collect (Portal Ansuran). Keys normally set in Tetapan › Integrasi (encrypted);
+    // these are fallbacks. CHIP_FAKE simulates the gateway locally (ignored in production).
+    'chip' => [
+        'base_url' => env('CHIP_BASE_URL', 'https://gate.chip-in.asia/api/v1/'),
+        'brand_id' => env('CHIP_BRAND_ID'),
+        'secret_key' => env('CHIP_SECRET_KEY'),
+        'fake' => (bool) env('CHIP_FAKE', false),
+    ],
+
 ];

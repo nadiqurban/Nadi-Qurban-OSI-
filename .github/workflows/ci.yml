@@ -50,6 +50,9 @@ jobs:
         run: |
           cp .env.example .env
           php artisan key:generate
+          # Demo users (DemoUserSeeder) need a password; generate a throwaway one per run.
+          sed -i "s/^SEED_USER_PASSWORD=.*/SEED_USER_PASSWORD=Ci$(openssl rand -hex 12)A1/" .env
+          grep -q '^SEED_USER_PASSWORD=Ci' .env
 
       - name: Pint
         run: vendor/bin/pint --test

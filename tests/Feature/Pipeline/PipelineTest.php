@@ -37,6 +37,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use Livewire\Livewire;
+use Spatie\LaravelPdf\Facades\Pdf;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 beforeEach(function () {
@@ -228,7 +229,9 @@ it('generates the AWB from the screen and lists it in Tempahan Selesai', functio
         ->call('openDetail', $order->id)
         ->assertSee('Garis Masa Proses');
 
+    Pdf::fake();
     $this->actingAs(superAdmin())->get(route('shipping.awb.pdf', ['ids' => [$order->id]]))->assertOk();
+    Pdf::assertRespondedWithPdf(fn ($pdf) => $pdf->viewName === 'pdf.airway-bill');
 });
 
 it('saves the certificate template and downloads sample and bulk PDFs', function () {

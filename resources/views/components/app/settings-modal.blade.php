@@ -8,6 +8,8 @@
         ['icon' => 'users', 'tone' => 'gold', 'title' => 'Pengguna & Peranan', 'desc' => 'Kawalan akses (RBAC)', 'route' => 'users.index', 'can' => 'users.view'],
         ['icon' => 'buildings', 'tone' => 'purple', 'title' => 'Maklumat Syarikat', 'desc' => 'Alamat, SSM, bank', 'route' => 'settings.company', 'can' => 'settings.view'],
         ['icon' => 'shield-check', 'tone' => 'success', 'title' => 'Keselamatan', 'desc' => '2FA, log masuk, sesi', 'route' => 'settings.security', 'can' => null],
+        ['icon' => 'plugs', 'tone' => 'info', 'title' => 'Integrasi API', 'desc' => 'Kunci API & gerbang pembayaran', 'route' => 'settings.integrations', 'can' => 'api.view'],
+        ['icon' => 'webhooks-logo', 'tone' => 'warning', 'title' => 'Webhooks', 'desc' => 'Notifikasi peristiwa ke sistem luar', 'route' => 'settings.webhooks', 'can' => 'webhooks.view'],
     ])->filter(fn ($i) => $user && ($i['can'] === null || $user->can($i['can'])));
 @endphp
 

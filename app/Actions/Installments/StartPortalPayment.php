@@ -8,6 +8,7 @@ use App\Enums\PortalPayMethod;
 use App\Models\InstallmentPlan;
 use App\Models\PaymentGatewayTransaction;
 use App\Services\Chip\ChipGateway;
+use App\Support\PaymentGateways;
 use App\Support\Sequence;
 use Illuminate\Validation\ValidationException;
 use RuntimeException;
@@ -27,7 +28,7 @@ class StartPortalPayment
             throw ValidationException::withMessages(['pay' => 'Pelan ini tidak menerima bayaran.']);
         }
 
-        if (! $this->chip->isConfigured()) {
+        if (! $this->chip->isConfigured() || ! app(PaymentGateways::class)->enabled('chip')) {
             throw ValidationException::withMessages(['pay' => 'Gerbang pembayaran belum tersedia. Sila hubungi Nadi Qurban.']);
         }
 

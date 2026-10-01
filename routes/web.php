@@ -46,6 +46,7 @@ use App\Livewire\Settings\Company;
 use App\Livewire\Settings\Integrations;
 use App\Livewire\Settings\Profile;
 use App\Livewire\Settings\Security;
+use App\Livewire\Settings\Webhooks;
 use App\Livewire\Shipping\Index as ShippingIndex;
 use App\Livewire\Users\Index as UsersIndex;
 use App\Livewire\Users\RoleShow;
@@ -88,18 +89,12 @@ Route::middleware('auth')->group(function () {
 |--------------------------------------------------------------------------
 | Application (sidebar modules)
 |--------------------------------------------------------------------------
-| Every module requires "{module}.view" (matrix Penuh/Lihat). Screens not built
-| yet render a placeholder and are replaced in the listed phase.
+| Every module requires "{module}.view" (matrix Penuh/Lihat); every Livewire
+| action re-checks "{module}.manage" before changing data.
 */
 
 Route::middleware('auth')->group(function () {
     Route::get('/', HomeController::class)->name('home');
-
-    $placeholder = function (string $uri, string $name, string $module, string $title, array $breadcrumb, int $phase, string $icon) {
-        Route::view($uri, 'pages.placeholder', compact('title', 'breadcrumb', 'phase', 'icon'))
-            ->middleware('can:'.$module.'.view')
-            ->name($name);
-    };
 
     Route::livewire('/dashboard', Dashboard::class)->middleware('can:dashboard.view')->name('dashboard');
 
@@ -179,7 +174,7 @@ Route::middleware('auth')->group(function () {
     Route::livewire('/tetapan/syarikat', Company::class)->middleware('can:settings.view')->name('settings.company');
     Route::redirect('/tetapan/notifikasi', '/notifikasi?tetapan=1')->name('settings.notifications');
     Route::livewire('/tetapan/integrasi', Integrations::class)->middleware('can:api.view')->name('settings.integrations');
-    $placeholder('/tetapan/webhooks', 'settings.webhooks', 'webhooks', 'Webhooks', ['Tetapan', 'Webhooks'], 9, 'webhooks-logo');
+    Route::livewire('/tetapan/webhooks', Webhooks::class)->middleware('can:webhooks.view')->name('settings.webhooks');
 });
 
 // Design system review (local only)

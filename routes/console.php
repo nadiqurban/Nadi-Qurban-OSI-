@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\ApiRequest;
+use App\Models\WebhookDelivery;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
@@ -16,3 +18,6 @@ Schedule::command('finance:daily')->dailyAt('00:15')->timezone('Asia/Kuala_Lumpu
 
 // Audit Log: keep 24 months (config activitylog.clean_after_days = 730).
 Schedule::command('activitylog:clean --force')->monthlyOn(1, '03:00')->timezone('Asia/Kuala_Lumpur');
+
+// Integrasi: prune API request + webhook delivery logs older than 90 days.
+Schedule::command('model:prune', ['--model' => [ApiRequest::class, WebhookDelivery::class]])->dailyAt('02:30')->timezone('Asia/Kuala_Lumpur');

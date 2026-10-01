@@ -18,10 +18,13 @@ use App\Support\DocumentRegistry;
 use App\Support\Settings;
 use Carbon\Carbon;
 use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 use LogicException;
@@ -57,6 +60,9 @@ class AppServiceProvider extends ServiceProvider
         Certificate::created(fn (Certificate $c) => app(DocumentRegistry::class)->certificate($c));
         Invoice::created(fn (Invoice $i) => app(DocumentRegistry::class)->invoice($i));
         Quotation::created(fn (Quotation $q) => app(DocumentRegistry::class)->quotation($q));
+
+        // Integrasi API: 120 requests / minute per API key.
+        RateLimiter::for('api-v1', fn (Request $request) => Limit::perMinute(120)->by('api:'.($request->user()?->getKey() ?? $request->ip())));
 
         // Dashboard figures are cached 5 minutes; any order/payment/vendor change invalidates them.
         foreach ([Order::class, Payment::class, Vendor::class] as $model) {

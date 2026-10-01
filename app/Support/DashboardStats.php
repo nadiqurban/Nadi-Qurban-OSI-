@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Cache;
  * Dashboard Operasi figures. Everything is computed for the season
  * (settings season.year) up to the filter date, compared with the previous
  * season up to the same day. Cached 5 minutes; flush() on order/payment changes.
+ *
  * @phpstan-type DashboardData array{
  *     kpis: list<array{icon: string, tone: string, value: string, label: string, delta: string, trend: string}>,
  *     monthly: array{rows: list<array{label: string, value: float}>, target: float},

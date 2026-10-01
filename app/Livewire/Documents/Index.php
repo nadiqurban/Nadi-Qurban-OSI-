@@ -74,7 +74,7 @@ class Index extends Component
     {
         $term = trim($this->search);
 
-        return Document::query()
+        return Document::query()->visibleTo($this->user())
             ->when(DocumentCategory::tryFrom($this->category), fn (Builder $q, DocumentCategory $c) => $q->where('category', $c))
             ->when(in_array($this->service, Document::SERVICES, true), fn (Builder $q) => $q->where('service', $this->service))
             ->when($term !== '', fn (Builder $q) => $q->where('name', 'like', "%{$term}%"))
@@ -89,7 +89,7 @@ class Index extends Component
     #[Computed]
     public function counts(): array
     {
-        $counts = Document::query()->select('category', DB::raw('COUNT(*) as n'))->groupBy('category')->pluck('n', 'category')->map(fn ($n) => (int) $n)->all();
+        $counts = Document::query()->visibleTo($this->user())->select('category', DB::raw('COUNT(*) as n'))->groupBy('category')->pluck('n', 'category')->map(fn ($n) => (int) $n)->all();
 
         return ['' => array_sum($counts)] + $counts;
     }
@@ -113,13 +113,19 @@ class Index extends Component
             ['icon' => 'files', 'tone' => 'primary', 'value' => number_format($c['']), 'label' => 'Jumlah Fail'],
             ['icon' => 'certificate', 'tone' => 'gold', 'value' => number_format($c[DocumentCategory::Certificate->value] ?? 0), 'label' => 'Sijil'],
             ['icon' => 'file-text', 'tone' => 'info', 'value' => number_format($c[DocumentCategory::Report->value] ?? 0), 'label' => 'Laporan'],
-            ['icon' => 'video', 'tone' => 'purple', 'value' => number_format(Document::query()->whereIn('extension', ['mp4', 'mov'])->count()), 'label' => 'Video Pelaksanaan'],
+            ['icon' => 'video', 'tone' => 'purple', 'value' => number_format(Document::query()->visibleTo($this->user())->whereIn('extension', ['mp4', 'mov'])->count()), 'label' => 'Video Pelaksanaan'],
         ];
     }
 
     public static function bytes(int $bytes): string
     {
         return $bytes >= 1024 ** 3 ? round($bytes / 1024 ** 3, 1).' GB' : ($bytes >= 1024 ** 2 ? round($bytes / 1024 ** 2, 1).' MB' : round($bytes / 1024).' KB');
+    }
+
+    private function user(): User
+    {
+        /** @var User */
+        return auth()->user();
     }
 
     public function openUpload(): void
@@ -181,7 +187,7 @@ class Index extends Component
     public function delete(int $documentId): void
     {
         $this->authorize(Module::Documents->managePermission());
-        $doc = Document::query()->findOrFail($documentId);
+        $doc = Document::query()->visibleTo($this->user())->findOrFail($documentId);
         abort_if($doc->source !== 'upload', 403);
 
         /** @var User $actor */

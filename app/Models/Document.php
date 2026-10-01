@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\DocumentCategory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -79,6 +80,30 @@ class Document extends Model implements HasMedia
     public function uploader(): BelongsTo
     {
         return $this->belongsTo(User::class, 'uploaded_by');
+    }
+
+    /**
+     * Vendor PICs only see files attached to their own vendor's payments,
+     * PO reports and execution reports; staff see everything.
+     *
+     * @param  Builder<self>  $query
+     * @return Builder<self>
+     */
+    public function scopeVisibleTo(Builder $query, ?User $user): Builder
+    {
+        if (! $user?->isVendorPic()) {
+            return $query;
+        }
+
+        $vendorId = (int) $user->vendor_id;
+
+        return $query->whereHas('file', fn (Builder $m) => $m->where(fn (Builder $w) => $w
+            ->where(fn (Builder $x) => $x->where('model_type', (new VendorPayment)->getMorphClass())
+                ->whereIn('model_id', VendorPayment::query()->select('id')->where('vendor_id', $vendorId)))
+            ->orWhere(fn (Builder $x) => $x->where('model_type', (new VendorReport)->getMorphClass())
+                ->whereIn('model_id', VendorReport::query()->select('id')->where('vendor_id', $vendorId)))
+            ->orWhere(fn (Builder $x) => $x->where('model_type', (new ExecutionReport)->getMorphClass())
+                ->whereIn('model_id', ExecutionReport::query()->select('id')->where('vendor_id', $vendorId)))));
     }
 
     public function type(): string

@@ -4,6 +4,7 @@ namespace App\Support;
 
 use App\Models\WebhookDelivery;
 use App\Models\WebhookEndpoint;
+use App\Rules\PublicUrl;
 use Illuminate\Support\Str;
 use Spatie\WebhookServer\WebhookCall;
 
@@ -64,6 +65,16 @@ final class Webhooks
             ->filter(fn (WebhookEndpoint $e) => in_array($event, $e->events, true));
 
         foreach ($endpoints as $endpoint) {
+            // Re-check at send time (DNS may have changed since the endpoint was saved).
+            $blocked = app()->isProduction() && ! PublicUrl::isPublicHost((string) parse_url($endpoint->url, PHP_URL_HOST));
+
+            if ($blocked) {
+                WebhookDelivery::query()->create(['uuid' => (string) Str::uuid(), 'webhook_endpoint_id' => $endpoint->id, 'event' => $event,
+                    'status' => WebhookDelivery::FAILED, 'error' => 'Disekat: endpoint menghala ke alamat dalaman.']);
+
+                continue;
+            }
+
             $delivery = WebhookDelivery::query()->create([
                 'uuid' => (string) Str::uuid(),
                 'webhook_endpoint_id' => $endpoint->id,

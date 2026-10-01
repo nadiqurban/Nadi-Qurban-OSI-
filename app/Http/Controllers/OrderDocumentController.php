@@ -101,7 +101,10 @@ class OrderDocumentController extends Controller
 
         abort_if($ids === [] || count($ids) > 500, 422, 'Sila pilih sekurang-kurangnya satu tempahan.');
 
-        return Order::query()->with(['customer', 'country', 'participants'])->whereIn('id', $ids)->orderBy('order_no')->get();
+        $orders = Order::query()->with(['customer', 'country', 'participants'])->whereIn('id', $ids)->orderBy('order_no')->get();
+        abort_if($orders->isEmpty(), 404);
+
+        return $orders;
     }
 
     private function respond(Request $request, PdfBuilder $pdf, string $name): PdfBuilder

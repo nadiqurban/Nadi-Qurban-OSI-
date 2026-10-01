@@ -7,6 +7,8 @@ use App\Enums\OrderStage;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentMethod;
 use App\Enums\Service;
+use App\Models\Scopes\VendorPicOrderScope;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -59,6 +61,7 @@ use Illuminate\Support\Collection;
  * @property-read Shipment|null $shipment
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Certificate> $certificates
  */
+#[ScopedBy([VendorPicOrderScope::class])]
 class Order extends Model
 {
     use SoftDeletes;

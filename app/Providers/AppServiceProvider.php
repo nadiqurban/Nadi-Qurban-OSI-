@@ -25,6 +25,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 use LogicException;
@@ -54,6 +55,11 @@ class AppServiceProvider extends ServiceProvider
         Carbon::setLocale('ms');
 
         Model::preventLazyLoading(! $this->app->isProduction());
+
+        // Production is HTTPS-only (secure cookies + HSTS from SecurityHeaders).
+        if ($this->app->isProduction()) {
+            URL::forceScheme('https');
+        }
 
         // Dokumen: auto-register system files (uploads elsewhere + generated PDFs).
         Event::listen(MediaHasBeenAddedEvent::class, fn (MediaHasBeenAddedEvent $e) => app(DocumentRegistry::class)->media($e->media));

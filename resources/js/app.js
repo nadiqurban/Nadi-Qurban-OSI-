@@ -17,7 +17,16 @@ document.addEventListener('alpine:init', () => {
             const mod = await import('world-atlas/countries-110m.json');
             this.topo = mod.default ?? mod;
             this.draw();
-            this.ro = new ResizeObserver(() => this.draw());
+            // Redraw only when the width really changes, on the next frame (avoids ResizeObserver loops).
+            let lastWidth = this.$el.clientWidth;
+            let frame = null;
+            this.ro = new ResizeObserver(() => {
+                const width = this.$el.clientWidth;
+                if (Math.abs(width - lastWidth) < 1) return;
+                lastWidth = width;
+                cancelAnimationFrame(frame);
+                frame = requestAnimationFrame(() => this.draw());
+            });
             this.ro.observe(this.$el);
             this.onTheme = () => this.draw();
             window.addEventListener('nq-theme', this.onTheme);

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\EnsureAccountIsUsable;
+use App\Http\Middleware\SecurityHeaders;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -18,7 +19,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->web(append: [EnsureAccountIsUsable::class]);
+        $middleware->web(append: [EnsureAccountIsUsable::class, SecurityHeaders::class]);
+        $middleware->api(append: [SecurityHeaders::class]);
 
         // Gateway callbacks are verified by RSA signature instead of a CSRF token.
         $middleware->validateCsrfTokens(except: ['webhooks/*']);

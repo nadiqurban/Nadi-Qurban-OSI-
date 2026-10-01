@@ -7,6 +7,7 @@ use App\Enums\Severity;
 use App\Models\User;
 use App\Models\WebhookDelivery;
 use App\Models\WebhookEndpoint;
+use App\Rules\PublicUrl;
 use App\Support\Audit;
 use App\Support\Webhooks as WebhookService;
 use Illuminate\Database\Eloquent\Collection;
@@ -76,7 +77,7 @@ class Webhooks extends Component
     {
         $this->authorize(Module::Webhooks->managePermission());
         $this->validate([
-            'url' => ['required', 'url:https,http', 'max:500', app()->isProduction() ? 'starts_with:https://' : 'string'],
+            'url' => ['required', 'url:https,http', 'max:500', new PublicUrl],
             'description' => ['nullable', 'string', 'max:150'],
             'events' => ['required', 'array', 'min:1'],
             'events.*' => [Rule::in(array_keys(WebhookEndpoint::EVENTS))],

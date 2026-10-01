@@ -19,6 +19,7 @@ class DocumentController
     public function open(Request $request, Document $document): StreamedResponse|RedirectResponse
     {
         Gate::authorize(Module::Documents->viewPermission());
+        abort_unless(Document::query()->visibleTo($request->user())->whereKey($document->id)->exists(), 404);
         $download = $request->boolean('muat-turun');
 
         if ($document->route_name) {

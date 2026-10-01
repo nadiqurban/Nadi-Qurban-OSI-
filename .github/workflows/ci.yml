@@ -5,9 +5,18 @@ on:
     branches: [main, develop]
   pull_request:
 
+permissions:
+  contents: read
+  checks: write   # JUnit results are published as check annotations
+
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    env:
+      # Headless Chrome (spatie/laravel-pdf via Browsershot) cannot use the sandbox on GitHub runners.
+      LARAVEL_PDF_NO_SANDBOX: 'true'
 
     steps:
       - uses: actions/checkout@v4
@@ -25,6 +34,9 @@ jobs:
 
       - name: Install Composer dependencies
         run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Audit dependencies
+        run: composer audit
 
       - name: Install npm dependencies & build
         run: |
@@ -45,5 +57,18 @@ jobs:
       - name: Larastan
         run: vendor/bin/phpstan analyse --no-progress --memory-limit=1G
 
-      - name: Pest
-        run: vendor/bin/pest
+      - name: Pest — unit & feature
+        run: vendor/bin/pest tests/Unit tests/Feature --log-junit=build/junit-feature.xml
+
+      - name: Pest — browser (Playwright)
+        if: success() || failure()
+        run: vendor/bin/pest tests/Browser --log-junit=build/junit-browser.xml
+
+      - name: Publish test report
+        if: success() || failure()
+        uses: mikepenz/action-junit-report@v5
+        with:
+          report_paths: 'build/junit-*.xml'
+          check_name: Pest results
+          include_passed: false
+          detailed_summary: true

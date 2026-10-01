@@ -1,15 +1,20 @@
 <?php
 
 use App\Enums\Courier;
+use App\Http\Controllers\AuditExportController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\ChipWebhookController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\ExecutionMediaController;
+use App\Http\Controllers\FinanceDocumentController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InstallmentDocumentController;
 use App\Http\Controllers\OrderDocumentController;
+use App\Http\Controllers\ReportDownloadController;
 use App\Http\Controllers\VendorDocumentController;
 use App\Livewire\Akad\Index as AkadIndex;
 use App\Livewire\Allocation\Index as AllocationIndex;
+use App\Livewire\Audit\Index as AuditIndex;
 use App\Livewire\Auth\ForceChangePassword;
 use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\Locked;
@@ -18,8 +23,14 @@ use App\Livewire\Auth\LoginHistory;
 use App\Livewire\Auth\ResetPassword;
 use App\Livewire\Auth\TwoFactorChallenge;
 use App\Livewire\Certificates\Editor as CertificateEditor;
+use App\Livewire\Crm\Pipeline as CrmPipeline;
+use App\Livewire\Crm\Show as CrmShow;
+use App\Livewire\Documents\Index as DocumentsIndex;
 use App\Livewire\Execution\Index as ExecutionIndex;
+use App\Livewire\Finance\Index as FinanceIndex;
+use App\Livewire\Finance\InvoiceShow as FinanceInvoiceShow;
 use App\Livewire\Installments\Index as InstallmentsIndex;
+use App\Livewire\Notifications\Index as NotificationsIndex;
 use App\Livewire\Orders\Completed as OrdersCompleted;
 use App\Livewire\Orders\Index as OrdersIndex;
 use App\Livewire\Orders\Show as OrdersShow;
@@ -28,6 +39,7 @@ use App\Livewire\Products\Index as ProductsIndex;
 use App\Livewire\Promo\Index as PromoIndex;
 use App\Livewire\Public\InstallmentPortal;
 use App\Livewire\Public\Tracking;
+use App\Livewire\Reports\Index as ReportsIndex;
 use App\Livewire\Settings\Company;
 use App\Livewire\Settings\Integrations;
 use App\Livewire\Settings\Profile;
@@ -116,25 +128,44 @@ Route::middleware('auth')->group(function () {
     Route::middleware('can:vendors.view')->group(function () {
         Route::livewire('/vendor', VendorsIndex::class)->name('vendors.index');
         Route::livewire('/vendor/{vendor}', VendorsShow::class)->name('vendors.show');
-        Route::get('/vendor/po/{po}/resit.pdf', [VendorDocumentController::class, 'purchaseOrder'])->name('vendors.po.pdf');
-        Route::get('/fail-vendor/{media}', [VendorDocumentController::class, 'media'])->middleware('signed')->name('vendors.media');
     });
+    // PO receipt + payment files: Vendor (vendors.view) and Kewangan (finance.view); checked in the controller.
+    Route::get('/vendor/po/{po}/resit.pdf', [VendorDocumentController::class, 'purchaseOrder'])->name('vendors.po.pdf');
+    Route::get('/fail-vendor/{media}', [VendorDocumentController::class, 'media'])->middleware('signed')->name('vendors.media');
     Route::livewire('/produk', ProductsIndex::class)->middleware('can:products.view')->name('products.index');
-    $placeholder('/dokumen', 'documents.index', 'documents', 'Dokumen', ['Operasi', 'Dokumen'], 7, 'folders');
+    Route::middleware('can:documents.view')->group(function () {
+        Route::livewire('/dokumen', DocumentsIndex::class)->name('documents.index');
+        Route::get('/dokumen/{document}/buka', [DocumentController::class, 'open'])->name('documents.open');
+    });
+    // Single certificate PDF (Dokumen / Sijil / Tempahan viewers); checked in the controller.
+    Route::get('/sijil/{certificate}/pdf', [DocumentController::class, 'certificate'])->name('documents.certificate');
 
     // Jualan & Kewangan
-    $placeholder('/crm', 'crm.index', 'crm', 'Sales CRM', ['Jualan & Kewangan', 'Sales CRM'], 7, 'users-three');
-    $placeholder('/crm/{lead}', 'crm.show', 'crm', 'Butiran Lead', ['Jualan & Kewangan', 'Sales CRM'], 7, 'users-three');
+    Route::middleware('can:crm.view')->group(function () {
+        Route::livewire('/crm', CrmPipeline::class)->name('crm.index');
+        Route::livewire('/crm/{lead}', CrmShow::class)->name('crm.show');
+    });
     Route::livewire('/kod-promosi', PromoIndex::class)->middleware('can:promo.view')->name('promo.index');
-    $placeholder('/kewangan', 'finance.index', 'finance', 'Kewangan', ['Jualan & Kewangan', 'Kewangan'], 7, 'wallet');
-    $placeholder('/kewangan/invois/{invoice}', 'finance.invoice', 'finance', 'Butiran Invois', ['Jualan & Kewangan', 'Kewangan'], 7, 'wallet');
+    Route::middleware('can:finance.view')->group(function () {
+        Route::livewire('/kewangan', FinanceIndex::class)->name('finance.index');
+        Route::livewire('/kewangan/invois/{invoice}', FinanceInvoiceShow::class)->name('finance.invoice');
+        Route::get('/kewangan/invois/{invoice}/pdf', [FinanceDocumentController::class, 'invoice'])->name('finance.invoice.pdf');
+        Route::get('/kewangan/quotation/{quotation}/pdf', [FinanceDocumentController::class, 'quotation'])->name('finance.quotation');
+    });
 
     // Laporan
-    $placeholder('/laporan', 'reports.index', 'reports', 'Pusat Laporan', ['Laporan', 'Pusat Laporan'], 7, 'chart-bar');
-    $placeholder('/audit-log', 'audit.index', 'audit', 'Audit Log', ['Laporan', 'Audit Log'], 7, 'clock-counter-clockwise');
+    Route::middleware('can:reports.view')->group(function () {
+        Route::livewire('/laporan', ReportsIndex::class)->name('reports.index');
+        Route::get('/laporan/{report}/muat-turun', ReportDownloadController::class)->name('reports.download');
+    });
+    // Audit trail is read-only: no update/delete routes exist.
+    Route::middleware('can:audit.view')->group(function () {
+        Route::livewire('/audit-log', AuditIndex::class)->name('audit.index');
+        Route::get('/audit-log/eksport.csv', AuditExportController::class)->name('audit.export');
+    });
 
     // Sistem
-    $placeholder('/notifikasi', 'notifications.index', 'notifications', 'Notifikasi', ['Sistem', 'Notifikasi'], 7, 'bell');
+    Route::livewire('/notifikasi', NotificationsIndex::class)->middleware('can:notifications.view')->name('notifications.index');
     Route::livewire('/pengguna', UsersIndex::class)->middleware('can:users.view')->name('users.index');
     Route::livewire('/pengguna/peranan/{role}', RoleShow::class)->middleware('can:users.view')->name('users.role');
     Route::livewire('/sijil', CertificateEditor::class)->middleware('can:certificates.view')->name('certificates.editor');
@@ -143,7 +174,7 @@ Route::middleware('auth')->group(function () {
     Route::livewire('/tetapan/profil', Profile::class)->name('settings.profile');
     Route::livewire('/tetapan/keselamatan', Security::class)->name('settings.security');
     Route::livewire('/tetapan/syarikat', Company::class)->middleware('can:settings.view')->name('settings.company');
-    Route::view('/tetapan/notifikasi', 'pages.placeholder', ['title' => 'Notifikasi', 'breadcrumb' => ['Tetapan', 'Notifikasi'], 'phase' => 7, 'icon' => 'bell'])->name('settings.notifications');
+    Route::redirect('/tetapan/notifikasi', '/notifikasi?tetapan=1')->name('settings.notifications');
     Route::livewire('/tetapan/integrasi', Integrations::class)->middleware('can:api.view')->name('settings.integrations');
     $placeholder('/tetapan/webhooks', 'settings.webhooks', 'webhooks', 'Webhooks', ['Tetapan', 'Webhooks'], 9, 'webhooks-logo');
 });

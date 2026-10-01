@@ -1,8 +1,6 @@
 @php
     /** @var \App\Models\User|null $user */
     $user = auth()->user();
-    $unread = $user?->unreadNotifications()->count() ?? 0;
-    $canNotifications = $user?->can('notifications.view') ?? false;
 @endphp
 
 <header class="sticky top-0 z-20 flex h-[72px] items-center gap-3 border-b border-border bg-surface px-4 md:px-6 lg:gap-6 lg:px-8">
@@ -30,13 +28,7 @@
             <i class="ph ph-magnifying-glass text-[20px] leading-none"></i>
         </button>
 
-        <a href="{{ $canNotifications ? route('notifications.index') : route('settings.notifications') }}" wire:navigate
-           class="relative flex size-11 items-center justify-center rounded-[10px] border border-border text-muted hover:text-muted lg:size-10" aria-label="Notifikasi">
-            <i class="ph ph-bell text-[20px] leading-none"></i>
-            @if ($unread > 0)
-                <span class="absolute -top-1 -right-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-[20px] border-2 border-white bg-danger px-1 text-[10px] font-bold text-white">{{ $unread > 99 ? '99+' : $unread }}</span>
-            @endif
-        </a>
+        <livewire:notification-bell />
 
         <button type="button" x-data @click="$store.ui.toggleTheme()" title="Tukar tema"
                 class="flex size-11 items-center justify-center rounded-[10px] border border-border text-muted lg:size-10" aria-label="Tukar tema">

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Orders;
 
+use App\Actions\Crm\Leads;
 use App\Actions\Orders\CreateOrder;
 use App\Actions\Orders\UpdateOrderStatus;
 use App\Actions\Pipeline\IssueCertificates;
@@ -16,6 +17,7 @@ use App\Exports\OrdersExport;
 use App\Livewire\Forms\OrderForm;
 use App\Models\Certificate;
 use App\Models\Country;
+use App\Models\Lead;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\PromoCode;
@@ -29,6 +31,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Locked;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -99,9 +102,26 @@ class Index extends Component
 
     public bool $showProof = false;
 
+    /** Sales CRM "Tukar ke Tempahan": lead that prefilled the new-order modal. */
+    #[Locked]
+    public ?int $fromLead = null;
+
     public function mount(): void
     {
         $this->form->resetForm();
+
+        $leadId = (int) request()->query('lead');
+        $user = auth()->user();
+        if ($leadId > 0 && $user?->can(Module::Orders->managePermission()) && $user->can(Module::Crm->viewPermission())) {
+            $lead = Lead::query()->whereNull('order_id')->find($leadId);
+            if ($lead) {
+                $this->fromLead = $lead->id;
+                $this->form->name = $lead->name;
+                $this->form->phone = (string) $lead->phone;
+                $this->form->email = (string) $lead->email;
+                $this->showForm = true;
+            }
+        }
     }
 
     public function updated(string $property): void
@@ -350,6 +370,11 @@ class Index extends Component
             }
 
             return;
+        }
+
+        if ($this->fromLead && ($lead = Lead::query()->find($this->fromLead))) {
+            app(Leads::class)->linkOrder($lead, $order, $this->actor());
+            $this->fromLead = null;
         }
 
         $this->showForm = false;

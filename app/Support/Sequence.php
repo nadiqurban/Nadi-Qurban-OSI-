@@ -32,4 +32,10 @@ final class Sequence
             return $value;
         });
     }
+
+    /** The value next() would return, without consuming it (previews). */
+    public static function peek(string $name, int $start = 1): int
+    {
+        return (int) (DB::table('sequences')->where('name', $name)->value('next_value') ?? $start);
+    }
 }

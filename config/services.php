@@ -37,6 +37,11 @@ return [
 
     // CHIP Collect (Portal Ansuran). Keys normally set in Tetapan › Integrasi (encrypted);
     // these are fallbacks. CHIP_FAKE simulates the gateway locally (ignored in production).
+    'whatsapp' => [
+        'url' => env('WHATSAPP_API_URL'),
+        'token' => env('WHATSAPP_API_TOKEN'),
+    ],
+
     'chip' => [
         'base_url' => env('CHIP_BASE_URL', 'https://gate.chip-in.asia/api/v1/'),
         'brand_id' => env('CHIP_BRAND_ID'),

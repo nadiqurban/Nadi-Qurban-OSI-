@@ -3,18 +3,26 @@
 namespace App\Providers;
 
 use App\Enums\RoleName;
+use App\Models\Certificate;
+use App\Models\Invoice;
+use App\Models\Quotation;
 use App\Models\User;
 use App\Services\Chip\ChipClient;
 use App\Services\Chip\ChipGateway;
 use App\Services\Chip\FakeChipGateway;
+use App\Support\DocumentRegistry;
 use App\Support\Settings;
 use Carbon\Carbon;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
+use LogicException;
+use Spatie\Activitylog\Models\Activity;
+use Spatie\MediaLibrary\MediaCollections\Events\MediaHasBeenAddedEvent;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,6 +32,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(Settings::class);
+        $this->app->singleton(DocumentRegistry::class);
 
         $this->app->singleton(ChipGateway::class, fn ($app) => config('services.chip.fake') && ! $app->isProduction()
             ? new FakeChipGateway
@@ -38,6 +47,16 @@ class AppServiceProvider extends ServiceProvider
         Carbon::setLocale('ms');
 
         Model::preventLazyLoading(! $this->app->isProduction());
+
+        // Dokumen: auto-register system files (uploads elsewhere + generated PDFs).
+        Event::listen(MediaHasBeenAddedEvent::class, fn (MediaHasBeenAddedEvent $e) => app(DocumentRegistry::class)->media($e->media));
+        Certificate::created(fn (Certificate $c) => app(DocumentRegistry::class)->certificate($c));
+        Invoice::created(fn (Invoice $i) => app(DocumentRegistry::class)->invoice($i));
+        Quotation::created(fn (Quotation $q) => app(DocumentRegistry::class)->quotation($q));
+
+        // Audit trail is immutable: rows are only ever inserted (and pruned by activitylog:clean).
+        Activity::updating(fn () => throw new LogicException('Log audit tidak boleh diubah.'));
+        Activity::deleting(fn () => throw new LogicException('Log audit tidak boleh dipadam.'));
 
         // Super Admin always has every permission (its matrix column is fixed to Penuh).
         Gate::before(fn (User $user) => $user->hasRole(RoleName::SuperAdmin->value) ? true : null);

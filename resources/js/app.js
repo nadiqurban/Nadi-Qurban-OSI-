@@ -1,7 +1,35 @@
+import Sortable from 'sortablejs';
+
 // Alpine ships with Livewire 4 (injected automatically); register global stores/components here.
 
 document.addEventListener('alpine:init', () => {
     const Alpine = window.Alpine;
+
+    // Sales CRM Kanban column: drag cards between columns (SortableJS) and persist
+    // stage + order through the Livewire component's moveLead(id, stage, orderedIds).
+    Alpine.data('kanbanColumn', (stage) => ({
+        init() {
+            Sortable.create(this.$el, {
+                group: 'crm-leads',
+                animation: 150,
+                draggable: '[data-lead]',
+                ghostClass: 'opacity-40',
+                delay: 150,
+                delayOnTouchOnly: true,
+                forceFallback: true,
+                fallbackTolerance: 3,
+                onEnd: (evt) => {
+                    const to = evt.to;
+                    const ids = [...to.querySelectorAll('[data-lead]')].map((n) => Number(n.dataset.lead));
+                    const target = to.closest('[data-stage]')?.dataset.stage ?? stage;
+                    // Put the node back so Livewire's morph (keyed cards) owns the DOM.
+                    evt.item.remove();
+                    evt.from.insertBefore(evt.item, evt.from.children[evt.oldIndex] ?? null);
+                    this.$wire.moveLead(Number(evt.item.dataset.lead), target, ids);
+                },
+            });
+        },
+    }));
 
     // Global UI state: mobile sidebar drawer, search overlay, theme.
     Alpine.store('ui', {
@@ -119,3 +147,23 @@ document.addEventListener('keydown', (e) => {
         }
     }
 });
+
+// Print one on-screen A4 preview (e.g. Kewangan draft invoice) in a hidden iframe,
+// reusing the page's stylesheets so it prints exactly as previewed.
+window.nqPrint = (el) => {
+    if (!el) return window.print();
+    const frame = document.createElement('iframe');
+    frame.style.cssText = 'position:fixed; right:0; bottom:0; width:0; height:0; border:0;';
+    document.body.appendChild(frame);
+    const styles = [...document.querySelectorAll('link[rel="stylesheet"], style')].map((n) => n.outerHTML).join('');
+    const doc = frame.contentDocument;
+    doc.open();
+    doc.write(`<!doctype html><html><head><meta charset="utf-8">${styles}<style>@page{size:A4;margin:0}body{margin:0;background:#fff}</style></head><body>${el.outerHTML}</body></html>`);
+    doc.close();
+    const page = doc.body.firstElementChild;
+    if (page) { page.style.transform = 'none'; page.style.boxShadow = 'none'; }
+    let done = false;
+    const go = () => { if (done) return; done = true; frame.contentWindow.focus(); frame.contentWindow.print(); setTimeout(() => frame.remove(), 1000); };
+    frame.onload = go;
+    setTimeout(go, 400);
+};

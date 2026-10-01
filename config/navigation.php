@@ -2,6 +2,7 @@
 
 use App\Navigation\Badges\ActiveOrders;
 use App\Navigation\Badges\PendingPayments;
+use App\Navigation\Badges\UnpaidInvoices;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,7 +44,7 @@ return [
         'items' => [
             ['label' => 'Sales CRM', 'icon' => 'users-three', 'route' => 'crm.index', 'active' => 'crm.*', 'module' => 'crm'],
             ['label' => 'Kod Promosi', 'icon' => 'ticket', 'route' => 'promo.index', 'module' => 'promo'],
-            ['label' => 'Kewangan', 'icon' => 'wallet', 'route' => 'finance.index', 'active' => 'finance.*', 'module' => 'finance', 'badge' => null],
+            ['label' => 'Kewangan', 'icon' => 'wallet', 'route' => 'finance.index', 'active' => 'finance.*', 'module' => 'finance', 'badge' => UnpaidInvoices::class],
         ],
     ],
     [

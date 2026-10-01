@@ -5,6 +5,7 @@
     'tone' => 'primary',
     'delta' => null,
     'trend' => 'up',   // up (green) | down (red) | flat (neutral) | warn (amber) | info (blue)
+    'valueClass' => 'md:text-[27px]',   // Kewangan uses 24px
 ])
 
 @php
@@ -28,7 +29,7 @@
         @endif
     </div>
     <div>
-        <div class="text-[20px] leading-none font-bold text-ink md:text-[27px]">{{ $value }}</div>
+        <div class="text-[20px] leading-none font-bold text-ink {{ $valueClass }}">{{ $value }}</div>
         <div class="mt-[7px] text-[12px] text-muted md:text-[12.5px]">{{ $label }}</div>
     </div>
 </div>

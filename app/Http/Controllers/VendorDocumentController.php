@@ -9,7 +9,6 @@ use App\Models\User;
 use App\Models\VendorPayment;
 use App\Models\VendorReport;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 use Spatie\LaravelPdf\Facades\Pdf;
 use Spatie\LaravelPdf\PdfBuilder;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -20,7 +19,7 @@ class VendorDocumentController
 {
     public function purchaseOrder(Request $request, PurchaseOrder $po): PdfBuilder
     {
-        Gate::authorize(Module::Vendors->viewPermission());
+        abort_unless($request->user()->canAny([Module::Vendors->viewPermission(), Module::Finance->viewPermission()]), 403);
         $this->guardVendor($request->user(), $po->vendor_id);
         abort_if($request->user()?->isVendorPic() && $po->status === PoStatus::Draft, 403);
 
@@ -32,7 +31,9 @@ class VendorDocumentController
     /** Signed + authenticated; streams a payment receipt/advice or report file. */
     public function media(Request $request, Media $media): StreamedResponse
     {
-        Gate::authorize(Module::Vendors->viewPermission());
+        // Kewangan (finance.view) also opens completed-payment receipts.
+        $financeReceipt = $media->model_type === (new VendorPayment)->getMorphClass() && $request->user()?->can(Module::Finance->viewPermission());
+        abort_unless($financeReceipt || $request->user()?->can(Module::Vendors->viewPermission()), 403);
 
         $owner = match ($media->model_type) {
             (new VendorPayment)->getMorphClass() => VendorPayment::query()->find($media->model_id),

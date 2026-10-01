@@ -33,6 +33,8 @@ use Spatie\Permission\Traits\HasRoles;
  * @property Carbon|null $password_changed_at
  * @property string|null $two_factor_secret
  * @property Carbon|null $two_factor_confirmed_at
+ * @property string $theme
+ * @property list<string>|null $dashboard_collapsed
  * @property-read string $role_label
  * @property-read string|null $avatar_url
  */
@@ -62,6 +64,7 @@ class User extends Authenticatable
             'password_changed_at' => 'datetime',
             'two_factor_secret' => 'encrypted',
             'two_factor_confirmed_at' => 'datetime',
+            'dashboard_collapsed' => 'array',
         ];
     }
 

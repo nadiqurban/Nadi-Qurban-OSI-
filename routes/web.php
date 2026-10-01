@@ -11,6 +11,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InstallmentDocumentController;
 use App\Http\Controllers\OrderDocumentController;
 use App\Http\Controllers\ReportDownloadController;
+use App\Http\Controllers\ThemeController;
 use App\Http\Controllers\VendorDocumentController;
 use App\Livewire\Akad\Index as AkadIndex;
 use App\Livewire\Allocation\Index as AllocationIndex;
@@ -25,6 +26,7 @@ use App\Livewire\Auth\TwoFactorChallenge;
 use App\Livewire\Certificates\Editor as CertificateEditor;
 use App\Livewire\Crm\Pipeline as CrmPipeline;
 use App\Livewire\Crm\Show as CrmShow;
+use App\Livewire\Dashboard;
 use App\Livewire\Documents\Index as DocumentsIndex;
 use App\Livewire\Execution\Index as ExecutionIndex;
 use App\Livewire\Finance\Index as FinanceIndex;
@@ -99,7 +101,7 @@ Route::middleware('auth')->group(function () {
             ->name($name);
     };
 
-    $placeholder('/dashboard', 'dashboard', 'dashboard', 'Dashboard', ['Utama', 'Dashboard'], 8, 'squares-four');
+    Route::livewire('/dashboard', Dashboard::class)->middleware('can:dashboard.view')->name('dashboard');
 
     // Operasi
     Route::middleware('can:installments.view')->group(function () {
@@ -172,6 +174,7 @@ Route::middleware('auth')->group(function () {
 
     // Tetapan — profile & security are personal (every user); company needs settings.view.
     Route::livewire('/tetapan/profil', Profile::class)->name('settings.profile');
+    Route::post('/tetapan/tema', ThemeController::class)->name('settings.theme');
     Route::livewire('/tetapan/keselamatan', Security::class)->name('settings.security');
     Route::livewire('/tetapan/syarikat', Company::class)->middleware('can:settings.view')->name('settings.company');
     Route::redirect('/tetapan/notifikasi', '/notifikasi?tetapan=1')->name('settings.notifications');

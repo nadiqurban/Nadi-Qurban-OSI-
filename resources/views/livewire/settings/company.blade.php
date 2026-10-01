@@ -27,6 +27,15 @@
             </section>
 
             <section class="rounded-[12px] border border-border bg-surface p-5 md:p-6">
+                <div class="mb-1 text-[15px] font-bold text-ink">Musim &amp; Sasaran</div>
+                <div class="mb-4 text-[12px] text-faint">Tahun musim untuk tempahan baharu dan sasaran jualan bagi gauge Pencapaian Jualan di Dashboard</div>
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <x-ui.field label="Tahun Musim" id="season-year" wire:model="seasonYear" inputmode="numeric" />
+                    <x-ui.field label="Sasaran Jualan Musim (RM)" id="season-target" wire:model="seasonTarget" inputmode="numeric" />
+                </div>
+            </section>
+
+            <section class="rounded-[12px] border border-border bg-surface p-5 md:p-6">
                 <div class="mb-4 text-[15px] font-bold text-ink">Akaun Bank</div>
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <x-ui.field label="Nama Bank" wire:model="company.bank_name" />

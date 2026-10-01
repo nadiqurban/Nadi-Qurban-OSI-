@@ -5,11 +5,15 @@ namespace App\Providers;
 use App\Enums\RoleName;
 use App\Models\Certificate;
 use App\Models\Invoice;
+use App\Models\Order;
+use App\Models\Payment;
 use App\Models\Quotation;
 use App\Models\User;
+use App\Models\Vendor;
 use App\Services\Chip\ChipClient;
 use App\Services\Chip\ChipGateway;
 use App\Services\Chip\FakeChipGateway;
+use App\Support\DashboardStats;
 use App\Support\DocumentRegistry;
 use App\Support\Settings;
 use Carbon\Carbon;
@@ -53,6 +57,12 @@ class AppServiceProvider extends ServiceProvider
         Certificate::created(fn (Certificate $c) => app(DocumentRegistry::class)->certificate($c));
         Invoice::created(fn (Invoice $i) => app(DocumentRegistry::class)->invoice($i));
         Quotation::created(fn (Quotation $q) => app(DocumentRegistry::class)->quotation($q));
+
+        // Dashboard figures are cached 5 minutes; any order/payment/vendor change invalidates them.
+        foreach ([Order::class, Payment::class, Vendor::class] as $model) {
+            $model::saved(fn () => DashboardStats::flush());
+            $model::deleted(fn () => DashboardStats::flush());
+        }
 
         // Audit trail is immutable: rows are only ever inserted (and pruned by activitylog:clean).
         Activity::updating(fn () => throw new LogicException('Log audit tidak boleh diubah.'));

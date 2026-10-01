@@ -1,9 +1,63 @@
 import Sortable from 'sortablejs';
+import { geoMercator, geoPath, select } from 'd3';
+import { feature } from 'topojson-client';
 
 // Alpine ships with Livewire 4 (injected automatically); register global stores/components here.
 
 document.addEventListener('alpine:init', () => {
     const Alpine = window.Alpine;
+
+    // Dashboard "Agihan Negara": d3 + topojson world map with scaled pins
+    // (Dashboard Operasi.dc.html _renderMap). Redraws on resize and theme change.
+    Alpine.data('countryMap', (points, height = 200) => ({
+        topo: null,
+        ro: null,
+        onTheme: null,
+        async init() {
+            const mod = await import('world-atlas/countries-110m.json');
+            this.topo = mod.default ?? mod;
+            this.draw();
+            this.ro = new ResizeObserver(() => this.draw());
+            this.ro.observe(this.$el);
+            this.onTheme = () => this.draw();
+            window.addEventListener('nq-theme', this.onTheme);
+        },
+        destroy() {
+            this.ro?.disconnect();
+            window.removeEventListener('nq-theme', this.onTheme);
+        },
+        draw() {
+            if (!this.topo) return;
+            const el = this.$el;
+            const dark = document.documentElement.dataset.theme === 'dark';
+            const W = el.clientWidth || 340;
+            const H = window.innerWidth < 768 ? 180 : height;
+            el.innerHTML = '';
+            const svg = select(el).append('svg').attr('viewBox', `0 0 ${W} ${H}`).attr('width', '100%').attr('height', H)
+                .attr('role', 'img').attr('aria-label', 'Peta agihan negara').style('display', 'block');
+            svg.append('rect').attr('width', W).attr('height', H).attr('rx', 10).attr('fill', dark ? 'rgba(90,120,160,.10)' : '#eef3f6');
+            const proj = geoMercator().center([48, 14]).scale(W * 0.62).translate([W / 2, H / 2]);
+            const path = geoPath(proj);
+            svg.append('g').selectAll('path').data(feature(this.topo, this.topo.objects.countries).features).join('path')
+                .attr('d', path)
+                .attr('fill', dark ? 'rgba(201,162,39,.14)' : '#e2e5d0')
+                .attr('stroke', dark ? 'rgba(201,162,39,.25)' : '#cfd3b6').attr('stroke-width', 0.5);
+            const maxV = Math.max(1, ...points.map((d) => d.value));
+            points.forEach((d) => {
+                const p = proj([d.lon, d.lat]);
+                if (!p) return;
+                const rad = 5 + (d.value / maxV) * 11;
+                const g = svg.append('g');
+                g.append('title').text(`${d.name}: ${d.value}%`);
+                g.append('circle').attr('cx', p[0]).attr('cy', p[1]).attr('r', rad + 5).attr('fill', d.color).attr('opacity', 0.16);
+                g.append('circle').attr('cx', p[0]).attr('cy', p[1]).attr('r', rad).attr('fill', d.color)
+                    .attr('stroke', dark ? '#14201B' : '#fff').attr('stroke-width', 2);
+                g.append('text').attr('x', p[0]).attr('y', p[1] + 3.2).attr('text-anchor', 'middle')
+                    .attr('font-size', 9).attr('font-weight', 700).attr('font-family', 'Inter,sans-serif')
+                    .attr('fill', d.value > 15 || d.color === '#42481c' ? '#fff' : '#1A1D21').text(d.value);
+            });
+        },
+    }));
 
     // Sales CRM Kanban column: drag cards between columns (SortableJS) and persist
     // stage + order through the Livewire component's moveLead(id, stage, orderedIds).
@@ -40,9 +94,14 @@ document.addEventListener('alpine:init', () => {
         toggleTheme() {
             this.theme = this.theme === 'dark' ? 'light' : 'dark';
             document.documentElement.dataset.theme = this.theme;
-            try {
-                localStorage.setItem('nq_theme', this.theme);
-            } catch (e) {}
+            // Stored per user (Dashboard design: global light/dark toggle).
+            const token = document.querySelector('meta[name="csrf-token"]')?.content;
+            fetch('/tetapan/tema', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': token ?? '', Accept: 'application/json' },
+                body: JSON.stringify({ theme: this.theme }),
+            }).catch(() => {});
+            window.dispatchEvent(new CustomEvent('nq-theme', { detail: this.theme }));
         },
     });
 

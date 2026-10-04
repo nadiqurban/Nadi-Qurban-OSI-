@@ -9,8 +9,8 @@ use Illuminate\Database\Seeder;
 
 /**
  * Production-safe: first Super Admin from env (SUPERADMIN_NAME / SUPERADMIN_EMAIL /
- * SUPERADMIN_PASSWORD). Must change the password on first login. Skipped when the
- * email is not configured or the user already exists.
+ * SUPERADMIN_PASSWORD). Logs straight into the portal (no forced password change).
+ * Skipped when the email is not configured or the user already exists.
  */
 class SuperAdminSeeder extends Seeder
 {
@@ -31,7 +31,7 @@ class SuperAdminSeeder extends Seeder
                 'name' => config('nadi.superadmin.name'),
                 'password' => $password,
                 'status' => UserStatus::Active,
-                'must_change_password' => true,
+                'must_change_password' => false,
             ],
         );
 

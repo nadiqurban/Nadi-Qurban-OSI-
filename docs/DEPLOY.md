@@ -108,7 +108,7 @@ MAIL_SCHEME=tls
 MAIL_FROM_ADDRESS=noreply@nadiqurban.com
 MAIL_FROM_NAME="Nadi Qurban"
 
-# Super Admin pertama (dicipta oleh `db:seed`, wajib tukar kata laluan pada log masuk pertama)
+# Super Admin pertama (dicipta oleh `db:seed`, terus masuk portal selepas log masuk)
 SUPERADMIN_NAME="Nama Pentadbir"
 SUPERADMIN_EMAIL=
 SUPERADMIN_PASSWORD=
@@ -213,4 +213,4 @@ git push origin main          # Forge Quick Deploy bermula
 git checkout develop
 ```
 
-Selepas deploy: log masuk sebagai Super Admin → tukar kata laluan → semak `/dashboard`, jana satu PDF (resit), dan hantar satu ujian webhook.
+Selepas deploy: log masuk sebagai Super Admin → semak `/dashboard`, jana satu PDF (resit), dan hantar satu ujian webhook.

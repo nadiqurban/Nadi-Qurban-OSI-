@@ -26,11 +26,13 @@ Selepas pelayan siap:
 
 ### 1.1 Chromium untuk PDF (spatie/laravel-pdf + Browsershot)
 
-Resit, PO, AWB, waybill, invois, sijil dan laporan PDF dijana dengan headless Chrome. `puppeteer` sudah ada dalam `package.json`, jadi `npm ci` dalam skrip deploy memuat turun Chrome ke `~/.cache/puppeteer` milik user `forge`. Pasang hanya library sistem yang diperlukan (sekali sahaja, sebagai `forge` dengan sudo):
+Resit, PO, AWB, waybill, invois, sijil dan laporan PDF dijana dengan headless Chrome (`chrome-headless-shell` versi puppeteer dalam `package.json`). Skrip deploy (§4) memasangnya ke `~/.cache/puppeteer` milik user `forge`. Library sistem dipasang sekali sahaja melalui Forge › **Recipes** (Runs as `root`):
 
 ```bash
-sudo apt-get update
-sudo npx --yes playwright@1.63.0 install-deps chromium
+export DEBIAN_FRONTEND=noninteractive
+apt-get update -q
+npx --yes playwright@1.63.0 install-deps chromium
+apt-get install -y -q fonts-noto-core fonts-liberation
 ```
 
 Semak lokasi Node/npm untuk env di bawah:
@@ -97,6 +99,7 @@ SESSION_SAME_SITE=lax
 
 CACHE_STORE=database
 QUEUE_CONNECTION=database
+DB_QUEUE_RETRY_AFTER=330      # mesti > --timeout worker (300)
 FILESYSTEM_DISK=local          # lihat §7 Storan fail
 
 MAIL_MAILER=smtp
@@ -142,6 +145,7 @@ git pull origin $FORGE_SITE_BRANCH
 $FORGE_COMPOSER install --no-dev --no-interaction --prefer-dist --optimize-autoloader
 
 npm ci
+npx puppeteer browsers install chrome-headless-shell
 npm run build
 
 ( flock -w 10 9 || exit 1

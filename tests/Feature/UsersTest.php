@@ -8,6 +8,7 @@ use App\Livewire\Users\RoleShow;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 use Livewire\Livewire;
@@ -206,4 +207,45 @@ it('does not let a non Super Admin set passwords', function () {
         ->assertForbidden();
 
     expect($user->fresh()->password)->toBe($hash);
+});
+
+it('lets a Super Admin permanently delete a user, keeping their records', function () {
+    $admin = superAdmin();
+    $user = userWithRoles(RoleName::Sales);
+    $user->update(['name' => 'Rahim Salleh']);
+
+    Livewire::actingAs($admin)->test(UsersIndex::class)
+        ->assertSeeHtml('aria-label="Padam Rahim Salleh"')
+        ->call('delete', $user->id)
+        ->assertHasNoErrors()
+        ->assertSet('createdNotice', 'Pengguna Rahim Salleh telah dipadam.')
+        ->assertDontSee('Rahim Salleh</span>', false);
+
+    expect(User::query()->find($user->id))->toBeNull()
+        ->and(Activity::query()->where('event', 'user.deleted')->exists())->toBeTrue()
+        ->and(DB::table('model_has_roles')->where('model_id', $user->id)->exists())->toBeFalse();
+});
+
+it('does not let a Super Admin delete themselves or the last Super Admin', function () {
+    $admin = superAdmin();
+
+    Livewire::actingAs($admin)->test(UsersIndex::class)
+        ->assertDontSeeHtml('aria-label="Padam '.$admin->name.'"')
+        ->call('delete', $admin->id)
+        ->assertHasErrors('delete');
+
+    expect($admin->fresh())->not->toBeNull();
+});
+
+it('does not let a non Super Admin delete users', function () {
+    $manager = userWithRoles(RoleName::AdminHq);
+    $manager->givePermissionTo(Module::Users->managePermission());
+    $user = userWithRoles(RoleName::Sales);
+
+    Livewire::actingAs($manager)->test(UsersIndex::class)
+        ->assertDontSeeHtml('aria-label="Padam ')
+        ->call('delete', $user->id)
+        ->assertForbidden();
+
+    expect($user->fresh())->not->toBeNull();
 });

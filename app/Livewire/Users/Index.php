@@ -5,6 +5,7 @@ namespace App\Livewire\Users;
 use App\Actions\Roles\SaveMatrix;
 use App\Actions\Roles\SyncRolePermissions;
 use App\Actions\Users\CreateUser;
+use App\Actions\Users\DeleteUser;
 use App\Actions\Users\ForcePasswordChange;
 use App\Actions\Users\SendPasswordResetLink;
 use App\Actions\Users\SetUserPassword;
@@ -193,7 +194,7 @@ class Index extends Component
         $this->tempPassword = self::generatePassword();
     }
 
-    public function canSetPassword(): bool
+    public function actorIsSuperAdmin(): bool
     {
         return auth()->user()?->isSuperAdmin() ?? false;
     }
@@ -201,7 +202,7 @@ class Index extends Component
     public function save(CreateUser $create, UpdateUser $update, SetUserPassword $setPassword): void
     {
         $this->authorize(Module::Users->managePermission());
-        abort_if($this->newPassword !== '' && ! $this->canSetPassword(), 403);
+        abort_if($this->newPassword !== '' && ! $this->actorIsSuperAdmin(), 403);
 
         $roleNames = Role::query()->pluck('name')->all();
 
@@ -246,6 +247,19 @@ class Index extends Component
 
         $this->showForm = false;
         $this->resetForm();
+        unset($this->users, $this->stats, $this->allRoles);
+    }
+
+    public function delete(int $id, DeleteUser $delete): void
+    {
+        $this->authorize(Module::Users->managePermission());
+        abort_unless($this->actorIsSuperAdmin(), 403);
+
+        $user = User::query()->with('roles')->findOrFail($id);
+        $name = $user->name;
+        $delete->handle($user, $this->actor());
+
+        $this->createdNotice = "Pengguna {$name} telah dipadam.";
         unset($this->users, $this->stats, $this->allRoles);
     }
 

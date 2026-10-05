@@ -1,5 +1,6 @@
 @php
     $canManage = $this->canManage();
+    $isSuperAdmin = $this->actorIsSuperAdmin();
     $allRoles = $this->allRoles;
 @endphp
 
@@ -33,6 +34,11 @@
             <button type="button" wire:click="$set('createdNotice', null)" class="flex size-8 items-center justify-center text-success" aria-label="Tutup"><i class="ph ph-x text-[15px]"></i></button>
         </div>
     @endif
+    @error('delete')
+        <div class="mb-5 flex items-center gap-[10px] rounded-[10px] border border-[#F7CFCF] bg-danger-soft px-[14px] py-3 text-[13px] font-semibold text-danger" role="alert">
+            <i class="ph-fill ph-warning-circle text-[18px]"></i> {{ $message }}
+        </div>
+    @enderror
 
     {{-- ===================== USERS TAB ===================== --}}
     @if ($tab === 'pengguna')
@@ -68,6 +74,10 @@
                         @if ($canManage)
                             <x-ui.button variant="secondary" size="sm" icon-only icon="pencil-simple" class="text-primary" wire:click="edit({{ $u->id }})" aria-label="Edit {{ $u->name }}" />
                             <x-ui.button variant="secondary" size="sm" icon-only icon="lock-key" class="text-danger" wire:click="openAccess({{ $u->id }})" aria-label="Akses & keselamatan {{ $u->name }}" />
+                        @endif
+                        @if ($isSuperAdmin && $u->id !== auth()->id())
+                            <x-ui.button variant="secondary" size="sm" icon-only icon="trash" class="text-danger" wire:click="delete({{ $u->id }})"
+                                         wire:confirm="Padam pengguna {{ $u->name }} secara kekal? Tindakan ini tidak boleh dibatalkan." aria-label="Padam {{ $u->name }}" />
                         @endif
                     </x-ui.td>
                 </x-ui.tr>
@@ -194,7 +204,7 @@
                         <option value="{{ $st->value }}">{{ $st->label() }}</option>
                     @endforeach
                 </x-ui.field>
-                @if ($this->canSetPassword())
+                @if ($this->actorIsSuperAdmin())
                     <div class="col-span-full">
                         <x-ui.field id="new-password" label="Kata Laluan Baharu" hint="(pilihan)" wire:model="newPassword" placeholder="Kosongkan jika tidak mahu tukar" autocomplete="new-password" />
                         <button type="button" wire:click="autoPassword" class="mt-2 inline-flex min-h-9 items-center gap-1.5 text-[12px] font-semibold text-primary"><i class="ph ph-sparkle text-[14px]"></i> Auto-jana kata laluan selamat</button>

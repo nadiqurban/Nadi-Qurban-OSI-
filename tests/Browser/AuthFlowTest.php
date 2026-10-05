@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\RoleName;
+use Illuminate\Support\Facades\Hash;
 
 it('logs in through the real form and lands on the dashboard', function () {
     $user = userWithRoles(RoleName::AdminHq);
@@ -68,7 +69,7 @@ it('lets a Super Admin set a password in Edit Pengguna, then the user logs in di
         ->assertSee('telah ditetapkan')
         ->assertNoJavaScriptErrors();
 
-    expect(Illuminate\Support\Facades\Hash::check('BaruNq2026x', $user->fresh()->password))->toBeTrue();
+    expect(Hash::check('BaruNq2026x', $user->fresh()->password))->toBeTrue();
 });
 
 it('shows the new-password slot in the Edit Pengguna sheet on phones', function () {
@@ -82,4 +83,19 @@ it('shows the new-password slot in the Edit Pengguna sheet on phones', function 
         ->assertSee('Kata Laluan Baharu')
         ->screenshot(filename: 'users-edit-password-phone')
         ->assertScript('document.documentElement.scrollWidth <= window.innerWidth', true);
+});
+
+it('shows the delete button in the users table on desktop and phone', function () {
+    $this->actingAs(superAdmin());
+    userWithRoles(RoleName::Sales)->update(['name' => 'Rahim Salleh']);
+
+    visit('/pengguna')
+        ->resize(...DESKTOP)
+        ->assertPresent('[aria-label="Padam Rahim Salleh"]')
+        ->screenshot(filename: 'users-delete-button')
+        ->resize(...PHONE)
+        ->assertPresent('[aria-label="Padam Rahim Salleh"]')
+        ->screenshot(filename: 'users-delete-button-phone')
+        ->assertScript('document.documentElement.scrollWidth <= window.innerWidth', true)
+        ->assertNoJavaScriptErrors();
 });

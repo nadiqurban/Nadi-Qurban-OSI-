@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\Module;
 use App\Enums\RoleName;
 use App\Enums\UserStatus;
 use App\Livewire\Users\Index as UsersIndex;
@@ -150,4 +151,59 @@ it('shows role detail and updates role permissions', function () {
     expect($role->description)->toBe('Urus logistik & pelaksanaan.')
         ->and($role->hasPermissionTo('crm.manage'))->toBeTrue()
         ->and($role->name)->toBe('Operasi'); // fixed role names cannot be renamed
+});
+
+it('lets a Super Admin set a user password that works straight away', function () {
+    $admin = superAdmin();
+    $user = userWithRoles(RoleName::Sales);
+    $user->forceFill(['must_change_password' => true])->save();
+
+    Livewire::actingAs($admin)->test(UsersIndex::class)
+        ->call('edit', $user->id)
+        ->assertSee('Kata Laluan Baharu')
+        ->set('newPassword', 'BaruNq2026x')
+        ->call('save')
+        ->assertHasNoErrors()
+        ->assertSet('createdNotice', fn ($n) => str_contains((string) $n, 'telah ditetapkan'));
+
+    $user->refresh();
+    expect(Hash::check('BaruNq2026x', $user->password))->toBeTrue()
+        ->and($user->must_change_password)->toBeFalse()
+        ->and(Activity::query()->where('event', 'user.password_set')->exists())->toBeTrue();
+});
+
+it('keeps the password unchanged when the new password field is empty', function () {
+    $admin = superAdmin();
+    $user = userWithRoles(RoleName::Sales);
+    $hash = $user->password;
+
+    Livewire::actingAs($admin)->test(UsersIndex::class)
+        ->call('edit', $user->id)->call('save')->assertHasNoErrors();
+
+    expect($user->fresh()->password)->toBe($hash);
+});
+
+it('rejects a weak new password', function () {
+    $admin = superAdmin();
+    $user = userWithRoles(RoleName::Sales);
+
+    Livewire::actingAs($admin)->test(UsersIndex::class)
+        ->call('edit', $user->id)->set('newPassword', 'abc')->call('save')
+        ->assertHasErrors('newPassword');
+});
+
+it('does not let a non Super Admin set passwords', function () {
+    $manager = userWithRoles(RoleName::AdminHq);
+    $manager->givePermissionTo(Module::Users->managePermission());
+    $user = userWithRoles(RoleName::Sales);
+    $hash = $user->password;
+
+    Livewire::actingAs($manager)->test(UsersIndex::class)
+        ->call('edit', $user->id)
+        ->assertDontSee('Kata Laluan Baharu')
+        ->set('newPassword', 'BaruNq2026x')
+        ->call('save')
+        ->assertForbidden();
+
+    expect($user->fresh()->password)->toBe($hash);
 });

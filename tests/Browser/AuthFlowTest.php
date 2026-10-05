@@ -50,3 +50,36 @@ it('opens the add-user modal as a full-screen sheet on phones', function () {
         ->assertSee('Cipta akaun pengguna baharu')
         ->assertScript('document.documentElement.scrollWidth <= window.innerWidth', true);
 });
+
+it('lets a Super Admin set a password in Edit Pengguna, then the user logs in directly', function () {
+    $this->actingAs(superAdmin());
+    $user = userWithRoles(RoleName::Sales);
+    $user->update(['name' => 'Rahim Salleh']);
+
+    visit('/pengguna')
+        ->resize(...DESKTOP)
+        ->click('[aria-label="Edit Rahim Salleh"]')
+        ->wait(0.6)
+        ->assertSee('Kata Laluan Baharu')
+        ->type('#new-password', 'BaruNq2026x')
+        ->screenshot(filename: 'users-edit-password')
+        ->press('Simpan')
+        ->wait(1)
+        ->assertSee('telah ditetapkan')
+        ->assertNoJavaScriptErrors();
+
+    expect(Illuminate\Support\Facades\Hash::check('BaruNq2026x', $user->fresh()->password))->toBeTrue();
+});
+
+it('shows the new-password slot in the Edit Pengguna sheet on phones', function () {
+    $this->actingAs(superAdmin());
+    userWithRoles(RoleName::Sales)->update(['name' => 'Rahim Salleh']);
+
+    visit('/pengguna')
+        ->resize(...PHONE)
+        ->click('[aria-label="Edit Rahim Salleh"]')
+        ->wait(0.6)
+        ->assertSee('Kata Laluan Baharu')
+        ->screenshot(filename: 'users-edit-password-phone')
+        ->assertScript('document.documentElement.scrollWidth <= window.innerWidth', true);
+});

@@ -7,6 +7,7 @@ use App\Actions\Roles\SyncRolePermissions;
 use App\Actions\Users\CreateUser;
 use App\Actions\Users\ForcePasswordChange;
 use App\Actions\Users\SendPasswordResetLink;
+use App\Actions\Users\SetUserPassword;
 use App\Actions\Users\SetUserStatus;
 use App\Actions\Users\UpdateUser;
 use App\Enums\AccessLevel;
@@ -20,6 +21,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password as PasswordRule;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -65,6 +67,9 @@ class Index extends Component
     public string $status = 'aktif';
 
     public string $tempPassword = '';
+
+    /** Edit only, Super Admin only: optional new password for the user. */
+    public string $newPassword = '';
 
     /** Shown once after creating a user so the admin can hand it over. */
     public ?string $createdNotice = null;
@@ -179,12 +184,24 @@ class Index extends Component
 
     public function autoPassword(): void
     {
+        if ($this->editingId) {
+            $this->newPassword = self::generatePassword();
+
+            return;
+        }
+
         $this->tempPassword = self::generatePassword();
     }
 
-    public function save(CreateUser $create, UpdateUser $update): void
+    public function canSetPassword(): bool
+    {
+        return auth()->user()?->isSuperAdmin() ?? false;
+    }
+
+    public function save(CreateUser $create, UpdateUser $update, SetUserPassword $setPassword): void
     {
         $this->authorize(Module::Users->managePermission());
+        abort_if($this->newPassword !== '' && ! $this->canSetPassword(), 403);
 
         $roleNames = Role::query()->pluck('name')->all();
 
@@ -196,11 +213,12 @@ class Index extends Component
             'roles.*' => [Rule::in($roleNames)],
             'status' => ['required', Rule::enum(UserStatus::class)],
             'tempPassword' => $this->editingId ? ['nullable'] : ['required', 'string', 'min:8', 'max:64'],
+            'newPassword' => $this->editingId && $this->newPassword !== '' ? ['string', 'max:64', PasswordRule::defaults()] : ['nullable'],
         ], [
             'roles.required' => 'Pilih sekurang-kurangnya satu peranan.',
         ], [
             'name' => 'nama penuh', 'email' => 'emel', 'phone' => 'no. telefon',
-            'roles' => 'peranan', 'tempPassword' => 'kata laluan sementara',
+            'roles' => 'peranan', 'tempPassword' => 'kata laluan sementara', 'newPassword' => 'kata laluan',
         ]);
 
         /** @var User $actor */
@@ -211,6 +229,11 @@ class Index extends Component
             $update->handle($user, ['name' => $validated['name'], 'email' => $validated['email']], $this->roles, UserStatus::from($this->status), $actor);
             $user->forceFill(['phone' => $validated['phone'] ?: null])->save();
             $this->createdNotice = null;
+
+            if ($this->newPassword !== '') {
+                $setPassword->handle($user, $this->newPassword, $actor);
+                $this->createdNotice = "Kata laluan {$user->name} telah ditetapkan. Pengguna boleh log masuk terus dengan kata laluan baharu.";
+            }
         } else {
             $user = $create->handle(
                 ['name' => $validated['name'], 'email' => $validated['email'], 'phone' => $validated['phone'] ?: null],
@@ -309,7 +332,7 @@ class Index extends Component
 
     private function resetForm(): void
     {
-        $this->reset('editingId', 'name', 'email', 'phone', 'roles', 'tempPassword');
+        $this->reset('editingId', 'name', 'email', 'phone', 'roles', 'tempPassword', 'newPassword');
         $this->status = UserStatus::Active->value;
         $this->resetValidation();
     }

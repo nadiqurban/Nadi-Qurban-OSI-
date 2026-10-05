@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\CanonicalHost;
 use App\Http\Middleware\EnsureAccountIsUsable;
 use App\Http\Middleware\SecurityHeaders;
 use Illuminate\Foundation\Application;
@@ -19,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->prepend(CanonicalHost::class);
         $middleware->web(append: [EnsureAccountIsUsable::class, SecurityHeaders::class]);
         $middleware->api(append: [SecurityHeaders::class]);
 

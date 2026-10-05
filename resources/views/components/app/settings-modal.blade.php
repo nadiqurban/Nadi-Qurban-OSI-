@@ -4,7 +4,7 @@
     // Items from the Tetapan modal (Tempahan & Pelanggan.dc.html `settingsItems`).
     $items = collect([
         ['icon' => 'user-gear', 'tone' => 'primary', 'title' => 'Profil & Akaun', 'desc' => 'Nama, emel, kata laluan', 'route' => 'settings.profile', 'can' => null],
-        ['icon' => 'bell', 'tone' => 'info', 'title' => 'Notifikasi', 'desc' => 'E-mel, WhatsApp, dalam sistem', 'route' => 'settings.notifications', 'can' => null],
+        ['icon' => 'bell', 'tone' => 'info', 'title' => 'Notifikasi', 'desc' => 'E-mel, WhatsApp, dalam sistem', 'route' => 'settings.notifications', 'can' => 'notifications.view'],
         ['icon' => 'users', 'tone' => 'gold', 'title' => 'Pengguna & Peranan', 'desc' => 'Kawalan akses (RBAC)', 'route' => 'users.index', 'can' => 'users.view'],
         ['icon' => 'buildings', 'tone' => 'purple', 'title' => 'Maklumat Syarikat', 'desc' => 'Alamat, SSM, bank', 'route' => 'settings.company', 'can' => 'settings.view'],
         ['icon' => 'shield-check', 'tone' => 'success', 'title' => 'Keselamatan', 'desc' => '2FA, log masuk, sesi', 'route' => 'settings.security', 'can' => null],

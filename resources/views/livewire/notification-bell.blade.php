@@ -29,6 +29,8 @@
                 <div class="px-4 py-8 text-center text-[12.5px] text-faint">Tiada notifikasi.</div>
             @endforelse
         </div>
-        <a href="{{ $canPage ? route('notifications.index') : route('settings.notifications') }}" wire:navigate class="flex min-h-11 items-center justify-center gap-1.5 bg-bg px-4 py-3 text-[12.5px] font-semibold text-primary dark:text-[#c9ce93]">Lihat semua notifikasi <i class="ph ph-arrow-right text-[14px]"></i></a>
+        @if ($canPage)
+            <a href="{{ route('notifications.index') }}" wire:navigate class="flex min-h-11 items-center justify-center gap-1.5 bg-bg px-4 py-3 text-[12.5px] font-semibold text-primary dark:text-[#c9ce93]">Lihat semua notifikasi <i class="ph ph-arrow-right text-[14px]"></i></a>
+        @endif
     </div>
 </div>

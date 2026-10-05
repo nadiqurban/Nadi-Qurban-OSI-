@@ -9,7 +9,6 @@ use App\Actions\Installments\SendPlanToOrder;
 use App\Enums\InstallmentStatus;
 use App\Models\InstallmentPlan;
 use App\Models\Product;
-use App\Models\User;
 use Illuminate\Database\Seeder;
 
 /**
@@ -25,7 +24,7 @@ class DemoInstallmentSeeder extends Seeder
             return;
         }
 
-        $admin = User::query()->where('email', 'nurfitri@nadiqurban.com')->first();
+        $admin = SampleDataSeeder::staff();
 
         // [name, phone, email, product, qty, months, deposit RM, paid months, start (months ago), address, postcode, city, state, method, extra names]
         $rows = [
@@ -37,6 +36,10 @@ class DemoInstallmentSeeder extends Seeder
             ['Sofea binti Kamal', '017-7781220', 'sofea.kamal@gmail.com', 'Qurban Lembu Uganda', 1, 6, 0, 2, 4, 'No. 77, Jalan Kenari 5', '47100', 'Puchong', 'Selangor', 'fpx_auto', []],
             ['Kamarul bin Zainal', '016-4412098', 'kamarul.z@gmail.com', 'Qurban Kambing Nigeria', 1, 6, 0, 1, 1, 'No. 5, Jalan Cempaka 9', '08000', 'Sungai Petani', 'Kedah', 'fpx_auto', []],
         ];
+
+        if (SampleDataSeeder::$active) {
+            $rows = array_slice($rows, 0, 1);   // Ahmad Zaki: 4 of 6 months paid
+        }
 
         foreach ($rows as [$name, $phone, $email, $productName, $qty, $months, $deposit, $paid, $monthsAgo, $address, $postcode, $city, $state, $method, $names]) {
             $plan = $create->handle(
@@ -70,7 +73,7 @@ class DemoInstallmentSeeder extends Seeder
             $refresh->handle($plan);
         }
 
-        if ($admin) {
+        if ($admin && ! SampleDataSeeder::$active) {
             // Faridah's plan is complete and already sent to Pengesahan Bayaran; Kamarul's is cancelled.
             app(SendPlanToOrder::class)->handle(InstallmentPlan::query()->whereHas('customer', fn ($q) => $q->where('name', 'Faridah binti Omar'))->firstOrFail(), $admin);
             app(CancelPlans::class)->cancel(

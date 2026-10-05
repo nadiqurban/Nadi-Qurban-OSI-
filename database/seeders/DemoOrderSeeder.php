@@ -65,11 +65,17 @@ class DemoOrderSeeder extends Seeder
 
         $rows = $this->rows();
 
+        if (SampleDataSeeder::$active) {
+            // One Uganda order waiting at each screen: Pengesahan Bayaran (1249), Lafaz Akad (1252),
+            // Agihan Negara (1256), Pelaksanaan (1257), AWB & Postage (1259), Tempahan Selesai (1241).
+            $rows = array_values(array_filter($rows, fn (array $r) => in_array($r[0], [1241, 1249, 1252, 1256, 1257, 1259], true)));
+        }
+
         $channels = ['FPX Maybank', 'FPX CIMB', 'DuitNow QR', 'FPX Bank Islam', 'Kad Kredit'];
         $products = Product::query()->with('package')->get()->keyBy('name');
 
         $vendors = Vendor::query()->orderBy('code')->get()->unique('country_id')->keyBy('country_id');
-        $pic = User::query()->where('email', 'nurfitri@nadiqurban.com')->first();
+        $pic = SampleDataSeeder::staff();
 
         DB::transaction(function () use ($rows, $channels, $products, $vendors, $pic) {
             foreach (array_reverse($rows) as $i => [$seq, $name, $phone, $productName, $qty, $status, $method, $fpx, $address, $postcode, $city, $state]) {

@@ -38,6 +38,10 @@ class DemoCatalogSeeder extends Seeder
             ['Nazar Unta Sudan', Service::Nazar, Animal::Camel, 'Nilam', 'Sudan', 4800, '1/7 bahagian unta nazar', 5],
         ];
 
+        if (SampleDataSeeder::$active) {
+            $products = array_slice($products, 0, 1);   // Qurban Lembu Uganda
+        }
+
         foreach ($products as [$name, $service, $animal, $pkg, $countryName, $price, $desc, $stock]) {
             $packageModel = $package($pkg);
 
@@ -63,6 +67,10 @@ class DemoCatalogSeeder extends Seeder
             ['EARLYBIRD26', 'Promo musim lepas', DiscountType::Percent, 12, 420, 420, '2026-12-31', false, 2500],
             ['STAFFNQ', 'Diskaun kakitangan', DiscountType::Percent, 20, 27, 50, '2026-12-31', false, 500],
         ];
+
+        if (SampleDataSeeder::$active) {
+            $codes = array_slice($codes, 0, 1);   // AWALQURBAN
+        }
 
         foreach ($codes as [$code, $desc, $type, $value, $used, $limit, $expires, $active, $discount]) {
             PromoCode::query()->updateOrCreate(['code' => $code], [

@@ -26,6 +26,10 @@ class DemoVendorSeeder extends Seeder
             ['Riyadh Camel Trading', 'Riyadh Camel Trading Est', 'Arab Saudi', VendorStatus::Suspended, ['Unta', 'Kambing'], '+966 11 220 3344', 'ops@riyadhcamel.sa', 3, 3.9, 'Fahad Al-Otaibi', 'Al Rajhi Bank', 'SA0380000000608010167519', 'RJHISARI', 'King Fahd Road, Riyadh'],
         ];
 
+        if (SampleDataSeeder::$active) {
+            $vendors = array_slice($vendors, 0, 1);   // Uganda Charity
+        }
+
         foreach ($vendors as $i => [$name, $company, $country, $status, $animals, $phone, $email, $rank, $rating, $pic, $bank, $account, $swift, $bankAddress]) {
             $vendor = Vendor::query()->updateOrCreate(['code' => sprintf('SP %03d', $i + 1)], [
                 'vendor_no' => 'VND-'.(2010 + $i),

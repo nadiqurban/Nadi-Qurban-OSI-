@@ -39,6 +39,10 @@ class DemoFinanceSeeder extends Seeder
             [881, 'Kamal bin Ariffin', 'NQ-2027-001233', 2450, 65, InvoiceStatus::Paid, 0],
             [880, 'Norhayati binti Said', 'NQ-2027-001230', 7000, 80, InvoiceStatus::Paid, 0],
         ];
+        if (SampleDataSeeder::$active) {
+            $rows = array_slice($rows, 0, 1);   // deposit paid, balance outstanding
+        }
+
         $methods = InvoicePayment::METHODS;
 
         DB::transaction(function () use ($rows, $company, $year, $methods) {

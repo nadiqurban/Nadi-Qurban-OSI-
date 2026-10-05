@@ -41,6 +41,12 @@ class DemoCrmSeeder extends Seeder
                 ['Persatuan Belia Damai', 'PBD', 'Korporat', 26000, 'NA', 4],
             ],
         ];
+        if (SampleDataSeeder::$active) {
+            // One lead at "Cadangan" with the full activity trail.
+            $columns = [LeadStage::Proposal->value => array_slice($columns[LeadStage::Proposal->value], 1, 1)];
+            $owners['RS'] ??= SampleDataSeeder::staff()?->id;
+        }
+
         $sources = ['WhatsApp Campaign', 'Facebook Ads', 'Rujukan', 'Laman Web'];
 
         DB::transaction(function () use ($columns, $owners, $sources) {

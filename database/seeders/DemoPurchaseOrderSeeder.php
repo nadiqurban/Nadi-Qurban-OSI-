@@ -26,7 +26,7 @@ class DemoPurchaseOrderSeeder extends Seeder
             return;
         }
 
-        $admin = User::query()->where('email', 'nurfitri@nadiqurban.com')->first();
+        $admin = SampleDataSeeder::staff();
         $pic = User::query()->where('email', 'vendor@albarakah.ug')->first() ?? $admin;
 
         if (! $admin) {
@@ -49,6 +49,10 @@ class DemoPurchaseOrderSeeder extends Seeder
         ];
 
         foreach ($rows as $n => [$code, $service, $animal, $qty, $unit, $date, $status, $notes, $payment]) {
+            if (SampleDataSeeder::$active && $n !== 1) {
+                continue;   // sample: only the completed PO with paid receipt + verified report
+            }
+
             $vendor = Vendor::query()->where('code', $code)->firstOrFail();
             $wasSuspended = $vendor->status;
             $vendor->status = VendorStatus::Active;   // allow creation for history

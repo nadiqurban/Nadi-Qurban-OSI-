@@ -4,11 +4,13 @@ use App\Actions\Roles\SaveMatrix;
 use App\Actions\Roles\SyncRolePermissions;
 use App\Enums\AccessLevel;
 use App\Enums\RoleName;
+use App\Livewire\Auth\Login;
 use App\Models\Role;
 use App\Models\User;
 use App\Support\Navigation;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Support\Facades\Storage;
+use Livewire\Livewire;
 
 /*
 | Matrix "Tiada" = the module is hidden everywhere. For every role, crawl each
@@ -93,4 +95,38 @@ it('hides a module everywhere once the matrix sets it to Tiada', function () {
     expect($html)->not->toContain('href="'.route('dashboard').'"')
         ->and($html)->not->toContain('href="'.route('notifications.index').'"')
         ->and($html)->not->toContain('Lihat semua notifikasi');
+});
+
+it('ignores a remembered page the new user cannot open after logging in', function () {
+    $sales = User::role(RoleName::Sales->value)->firstOrFail();
+    $sales->forceFill(['password' => 'BaruNq2026x', 'must_change_password' => false])->save();
+
+    // A previous Super Admin session left /pengguna as the "intended" page in this browser.
+    session()->put('url.intended', url('/pengguna'));
+
+    Livewire::test(Login::class)
+        ->set('email', $sales->email)
+        ->set('password', 'BaruNq2026x')
+        ->call('login')
+        ->assertRedirect(route('home'));
+});
+
+it('still follows the remembered page when the user may open it', function () {
+    $sales = User::role(RoleName::Sales->value)->firstOrFail();
+    $sales->forceFill(['password' => 'BaruNq2026x', 'must_change_password' => false])->save();
+    session()->put('url.intended', url('/crm'));
+
+    Livewire::test(Login::class)
+        ->set('email', $sales->email)
+        ->set('password', 'BaruNq2026x')
+        ->call('login')
+        ->assertRedirect(url('/crm'));
+});
+
+it('shows a Malay 403 page with a way back', function () {
+    $this->actingAs(User::role(RoleName::Sales->value)->firstOrFail());
+
+    $this->get('/pengguna')->assertForbidden()
+        ->assertSee('Tiada Akses')
+        ->assertSee('Ke halaman utama saya');
 });

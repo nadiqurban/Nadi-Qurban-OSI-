@@ -6,6 +6,7 @@ use App\Actions\Auth\CompleteLogin;
 use App\Actions\Auth\RecordLoginAttempt;
 use App\Enums\LoginStatus;
 use App\Models\User;
+use App\Support\LandingUrl;
 use Illuminate\Support\Facades\RateLimiter;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -57,7 +58,7 @@ class TwoFactorChallenge extends Component
         RateLimiter::clear($key);
         $complete->handle($user);
 
-        return $this->redirectIntended(route('home'));
+        return $this->redirect(LandingUrl::after($user));
     }
 
     public function render(): mixed

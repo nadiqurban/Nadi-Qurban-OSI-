@@ -5,6 +5,7 @@ namespace App\Livewire\Auth;
 use App\Actions\Auth\AttemptLogin;
 use App\Actions\Auth\LoginResult;
 use App\Models\User;
+use App\Support\LandingUrl;
 use Illuminate\Support\Facades\Cookie;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -43,13 +44,19 @@ class Login extends Component
             : Cookie::forget(self::REMEMBER_COOKIE));
 
         return match ($result) {
-            LoginResult::Success => $this->redirectIntended(route('home'), navigate: false),
+            LoginResult::Success => $this->redirect(LandingUrl::after($this->user()), navigate: false),
             LoginResult::TwoFactorRequired => $this->redirectRoute('two-factor.challenge'),
             LoginResult::Locked => $this->toLocked(),
             LoginResult::Suspended => $this->addError('email', 'Akaun anda telah digantung. Sila hubungi pentadbir sistem.'),
             LoginResult::Throttled => $this->addError('email', 'Terlalu banyak cubaan log masuk. Sila cuba sebentar lagi.'),
             LoginResult::Invalid => $this->addError('email', 'Emel atau kata laluan tidak sah.'),
         };
+    }
+
+    private function user(): User
+    {
+        /** @var User */
+        return auth()->user();
     }
 
     private function toLocked(): mixed

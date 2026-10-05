@@ -249,3 +249,14 @@ it('does not let a non Super Admin delete users', function () {
 
     expect($user->fresh())->not->toBeNull();
 });
+
+it('trims stray spaces from a pasted new password', function () {
+    $admin = superAdmin();
+    $user = userWithRoles(RoleName::Sales);
+
+    Livewire::actingAs($admin)->test(UsersIndex::class)
+        ->call('edit', $user->id)->set('newPassword', '  BaruNq2026x ')->call('save')
+        ->assertHasNoErrors();
+
+    expect(Hash::check('BaruNq2026x', $user->fresh()->password))->toBeTrue();
+});

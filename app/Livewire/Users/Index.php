@@ -202,6 +202,8 @@ class Index extends Component
     public function save(CreateUser $create, UpdateUser $update, SetUserPassword $setPassword): void
     {
         $this->authorize(Module::Users->managePermission());
+        // Stray spaces from copy/paste would make the password impossible to type at login.
+        $this->newPassword = trim($this->newPassword);
         abort_if($this->newPassword !== '' && ! $this->actorIsSuperAdmin(), 403);
 
         $roleNames = Role::query()->pluck('name')->all();

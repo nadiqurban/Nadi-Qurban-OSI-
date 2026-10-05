@@ -117,7 +117,8 @@ class User extends Authenticatable
     protected function roleLabel(): Attribute
     {
         return Attribute::get(function (): string {
-            $names = $this->roles->pluck('name');
+            // loadMissing: safe in lists (audit, dashboard activity) with lazy loading disabled.
+            $names = $this->loadMissing('roles')->roles->pluck('name');
 
             foreach (RoleName::cases() as $role) {
                 if ($names->contains($role->value)) {

@@ -212,7 +212,7 @@
                 @endif
             @else
                 <div class="col-span-full">
-                    <x-ui.field label="Kata Laluan Sementara" wire:model="tempPassword" placeholder="Auto-jana atau taip" autocomplete="off" />
+                    <x-ui.field label="Kata Laluan" wire:model="tempPassword" placeholder="Auto-jana atau taip" autocomplete="off" />
                     <button type="button" wire:click="autoPassword" class="mt-2 inline-flex min-h-9 items-center gap-1.5 text-[12px] font-semibold text-primary"><i class="ph ph-sparkle text-[14px]"></i> Auto-jana kata laluan selamat</button>
                 </div>
             @endif

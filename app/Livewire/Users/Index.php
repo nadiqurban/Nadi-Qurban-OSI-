@@ -244,7 +244,7 @@ class Index extends Component
                 $this->tempPassword,
                 $actor,
             );
-            $this->createdNotice = "Pengguna {$user->name} dicipta. Kata laluan sementara: {$this->tempPassword} — pengguna perlu menukarnya semasa log masuk pertama.";
+            $this->createdNotice = "Pengguna {$user->name} dicipta. Kata laluan: {$this->tempPassword} — pengguna boleh terus log masuk ke portal.";
         }
 
         $this->showForm = false;

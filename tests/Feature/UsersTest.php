@@ -53,7 +53,7 @@ it('creates a user with several roles and a temporary password', function () {
 
     $user = User::where('email', 'hidayah@nadiqurban.com')->firstOrFail();
     expect($user->hasAllRoles(['Sales', 'Kewangan']))->toBeTrue()
-        ->and($user->must_change_password)->toBeTrue()
+        ->and($user->must_change_password)->toBeFalse()
         ->and(Hash::check('Sementara9!', $user->password))->toBeTrue();
 });
 

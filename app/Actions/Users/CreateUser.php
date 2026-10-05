@@ -25,7 +25,7 @@ class CreateUser
                 'phone' => $data['phone'] ?? null,
                 'password' => $temporaryPassword,
                 'status' => UserStatus::Active,
-                'must_change_password' => true,
+                'must_change_password' => false,
             ]);
 
             $user->syncRoles($roles);

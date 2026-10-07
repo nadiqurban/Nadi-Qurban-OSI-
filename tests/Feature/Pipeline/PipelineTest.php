@@ -256,15 +256,17 @@ it('saves the certificate template and downloads sample and bulk PDFs', function
     expect($order->certificates()->count())->toBe(3);
 })->skip(fn () => ! getenv('LARAVEL_PDF_CHROME_PATH') && ! env('LARAVEL_PDF_CHROME_PATH'), 'Chrome not configured');
 
-it('masks participant names on /jejak unless the token matches', function () {
+it('shows the main participant in full on /jejak and masks the others unless the token matches', function () {
     $order = verifiedOrder(2);
+    $order->participants()->where('position', 2)->update(['name' => 'Aminah Salleh']);
 
     expect(Tracking::mask('Iskandar bin Yusof'))->toBe('Iskandar b*** Yusof')
         ->and(Tracking::mask('Aminah Salleh'))->toBe('Aminah S***');
 
     Livewire::test(Tracking::class, ['query' => $order->tracking_no])
-        ->assertSee('Iskandar b*** Yusof')
-        ->assertDontSee('Iskandar bin Yusof');
+        ->assertSee($order->customer->name)
+        ->assertSee('Aminah S***')
+        ->assertDontSee('Aminah Salleh');
 
     Livewire::withQueryParams(['track' => $order->order_no, 't' => $order->tracking_token])
         ->test(Tracking::class)

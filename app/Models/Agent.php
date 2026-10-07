@@ -72,7 +72,7 @@ class Agent extends Model
         return ! $this->user->isSuspended();
     }
 
-    /** Public sales link, e.g. https://www.appnadiqurban.my/e/aiman-zulkifli */
+    /** Public sales link, e.g. https://www.appnadiqurban.my/tempah/aiman-zulkifli */
     public function shareUrl(): string
     {
         return route('booking.agent', $this->slug);
@@ -86,6 +86,7 @@ class Agent extends Model
             ->take(2);
 
         $base = $words->implode('-') ?: 'ejen';
+        $base = $base === 'resit' ? 'resit-ejen' : $base;   // /tempah/resit/... is the receipt
         $slug = $base;
         $n = 2;
 

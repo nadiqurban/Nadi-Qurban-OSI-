@@ -27,7 +27,7 @@ use Livewire\WithFileUploads;
 
 /**
  * Tempahan Awam (Tempahan Awam.dc.html): welcome → 1 Pilih Pakej → 2 Maklumat →
- * 3 Bayar. /tempah or an agent link /e/{slug} (also /tempah?ref=CODE).
+ * 3 Bayar. /tempah or an agent link /tempah/{slug} (also /tempah?ref=CODE; old /e/{slug} redirects).
  *
  * @property-read Agent|null $agent
  * @property-read Collection<int, Product> $products

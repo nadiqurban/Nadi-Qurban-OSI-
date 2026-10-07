@@ -184,7 +184,7 @@ Dalam produksi seeder hanya memasukkan peranan & matriks kebenaran, tetapan lala
 
 ## 6. Fasa 12 — Ejen & Tempahan Awam
 
-- Halaman awam: `/tempah` (tempahan terus) dan `/e/{nama-ejen}` (link ejen). Bayaran FPX melalui CHIP — pastikan kunci CHIP diisi & `CHIP_FAKE=false`; tanpa CHIP, pelanggan masih boleh pilih Pindahan Bank / Cek (bukti → Pengesahan Bayaran).
+- Halaman awam: `/tempah` (tempahan terus) dan `/tempah/{nama-ejen}` (link ejen; link lama `/e/...` redirect). Bayaran FPX melalui CHIP — pastikan kunci CHIP diisi & `CHIP_FAKE=false`; tanpa CHIP, pelanggan masih boleh pilih Pindahan Bank / Cek (bukti → Pengesahan Bayaran).
 - Portal ejen: `/ejen` (log masuk) → `/ejen/portal`. Ejen didaftarkan di **Pengurusan Ejen** (staf).
 - Peranan **Ejen** & kebenaran `agents.*` ditambah automatik oleh migration semasa deploy (matriks sedia ada tidak ditimpa).
 - Komisen = komisen produk (RM/unit, halaman Produk) × kuantiti, dikira selepas bayaran disahkan.

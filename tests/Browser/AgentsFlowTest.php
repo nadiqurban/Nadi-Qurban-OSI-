@@ -37,7 +37,7 @@ beforeEach(function () {
 });
 
 it('walks through Tempahan Awam on desktop', function () {
-    $page = visit('/e/aiman-zulkifli')
+    $page = visit('/tempah/aiman-zulkifli')
         ->resize(...DESKTOP)
         ->assertSee('Mulakan Tempahan')
         ->screenshot(filename: 'booking-welcome')

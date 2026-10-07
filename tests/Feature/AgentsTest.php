@@ -110,7 +110,7 @@ it('registers an agent as a login user with role Ejen, a link slug and bank deta
     expect($agent->user->isAgent())->toBeTrue()
         ->and($agent->slug)->toBe('aiman-zulkifli')
         ->and($agent->bank_account_no)->toBe('5623 5782 2681')
-        ->and($agent->shareUrl())->toEndWith('/e/aiman-zulkifli')
+        ->and($agent->shareUrl())->toEndWith('/tempah/aiman-zulkifli')
         ->and(Activity::where('event', 'agent.created')->exists())->toBeTrue();
 
     // Agents are not listed or creatable in Pengguna & Peranan.
@@ -138,7 +138,7 @@ it('logs agents in on Log Masuk Ejen and keeps them inside the portal', function
         ->assertRedirect(route('agent.portal'));
 
     $this->actingAs($agent->user);
-    $this->get('/ejen/portal')->assertOk()->assertSee('Assalamualaikum, Aiman')->assertSee('/e/aiman-zulkifli');
+    $this->get('/ejen/portal')->assertOk()->assertSee('Assalamualaikum, Aiman')->assertSee('/tempah/aiman-zulkifli');
     $this->get('/tempahan')->assertRedirect(route('agent.portal'));
     $this->get('/')->assertRedirect(route('agent.portal'));
 });
@@ -247,12 +247,14 @@ it('applies a promo code and books without an agent from /tempah', function () {
 it('counts one link click per visitor per day and none for portal previews', function () {
     $agent = makeAgent();
 
-    $this->get('/e/aiman-zulkifli')->assertOk()->assertSee('Mulakan Tempahan')->assertSee('Aiman bin Zulkifli');
-    $this->get('/e/aiman-zulkifli')->assertOk();
-    $this->get('/e/aiman-zulkifli?pratonton=1')->assertOk();
+    $this->get('/tempah/aiman-zulkifli')->assertOk()->assertSee('Mulakan Tempahan')->assertSee('Aiman bin Zulkifli');
+    $this->get('/tempah/aiman-zulkifli')->assertOk();
+    $this->get('/tempah/aiman-zulkifli?pratonton=1')->assertOk();
+    // Old /e/ links still lead to the agent's booking page.
+    $this->get('/e/aiman-zulkifli?pratonton=1')->assertRedirect('/tempah/aiman-zulkifli?pratonton=1');
 
     expect(AgentStats::clicks($agent, new Period))->toBe(1);
-    $this->get('/e/tiada-ejen')->assertOk()->assertDontSee('Ejen anda');
+    $this->get('/tempah/tiada-ejen')->assertOk()->assertDontSee('Ejen anda');
 });
 
 it('shows the agent their orders by tab and only their own payment proofs', function () {

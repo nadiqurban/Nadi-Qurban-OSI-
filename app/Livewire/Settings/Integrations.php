@@ -156,13 +156,17 @@ class Integrations extends Component
         $g = $this->gateway;
         $has = fn (string $key) => (string) $settings->get($key) !== '';
 
+        // Pasted keys often carry spaces / line breaks around them.
+        $this->form = array_map(fn ($v) => is_string($v) ? trim($v) : $v, $this->form);
+        $this->secret = trim($this->secret);
+
         match ($g) {
             'chip' => $this->validate([
-                'form.brand_id' => ['required', 'uuid'],
+                'form.brand_id' => ['required', 'string', 'max:64', 'regex:/^[A-Za-z0-9-]+$/'],
                 'secret' => [$has('chip.secret_key') ? 'nullable' : 'required', 'string', 'min:20', 'max:200'],
                 'form.webhook_public_key' => ['nullable', 'string', 'max:4000', 'regex:/^\s*$|-----BEGIN PUBLIC KEY-----/'],
                 'chipMethods' => ['required', 'array', 'min:1'],
-            ], ['form.webhook_public_key.regex' => 'Kunci awam mesti dalam format PEM (-----BEGIN PUBLIC KEY-----).', 'chipMethods.required' => 'Hidupkan sekurang-kurangnya satu kaedah.'],
+            ], ['form.brand_id.regex' => 'Brand ID hanya huruf, nombor dan sengkang (salin dari CHIP › Developers › Brands).', 'form.webhook_public_key.regex' => 'Kunci awam mesti dalam format PEM (-----BEGIN PUBLIC KEY-----).', 'chipMethods.required' => 'Hidupkan sekurang-kurangnya satu kaedah.'],
                 ['form.brand_id' => 'Brand ID', 'secret' => 'Secret Key']),
             'billplz' => $this->validate([
                 'secret' => [$has('billplz.secret_key') ? 'nullable' : 'required', 'string', 'min:10', 'max:200'],

@@ -209,3 +209,21 @@ it('searches across modules within the user permissions', function () {
         ->set('q', 'Uganda Charity')
         ->assertDontSee('VND-');
 });
+
+it('accepts the CHIP Brand ID as typed (trimmed, not only UUIDs)', function () {
+    Livewire::actingAs(superAdmin())->test(Integrations::class)
+        ->call('openGateway', 'chip')
+        ->set('form.brand_id', "  ab12CD34-5678-brand  \n")
+        ->set('secret', '  '.str_repeat('k', 40).'  ')
+        ->call('saveGateway')
+        ->assertHasNoErrors();
+
+    expect(app(Settings::class)->get('chip.brand_id'))->toBe('ab12CD34-5678-brand')
+        ->and(app(Settings::class)->get('chip.secret_key'))->toBe(str_repeat('k', 40));
+
+    Livewire::actingAs(superAdmin())->test(Integrations::class)
+        ->call('openGateway', 'chip')
+        ->set('form.brand_id', 'brand id dengan ruang')
+        ->call('saveGateway')
+        ->assertHasErrors('form.brand_id');
+});

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; background:#F6F8F7; color:#1A1D21; -webkit-font-smoothing: antialiased; }
+  a { color:#42481c; text-decoration:none; } a:hover { color:#5a6127; }
+  input { font-family: inherit; }
+</style>
+</helmet>
+
+<sc-if value="{{ isLogin }}" hint-placeholder-val="{{ true }}">
+  <div style="min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; background:#42481c;">
+    <div style="width:100%; max-width:400px; background:#fff; border-radius:16px; padding:32px 28px; box-shadow:0 24px 60px rgba(0,0,0,.25);">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div style="width:44px; height:44px; border-radius:11px; overflow:hidden;"><img src="uploads/Untitled design.png" alt="Nadi Qurban" style="width:100%; height:100%; object-fit:cover; display:block;"></div>
+        <div><div style="font-size:16px; font-weight:800; color:#42481c;">NADI QURBAN</div><div style="font-size:11px; font-weight:600; letter-spacing:1.5px; color:#94A3AC;">PORTAL EJEN SALES</div></div>
+      </div>
+      <h1 style="font-size:22px; font-weight:800; margin-top:26px;">Log Masuk Ejen</h1>
+      <p style="font-size:13.5px; color:#64748B; margin-top:6px;">Urus link jualan, jejak tempahan &amp; komisen anda.</p>
+      <div style="margin-top:22px;"><label style="display:block; font-size:12.5px; font-weight:600; color:#334155; margin-bottom:6px;">Emel</label><input value="{{ email }}" onInput="{{ onEmail }}" placeholder="ejen@nadiqurban.com" style="width:100%; font-size:14px; border:1px solid #E2E8F0; border-radius:9px; padding:12px 13px; outline:none;"></div>
+      <div style="margin-top:14px;"><label style="display:block; font-size:12.5px; font-weight:600; color:#334155; margin-bottom:6px;">Kata Laluan</label><input type="password" value="{{ pass }}" onInput="{{ onPass }}" placeholder="••••••••" style="width:100%; font-size:14px; border:1px solid #E2E8F0; border-radius:9px; padding:12px 13px; outline:none;"></div>
+      <div style="{{ errStyle }}">Emel atau kata laluan tidak sah.</div>
+      <button onClick="{{ doLogin }}" style="width:100%; margin-top:20px; background:#42481c; color:#fff; border:none; border-radius:10px; padding:13px; font-size:14.5px; font-weight:700; cursor:pointer;">Log Masuk</button>
+      <div style="margin-top:18px; background:#F6F8F7; border-radius:10px; padding:12px 14px; font-size:12px; color:#64748B; line-height:1.6;">Akaun demo: <b style="color:#1A1D21;">aiman@nadiqurban.com</b> &middot; kata laluan <b style="color:#1A1D21;">ejen123</b></div>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isApp }}" hint-placeholder-val="{{ false }}">
+  <div style="min-height:100vh; background:#F6F8F7;">
+    <header style="background:#fff; border-bottom:1px solid #E2E8F0;">
+      <div style="max-width:1120px; margin:0 auto; padding:14px 24px; display:flex; align-items:center; gap:12px;">
+        <div style="width:38px; height:38px; border-radius:10px; overflow:hidden;"><img src="uploads/Untitled design.png" alt="Nadi Qurban" style="width:100%; height:100%; object-fit:cover; display:block;"></div>
+        <div style="flex:1; min-width:0;"><div style="font-size:15px; font-weight:800; color:#42481c;">NADI QURBAN</div><div style="font-size:10.5px; font-weight:600; letter-spacing:1.5px; color:#94A3AC;">PORTAL EJEN SALES</div></div>
+        <div style="text-align:right;"><div style="font-size:13px; font-weight:700;">{{ agentName }}</div><div style="font-size:11px; color:#64748B;">Kod Ejen: {{ agentCode }}</div></div>
+        <button onClick="{{ logout }}" title="Log keluar" style="width:38px; height:38px; border-radius:10px; border:1px solid #E2E8F0; background:#fff; color:#64748B; cursor:pointer; display:flex; align-items:center; justify-content:center;"><i class="ph ph-sign-out" style="font-size:18px;"></i></button>
+      </div>
+    </header>
+
+    <main style="max-width:1120px; margin:0 auto; padding:26px 24px 56px;">
+      <h1 style="font-size:22px; font-weight:700;">Assalamualaikum, {{ firstName }}</h1>
+      <p style="font-size:13.5px; color:#64748B; margin-top:4px;">Prestasi link jualan anda bagi musim 2027.</p>
+      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:16px;">
+        <span style="font-size:12px; font-weight:600; color:#94A3AC; display:inline-flex; align-items:center; gap:6px;"><i class="ph ph-funnel" style="font-size:15px;"></i> Tapis:</span>
+        <div style="display:inline-flex; background:#fff; border:1px solid #E2E8F0; border-radius:9px; padding:3px; gap:2px;"><sc-for list="{{ periodTabs }}" as="t" hint-placeholder-count="4"><span onClick="{{ t.onClick }}" style="{{ t.style }}">{{ t.label }}</span></sc-for></div>
+        <div style="display:inline-flex; align-items:center; gap:6px; background:#fff; border:1px solid #E2E8F0; border-radius:9px; padding:6px 10px;"><i class="ph ph-calendar-blank" style="font-size:15px; color:#42481c;"></i><input type="date" value="{{ refDate }}" onInput="{{ onRefDate }}" style="font-family:inherit; font-size:12.5px; color:#1A1D21; border:none; outline:none; background:transparent;"></div>
+        <span style="font-size:12px; color:#64748B;">{{ periodNote }}</span>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-top:20px;">
+        <sc-for list="{{ stats }}" as="s" hint-placeholder-count="5">
+          <div style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; padding:16px 18px; display:flex; align-items:center; gap:14px;">
+            <div style="width:42px; height:42px; border-radius:10px; background:{{ s.tint }}; color:{{ s.color }}; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><i class="{{ s.icon }}" style="font-size:22px;"></i></div>
+            <div style="min-width:0;"><div style="font-size:21px; font-weight:800; line-height:1.1;">{{ s.value }}</div><div style="font-size:12.5px; color:#64748B; margin-top:4px;">{{ s.label }}</div></div>
+          </div>
+        </sc-for>
+      </div>
+
+      <section style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; padding:20px 22px; margin-top:18px;">
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+          <div style="flex:1; min-width:220px;"><h2 style="font-size:15.5px; font-weight:700;">Link Jualan Anda</h2><p style="font-size:12.5px; color:#64748B; margin-top:3px;">Kongsi link ini — setiap tempahan & bayaran melaluinya dikreditkan kepada anda.</p></div>
+        </div>
+        <div style="display:flex; gap:8px; margin-top:14px; flex-wrap:wrap;">
+          <input value="{{ shareLink }}" readonly style="flex:1; min-width:240px; font-family:monospace; font-size:12.5px; color:#1A1D21; background:#F6F8F7; border:1px solid #E2E8F0; border-radius:9px; padding:11px 13px; outline:none;">
+          <button onClick="{{ copyLink }}" style="display:inline-flex; align-items:center; gap:7px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:0 16px; height:42px; font-size:13px; font-weight:600; cursor:pointer;"><i class="{{ copyIcon }}" style="font-size:16px;"></i> {{ copyLabel }}</button>
+          <button onClick="{{ shareWa }}" style="display:inline-flex; align-items:center; gap:7px; background:#16A34A; color:#fff; border:none; border-radius:9px; padding:0 16px; height:42px; font-size:13px; font-weight:600; cursor:pointer;"><i class="ph ph-whatsapp-logo" style="font-size:16px;"></i> WhatsApp</button>
+          <button onClick="{{ previewLink }}" style="display:inline-flex; align-items:center; gap:7px; background:#fff; color:#42481c; border:1px solid #42481c; border-radius:9px; padding:0 16px; height:42px; font-size:13px; font-weight:600; cursor:pointer;"><i class="ph ph-eye" style="font-size:16px;"></i> Pratonton</button>
+        </div>
+      </section>
+
+      <section style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; overflow:hidden; margin-top:18px;">
+        <div style="padding:16px 22px; border-bottom:1px solid #F1F5F4; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;"><h2 style="font-size:15.5px; font-weight:700;">Tempahan Melalui Link</h2><div style="display:flex; gap:8px; flex-wrap:wrap;"><sc-for list="{{ orderTabs }}" as="t" hint-placeholder-count="3"><span onClick="{{ t.onClick }}" style="{{ t.style }}">{{ t.label }} <span style="{{ t.countStyle }}">{{ t.count }}</span></span></sc-for></div></div>
+        <div style="overflow-x:auto;">
+          <div style="min-width:960px;">
+            <div style="display:grid; grid-template-columns:1.25fr 1.25fr 1.4fr 0.55fr 0.95fr 0.95fr 1fr 1.25fr; gap:12px; padding:12px 22px; background:#F6F8F7; font-size:11px; font-weight:700; letter-spacing:.4px; color:#94A3AC; text-transform:uppercase;">
+              <span>No. Tempahan</span><span>Pelanggan</span><span>Produk</span><span style="text-align:center;">Kuantiti</span><span style="text-align:right;">Jualan</span><span style="text-align:right;">Komisen</span><span style="text-align:center;">Status</span><span style="text-align:right;">Tindakan</span>
+            </div>
+            <sc-for list="{{ orders }}" as="o" hint-placeholder-count="5">
+              <div style="display:grid; grid-template-columns:1.25fr 1.25fr 1.4fr 0.55fr 0.95fr 0.95fr 1fr 1.25fr; gap:12px; padding:13px 22px; border-top:1px solid #F1F5F4; align-items:center; font-size:13px;">
+                <span style="font-weight:700; color:#42481c;">{{ o.no }}</span>
+                <span style="min-width:0;"><span style="display:block; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ o.name }}</span><span style="font-size:11.5px; color:#94A3AC;">{{ o.date }}</span></span>
+                <span style="color:#475569;">{{ o.product }}</span>
+                <span style="text-align:center; font-weight:600;">{{ o.qty }}</span>
+                <span style="text-align:right; font-weight:700;">{{ o.total }}</span>
+                <span style="text-align:right; font-weight:700; color:#16A34A;">{{ o.commission }}</span>
+                <span style="text-align:center;"><span style="{{ o.badgeStyle }}">{{ o.status }}</span></span>
+                <span style="display:flex; justify-content:flex-end; gap:6px;">
+                  <button onClick="{{ o.onProof }}" style="{{ o.proofBtnStyle }}"><i class="ph ph-receipt" style="font-size:14px;"></i> Bukti</button><sc-if value="{{ o.canAct }}" hint-placeholder-val="{{ true }}"><button onClick="{{ o.onSend }}" style="display:inline-flex; align-items:center; gap:5px; background:#42481c; color:#fff; border:none; border-radius:8px; padding:7px 11px; font-size:12px; font-weight:600; cursor:pointer;"><i class="ph ph-paper-plane-tilt" style="font-size:14px;"></i> Hantar</button><button onClick="{{ o.onCancel }}" style="display:inline-flex; align-items:center; gap:5px; background:#fff; color:#DC2626; border:1px solid #F7CFCF; border-radius:8px; padding:7px 11px; font-size:12px; font-weight:600; cursor:pointer;"><i class="ph ph-x-circle" style="font-size:14px;"></i> Batal</button></sc-if>
+                  <sc-if value="{{ o.isSent }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px; font-weight:600; color:#16A34A; display:inline-flex; align-items:center; gap:5px;"><i class="ph-fill ph-check-circle" style="font-size:15px;"></i> Dihantar</span></sc-if>
+                  <sc-if value="{{ o.isCancel }}" hint-placeholder-val="{{ false }}"><span onClick="{{ o.onRestore }}" style="font-size:12px; font-weight:600; color:#64748B; cursor:pointer; display:inline-flex; align-items:center; gap:5px;"><i class="ph ph-arrow-counter-clockwise" style="font-size:14px;"></i> Pulih</span></sc-if>
+                </span>
+              </div>
+            </sc-for>
+            <sc-if value="{{ noOrders }}" hint-placeholder-val="{{ false }}"><div style="padding:36px 22px; text-align:center; font-size:13.5px; color:#94A3AC;">Belum ada tempahan melalui link anda.</div></sc-if>
+          </div>
+        </div>
+      </section>
+    
+  <sc-if value="{{ showProof }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; inset:0; z-index:120; background:rgba(20,24,20,.6); display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; padding:28px 16px;">
+      <div style="width:100%; max-width:640px; background:#fff; border-radius:14px; box-shadow:0 24px 60px rgba(0,0,0,.3); overflow:hidden;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:16px 22px; border-bottom:1px solid #E2E8F0;">
+          <div style="display:flex; align-items:center; gap:11px;"><span style="width:36px; height:36px; border-radius:10px; background:#edeee0; color:#42481c; display:flex; align-items:center; justify-content:center;"><i class="ph ph-receipt" style="font-size:19px;"></i></span><div><h2 style="font-size:15px; font-weight:700;">Bukti Bayaran</h2><p style="font-size:12px; color:#94A3AC; margin-top:2px;">{{ pvNo }} &middot; {{ pvName }} &middot; {{ pvPay }}</p></div></div>
+          <span onClick="{{ closeProof }}" style="width:32px; height:32px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#64748B;"><i class="ph ph-x" style="font-size:16px;"></i></span>
+        </div>
+        <div style="padding:18px 22px; background:#F6F8F7; display:flex; flex-direction:column; align-items:center; gap:10px;">
+          <div style="width:100%; display:flex; justify-content:center;">{{ pvEl }}</div>
+          <sc-if value="{{ pvNoFile }}" hint-placeholder-val="{{ false }}"><div style="padding:40px 20px; text-align:center; font-size:13px; color:#94A3AC;"><i class="ph ph-file-dashed" style="font-size:34px; display:block; margin-bottom:8px;"></i>{{ pvNoFileMsg }}</div></sc-if>
+          <div style="font-size:12px; color:#64748B;">{{ pvFile }} &middot; Jumlah <b style="color:#1A1D21;">{{ pvTotal }}</b></div>
+        </div>
+        <div style="padding:16px 22px; display:flex; align-items:center; gap:10px; justify-content:flex-end;">
+          <span style="{{ pvStatusStyle }}">{{ pvStatus }}</span>
+          <span style="flex:1;"></span>
+          <sc-if value="{{ pvPending }}" hint-placeholder-val="{{ true }}"><button onClick="{{ rejectProof }}" style="display:inline-flex; align-items:center; gap:7px; background:#fff; color:#DC2626; border:1px solid #F7CFCF; border-radius:9px; padding:10px 16px; font-size:13px; font-weight:600; cursor:pointer;"><i class="ph ph-x-circle" style="font-size:16px;"></i> Tolak</button><button onClick="{{ approveProof }}" style="display:inline-flex; align-items:center; gap:7px; background:#16A34A; color:#fff; border:none; border-radius:9px; padding:10px 16px; font-size:13px; font-weight:600; cursor:pointer;"><i class="ph-fill ph-check-circle" style="font-size:16px;"></i> Sahkan Bayaran</button></sc-if>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</main>
+
+    <sc-if value="{{ showPreview }}" hint-placeholder-val="{{ false }}">
+      <div style="position:fixed; inset:0; z-index:100; background:rgba(20,24,20,.6); display:flex; align-items:center; justify-content:center; padding:24px;">
+        <div style="width:100%; max-width:980px; height:88vh; background:#fff; border-radius:14px; overflow:hidden; display:flex; flex-direction:column; box-shadow:0 24px 60px rgba(0,0,0,.3);">
+          <div style="display:flex; align-items:center; gap:10px; padding:12px 16px; border-bottom:1px solid #E2E8F0; background:#F6F8F7;">
+            <i class="ph ph-eye" style="font-size:17px; color:#42481c;"></i>
+            <span style="font-size:13px; font-weight:700; color:#334155;">Pratonton Link Jualan</span>
+            <span style="flex:1; min-width:0; font-family:monospace; font-size:11.5px; color:#64748B; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ shareLink }}</span>
+            <button onClick="{{ closePreview }}" style="width:32px; height:32px; border-radius:8px; border:1px solid #E2E8F0; background:#fff; color:#64748B; cursor:pointer; display:flex; align-items:center; justify-content:center;"><i class="ph ph-x" style="font-size:16px;"></i></button>
+          </div>
+          <iframe src="{{ previewSrc }}" title="Pratonton Tempahan Awam" style="flex:1; width:100%; border:none; display:block;"></iframe>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { view: 'login', email: '', pass: '', err: false, copied: false, tick: 0 };
+  componentDidMount() {
+    try { const a = JSON.parse(localStorage.getItem('nq_agent_session') || 'null'); if (a) this.setState({ view: 'app', agent: a }); } catch (e) {}
+    this._onFocus = () => this.setState({ tick: Date.now() });
+    window.addEventListener('focus', this._onFocus);
+  }
+  componentWillUnmount() { window.removeEventListener('focus', this._onFocus); }
+  renderVals() {
+    const s = this.state;
+    const set = (o) => this.setState(o);
+    const accounts = {
+      'aiman@nadiqurban.com': { pass: 'ejen123', name: 'Aiman Zulkifli', code: 'AZ01' },
+      'syafiqah@nadiqurban.com': { pass: 'ejen123', name: 'Nurul Syafiqah', code: 'NS02' },
+      'hafiz@nadiqurban.com': { pass: 'ejen123', name: 'Hafiz Rahman', code: 'HR03' },
+    };
+    const RATE = 0.05;
+    let cat = []; try { cat = JSON.parse(localStorage.getItem('nq_products') || '[]'); } catch (e) {}
+    const commOf = (o) => { if (o.comm != null) return Number(o.comm) || 0; const nm = String(o.product || '').split(' \u2014 ')[0]; const p = cat.find(x => x.name === nm); return p ? (Number(p.comm) || 0) * (Number(o.qty) || 1) : 0; };
+    const fmt = (n) => 'RM ' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const a = s.agent || { name: '', code: '' };
+    let clicks = 0, live = [];
+    try {
+      clicks = (JSON.parse(localStorage.getItem('nq_agent_clicks') || '{}'))[a.code] || 0;
+      live = (JSON.parse(localStorage.getItem('nq_agent_orders') || '[]')).filter(o => o.ref === a.code);
+    } catch (e) {}
+    const mAgo = (m, d) => { const x = new Date(); x.setDate(1); x.setMonth(x.getMonth() - m); x.setDate(d); return x.getTime(); };
+    const demo = [
+      ['AZ01', 0, 3, 850, 50, 'Rosmawati binti Idris', 'Qurban Lembu \u2014 Delima', 1], ['AZ01', 0, 12, 299, 20, 'Faizal bin Kassim', 'Qurban Kambing \u2014 Delima', 1], ['AZ01', 1, 8, 550, 30, 'Siti Hajar binti Ali', 'Qurban Lembu \u2014 Zamrud', 1], ['AZ01', 2, 15, 497, 20, 'Hakim bin Osman', 'Aqiqah Kambing \u2014 Zamrud', 1],
+      ['NS02', 0, 5, 900, 40, 'Aminah binti Yusof', 'Qurban Kambing \u2014 Topaz', 1], ['NS02', 1, 20, 250, 20, 'Zul bin Hamid', 'Dam Kambing \u2014 Zamrud', 1],
+      ['HR03', 1, 2, 850, 30, 'Nora binti Salleh', 'Qurban Lembu \u2014 Delima', 1], ['HR03', 3, 10, 1200, 60, 'Iskandar bin Musa', 'Aqiqah Kambing \u2014 Mutiara', 1],
+    ].filter(x => x[0] === a.code).map(([ref, m, dd, total, comm, name, product, qty], i) => ({ no: 'NQ-DEMO-' + ref + '-' + i, ref, total, comm, name, product, qty, status: 'Dibayar', at: mAgo(m, dd) }));
+    const allList = live.concat(demo);
+    const per = s.period || 'all';
+    const today = new Date(); const iso = (d) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    const refStr = s.refDate || iso(today);
+    const rp = refStr.split('-').map(Number);
+    const list = allList.filter(o => { if (per === 'all') return true; const d = new Date(o.at || Date.now()); if (d.getFullYear() !== rp[0]) return false; if (per === 'year') return true; if (d.getMonth() + 1 !== rp[1]) return false; if (per === 'month') return true; return d.getDate() === rp[2]; });
+    const bln = ['Jan','Feb','Mac','Apr','Mei','Jun','Jul','Ogos','Sep','Okt','Nov','Dis'];
+    const periodNote = per === 'all' ? 'Semua tempahan' : per === 'year' ? ('Tahun ' + rp[0]) : per === 'month' ? (bln[rp[1] - 1] + ' ' + rp[0]) : (rp[2] + ' ' + bln[rp[1] - 1] + ' ' + rp[0]);
+    const actOf = (o) => (s.act || {})[o.no] || (o.agentStatus || '');
+    const hqOk = {}; try { JSON.parse(localStorage.getItem('nq_agent_sent') || '[]').forEach(x => { if (x.hqConfirmed || x.hqStatus === 'Disahkan') hqOk[x.no] = true; }); } catch (e) {}
+    const grp = (o) => { const ac = actOf(o); if (ac === 'sent' && (hqOk[o.no] || o.hqConfirmed || o.hqStatus === 'Disahkan')) return 'archive'; if (ac === 'sent') return 'confirmed'; return 'pending'; };
+    const sales = list.filter(o => actOf(o) !== 'cancel').reduce((t, o) => t + (o.total || 0), 0);
+    const confirmedSales = list.filter(o => actOf(o) === 'sent').reduce((t, o) => t + (o.total || 0), 0);
+    const confirmedCount = list.filter(o => actOf(o) === 'sent').length;
+    const base = (function () { try { const u = new URL('Tempahan Awam.dc.html', location.href); u.search = ''; u.searchParams.set('ref', a.code); return u.href; } catch (e) { return 'Tempahan Awam.dc.html?ref=' + a.code; } })();
+    const slug = String(a.name || a.code || 'ejen').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\b(bin|binti|bt|b)\b/g, ' ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').split('-').slice(0, 2).join('-') || 'ejen';
+    const shortLink = 'nadiqurban.my/' + slug;
+    const withToken = (function () { try { const u = new URL(base); new URLSearchParams(location.search).forEach((v, k) => { if (!u.searchParams.has(k)) u.searchParams.set(k, v); }); return u.href; } catch (e) { return base; } })();
+    return {
+      isLogin: s.view === 'login', isApp: s.view === 'app',
+      email: s.email, onEmail: (e) => set({ email: e.target.value, err: false }),
+      pass: s.pass, onPass: (e) => set({ pass: e.target.value, err: false }),
+      errStyle: 'font-size:12.5px; font-weight:600; color:#DC2626; margin-top:10px;' + (s.err ? '' : 'display:none;'),
+      doLogin: () => {
+        let acc = accounts[(s.email || '').trim().toLowerCase()];
+        try { const L = JSON.parse(localStorage.getItem('nq_agents') || 'null'); if (Array.isArray(L)) { const f = L.find(x => x.email === (s.email || '').trim().toLowerCase()); acc = f ? (f.status === 'Aktif' ? { pass: f.pass, name: f.name, code: f.id } : null) : null; } } catch (e) {}
+        if (!acc || acc.pass !== s.pass) { set({ err: true }); return; }
+        const agent = { name: acc.name, code: acc.code };
+        try { localStorage.setItem('nq_agent_session', JSON.stringify(agent)); } catch (e) {}
+        set({ view: 'app', agent, pass: '' });
+      },
+      logout: () => { try { localStorage.removeItem('nq_agent_session'); } catch (e) {} set({ view: 'login', agent: null }); },
+      agentName: a.name, agentCode: a.code, firstName: (a.name || '').split(' ')[0],
+      rateLabel: Math.round(RATE * 100) + '%',
+      stats: [
+        { icon: 'ph ph-cursor-click', tint: '#E8F0FB', color: '#2563EB', value: String(clicks + (a.code === 'AZ01' ? 46 : 0)), label: 'Klik Link' },
+        { icon: 'ph ph-shopping-cart-simple', tint: '#edeee0', color: '#42481c', value: String(list.length), label: 'Tempahan Terhasil' },
+        { icon: 'ph ph-chart-line-up', tint: '#FEF3E2', color: '#D97706', value: fmt(sales), label: 'Jumlah Jualan' },
+        { icon: 'ph ph-hand-coins', tint: '#FEF3E2', color: '#D97706', value: fmt(list.filter(o => o.status !== 'Ditolak' && o.status !== 'Menunggu Pengesahan').reduce((t, o) => t + commOf(o), 0)), label: 'Komisen Ejen' },
+        { icon: 'ph ph-seal-check', tint: '#EAF7EE', color: '#16A34A', value: fmt(list.filter(o => actOf(o) === 'sent').reduce((t, o) => t + commOf(o), 0)), label: 'Komisen Disahkan (' + confirmedCount + ' tempahan)' },
+      ],
+      shareLink: shortLink,
+      copyLabel: s.copied ? 'Disalin' : 'Salin',
+      copyIcon: s.copied ? 'ph ph-check' : 'ph ph-copy',
+      copyLink: () => { try { navigator.clipboard.writeText('https://' + shortLink); } catch (e) {} set({ copied: true }); setTimeout(() => this.setState({ copied: false }), 1600); },
+      shareWa: () => { const msg = 'Assalamualaikum, tempah ibadah Qurban & Aqiqah bersama Nadi Qurban melalui link ini: ' + 'https://' + shortLink; try { window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank'); } catch (e) {} },
+      previewLink: () => set({ showPreview: true }),
+      showPreview: s.showPreview === true,
+      previewSrc: withToken,
+      closePreview: () => set({ showPreview: false, tick: Date.now() }),
+      periodTabs: [['all', 'Semua'], ['day', 'Hari'], ['month', 'Bulan'], ['year', 'Tahun']].map(([k, label]) => ({ label, onClick: () => set({ period: k }), style: 'font-size:12.5px; font-weight:600; border-radius:7px; padding:6px 12px; cursor:pointer;' + (per === k ? 'background:#42481c; color:#fff;' : 'color:#475569;') })),
+      refDate: refStr, onRefDate: (e) => set({ refDate: e.target.value, period: (s.period && s.period !== 'all') ? s.period : 'day' }),
+      periodNote: periodNote + ' · ' + list.length + ' tempahan',
+      orderCount: String(list.length),
+      ...(function (self) {
+        const pv = s.proofNo ? list.find(x => x.no === s.proofNo) : null;
+        const setStatus = (stv) => { try { const L = JSON.parse(localStorage.getItem('nq_agent_orders') || '[]'); L.forEach(x => { if (x.no === s.proofNo) { x.status = stv; x.verifiedBy = a.name; x.verifiedAt = Date.now(); } }); localStorage.setItem('nq_agent_orders', JSON.stringify(L)); } catch (e) {} self.setState({ proofNo: null, tick: Date.now() }); };
+        const isImg = !!(pv && pv.proofData && pv.proofType === 'image');
+        const isPdf = !!(pv && pv.proofData && pv.proofType === 'pdf');
+        const pst = pv ? (pv.status || 'Dibayar') : '';
+        return {
+          showProof: !!pv, pvNo: pv ? pv.no : '', pvName: pv ? pv.name : '', pvPay: pv ? (pv.payType || '-') : '',
+          pvData: pv ? (pv.proofData || '') : '', pvFile: pv ? (pv.proof || '-') : '', pvTotal: pv ? fmt(pv.total) : '',
+          pvEl: isImg ? React.createElement('img', { src: pv.proofData, alt: 'bukti', style: { maxWidth: '100%', maxHeight: '62vh', borderRadius: '10px', boxShadow: '0 4px 16px rgba(0,0,0,.12)', display: 'block' } }) : isPdf ? React.createElement('iframe', { src: pv.proofData, title: 'bukti', style: { width: '100%', height: '62vh', border: 'none', borderRadius: '10px', background: '#fff' } }) : null, pvNoFile: !!pv && !isImg && !isPdf,
+          pvNoFileMsg: pv && pv.proof ? ('Fail tidak dapat dipaparkan (' + pv.proof + ').') : ('Tiada bukti dimuat naik — bayaran dibuat melalui ' + ((pv && pv.payType) || 'FPX / CHIP') + ' dan disahkan secara automatik.'),
+          pvStatus: pst, pvPending: pst === 'Menunggu Pengesahan',
+          pvStatusStyle: 'font-size:11.5px; font-weight:700; border-radius:20px; padding:5px 12px;' + (pst === 'Menunggu Pengesahan' ? 'background:#FEF3E2; color:#D97706;' : pst === 'Ditolak' ? 'background:#FDECEC; color:#DC2626;' : 'background:#EAF7EE; color:#16A34A;'),
+          closeProof: () => self.setState({ proofNo: null }),
+          approveProof: () => setStatus('Dibayar'),
+          rejectProof: () => setStatus('Ditolak'),
+        };
+      })(this),
+      noOrders: list.filter(o => grp(o) === (s.otab || 'pending')).length === 0,
+      orderTabs: [['pending', 'Belum Disahkan'], ['confirmed', 'Disahkan'], ['archive', 'Arkib Tempahan']].map(([k, label]) => { const on = (s.otab || 'pending') === k; return { label, count: String(list.filter(o => grp(o) === k).length), onClick: () => set({ otab: k }), style: 'display:inline-flex; align-items:center; gap:7px; font-size:12.5px; font-weight:600; border-radius:9px; padding:8px 13px; cursor:pointer;' + (on ? 'background:#42481c; color:#fff;' : 'background:#fff; border:1px solid #E2E8F0; color:#475569;'), countStyle: 'font-size:11px; font-weight:700; border-radius:20px; padding:1px 7px;' + (on ? 'background:rgba(255,255,255,.22); color:#fff;' : 'background:#F1F5F4; color:#64748B;') }; }),
+      orders: list.filter(o => grp(o) === (s.otab || 'pending')).map(o => { const act = (s.act || {})[o.no] || (o.agentStatus || ''); const st = act === 'sent' ? 'Dihantar ke HQ' : act === 'cancel' ? 'Dibatalkan' : (o.status || 'Dibayar'); const bs = 'font-size:11px; font-weight:600; border-radius:20px; padding:4px 11px; white-space:nowrap;' + (act === 'sent' ? 'background:#E8F0FB; color:#2563EB;' : act === 'cancel' ? 'background:#FDECEC; color:#DC2626;' : (o.status === 'Menunggu Pengesahan' ? 'background:#FEF3E2; color:#D97706;' : o.status === 'Ditolak' ? 'background:#FDECEC; color:#DC2626;' : 'background:#EAF7EE; color:#16A34A;')); const mark = (v) => { const m = Object.assign({}, s.act); if (v) m[o.no] = v; else delete m[o.no]; try { const L = JSON.parse(localStorage.getItem('nq_agent_orders') || '[]'); L.forEach(x => { if (x.no === o.no) x.agentStatus = v || ''; }); localStorage.setItem('nq_agent_orders', JSON.stringify(L)); if (v === 'sent') { const H = JSON.parse(localStorage.getItem('nq_agent_sent') || '[]'); if (!H.find(x => x.no === o.no)) { H.unshift(Object.assign({}, o, { agent: a.name, ref: a.code, sentAt: Date.now() })); localStorage.setItem('nq_agent_sent', JSON.stringify(H)); } } } catch (e) {} set({ act: m }); }; return { no: o.no, name: o.name, product: o.product, qty: String(o.qty), total: fmt(o.total), commission: act === 'cancel' ? fmt(0) : fmt(commOf(o)), status: st, badgeStyle: bs, hasProof: !!o.proof, proofBtnStyle: 'display:inline-flex; align-items:center; gap:5px; border-radius:8px; padding:7px 11px; font-size:12px; font-weight:600; cursor:pointer;' + (o.status === 'Menunggu Pengesahan' ? 'background:#FEF3E2; color:#D97706; border:1px solid #F5D9A8;' : o.proof ? 'background:#fff; color:#42481c; border:1px solid #E2E8F0;' : 'background:#fff; color:#94A3AC; border:1px solid #E2E8F0;'), onProof: () => set({ proofNo: o.no }), canAct: !act && o.status !== 'Menunggu Pengesahan' && o.status !== 'Ditolak', isSent: act === 'sent', isCancel: act === 'cancel', onSend: () => mark('sent'), onCancel: () => mark('cancel'), onRestore: () => mark(''),
+        date: new Date(o.at || Date.now()).toLocaleDateString('ms-MY', { day: '2-digit', month: 'short', year: 'numeric' }) }; }),
+    };
+  }
+}
+</script>
+</body>
+</html>

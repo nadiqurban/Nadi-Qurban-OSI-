@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; background:#F6F8F7; color:#1A1D21; -webkit-font-smoothing: antialiased; }
+  a { color:#42481c; text-decoration:none; } a:hover { color:#5a6127; }
+  @media print { @page { size:A4 portrait; margin:0; } body * { visibility:hidden !important; } #comm-inv, #comm-inv * { visibility:visible !important; } #comm-inv { position:absolute !important; left:0; top:0; box-shadow:none !important; } }
+  ::-webkit-scrollbar { width:10px; height:10px; }
+  ::-webkit-scrollbar-thumb { background:#b3b79a; border-radius:6px; border:2px solid transparent; background-clip:padding-box; }
+</style>
+</helmet>
+
+<div style="display:flex; min-height:100vh; background:#F6F8F7;">
+
+  <aside style="width:260px; flex-shrink:0; background:#fff; border-right:1px solid #E2E8F0; display:flex; flex-direction:column; position:sticky; top:0; height:100vh;">
+    <div style="height:72px; display:flex; align-items:center; gap:12px; padding:0 22px; border-bottom:1px solid #E2E8F0; flex-shrink:0;">
+      <div style="width:38px; height:38px; border-radius:10px; overflow:hidden;"><img src="uploads/Untitled design.png" alt="Nadi Qurban" style="width:100%; height:100%; object-fit:cover; display:block;"></div>
+      <div style="line-height:1;"><div style="font-size:15px; font-weight:800; letter-spacing:.3px; color:#42481c;">NADI QURBAN</div><div style="font-size:10.5px; font-weight:600; letter-spacing:2px; color:#94A3AC; margin-top:3px;">OSI SYSTEM</div></div>
+    </div>
+    <nav style="flex:1; overflow-y:auto; padding:14px 12px;">
+      <sc-for list="{{ nav }}" as="item" hint-placeholder-count="18">
+        <sc-if value="{{ item.isSection }}" hint-placeholder-val="{{ false }}"><div style="font-size:10.5px; font-weight:700; letter-spacing:1.4px; color:#94A3AC; padding:16px 14px 8px;">{{ item.label }}</div></sc-if>
+        <sc-if value="{{ item.isItem }}" hint-placeholder-val="{{ true }}">
+          <div style="{{ item.rowStyle }}" onClick="{{ item.onClick }}">
+            <span style="position:absolute; left:0; top:8px; bottom:8px; width:3px; border-radius:0 3px 3px 0; background:{{ item.bar }};"></span>
+            <i class="{{ item.icon }}" style="font-size:19px; color:{{ item.iconColor }};"></i>
+            <span style="flex:1;">{{ item.label }}</span>
+            <sc-if value="{{ item.badge }}" hint-placeholder-val="{{ false }}"><span style="background:#C9A227; color:#fff; font-size:10.5px; font-weight:700; border-radius:20px; padding:2px 8px;">{{ item.badge }}</span></sc-if>
+          </div>
+        </sc-if>
+      </sc-for>
+    </nav>
+    <div style="padding:14px 16px; display:flex; align-items:center; gap:11px; border-top:1px solid #E2E8F0;">
+      <div style="width:38px; height:38px; border-radius:50%; background:#42481c; color:#C9A227; font-weight:800; font-size:13px; display:flex; align-items:center; justify-content:center;">MN</div>
+      <div style="min-width:0; flex:1;"><div style="font-size:13px; font-weight:700; color:#1A1D21;">Muhammad Nurfitkri</div><div style="font-size:11px; color:#64748B;">Superadmin</div></div>
+    </div>
+  </aside>
+
+  <div style="flex:1; min-width:0; display:flex; flex-direction:column;">
+    <header style="height:72px; background:#fff; border-bottom:1px solid #E2E8F0; display:flex; align-items:center; padding:0 32px; gap:24px; position:sticky; top:0; z-index:20;">
+      <div style="flex:1; max-width:520px; margin:0 auto; display:flex; align-items:center; gap:11px; background:#F6F8F7; border:1px solid #E2E8F0; border-radius:10px; padding:10px 15px;">
+        <i class="ph ph-magnifying-glass" style="font-size:18px; color:#94A3AC;"></i>
+        <span style="font-size:13.5px; color:#94A3AC;">Cari ejen&hellip;</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <div style="position:relative; width:40px; height:40px; border-radius:10px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; color:#475569;"><i class="ph ph-bell" style="font-size:20px;"></i><span style="position:absolute; top:-4px; right:-4px; background:#DC2626; color:#fff; font-size:10px; font-weight:700; border-radius:20px; min-width:18px; height:18px; display:flex; align-items:center; justify-content:center; padding:0 4px; border:2px solid #fff;">7</span></div>
+        <div style="width:1px; height:30px; background:#E2E8F0; margin:0 4px;"></div>
+        <div style="width:40px; height:40px; border-radius:50%; background:#42481c; color:#C9A227; font-weight:800; font-size:13px; display:flex; align-items:center; justify-content:center;">MN</div>
+      </div>
+    </header>
+
+    <main style="flex:1; padding:28px 32px 56px; overflow-y:auto;">
+      <div style="display:flex; align-items:flex-end; gap:16px; margin-bottom:24px; flex-wrap:wrap;">
+        <div style="margin-right:auto;">
+          <div style="display:flex; align-items:center; gap:8px; font-size:12.5px; color:#94A3AC; margin-bottom:6px;"><span>Jualan &amp; Kewangan</span><i class="ph ph-caret-right" style="font-size:12px;"></i><span style="color:#42481c; font-weight:600;">Pengurusan Ejen</span></div>
+          <h1 style="font-size:23px; font-weight:700;">Pengurusan Ejen</h1>
+          <p style="font-size:13.5px; color:#64748B; margin-top:4px;">Daftar ejen sebagai pengguna untuk log masuk ke Portal Ejen.</p>
+        </div>
+        <div style="flex-basis:100%; display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+          <span style="font-size:12px; font-weight:600; color:#94A3AC; display:inline-flex; align-items:center; gap:6px;"><i class="ph ph-funnel" style="font-size:15px;"></i> Tempoh:</span>
+          <div style="display:inline-flex; background:#fff; border:1px solid #E2E8F0; border-radius:9px; padding:3px; gap:2px;"><sc-for list="{{ periodTabs }}" as="t" hint-placeholder-count="4"><span onClick="{{ t.onClick }}" style="{{ t.style }}">{{ t.label }}</span></sc-for></div>
+          <sc-if value="{{ notRange }}" hint-placeholder-val="{{ true }}"><div style="display:inline-flex; align-items:center; gap:6px; background:#fff; border:1px solid #E2E8F0; border-radius:9px; padding:6px 10px;"><i class="ph ph-calendar-blank" style="font-size:15px; color:#42481c;"></i><input type="date" value="{{ refDate }}" onInput="{{ onRefDate }}" style="font-family:inherit; font-size:12.5px; color:#1A1D21; border:none; outline:none; background:transparent;"></div></sc-if>
+          <sc-if value="{{ isRange }}" hint-placeholder-val="{{ false }}"><div style="display:inline-flex; align-items:center; gap:8px; background:#fff; border:1px solid #42481c; border-radius:9px; padding:6px 10px;"><i class="ph ph-calendar-dots" style="font-size:15px; color:#42481c;"></i><span style="font-size:11.5px; color:#94A3AC;">Dari</span><input type="date" value="{{ fromDate }}" onInput="{{ onFromDate }}" style="font-family:inherit; font-size:12.5px; color:#1A1D21; border:none; outline:none; background:transparent;"><span style="font-size:11.5px; color:#94A3AC;">hingga</span><input type="date" value="{{ toDate }}" onInput="{{ onToDate }}" style="font-family:inherit; font-size:12.5px; color:#1A1D21; border:none; outline:none; background:transparent;"></div></sc-if>
+          <span style="font-size:12px; font-weight:600; color:#42481c; background:#edeee0; border-radius:20px; padding:5px 12px;">{{ periodNote }}</span>
+        </div>
+        <button onClick="{{ openNew }}" style="display:flex; align-items:center; gap:8px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-user-plus" style="font-size:17px;"></i> Tambah Ejen</button>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:22px;">
+        <sc-for list="{{ stats }}" as="s" hint-placeholder-count="3">
+          <div style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; padding:16px 18px; display:flex; align-items:center; gap:14px;">
+            <div style="width:42px; height:42px; border-radius:10px; background:{{ s.tint }}; color:{{ s.color }}; display:flex; align-items:center; justify-content:center;"><i class="{{ s.icon }}" style="font-size:22px;"></i></div>
+            <div><div style="font-size:22px; font-weight:700; line-height:1;">{{ s.value }}</div><div style="font-size:12.5px; color:#64748B; margin-top:5px;">{{ s.label }}</div></div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.6fr); gap:16px; margin-bottom:22px;">
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          <div style="background:#42481c; border-radius:12px; padding:18px 20px; color:#fff;">
+            <div style="display:flex; align-items:center; gap:8px; font-size:12px; color:#d6d9bd;"><i class="ph ph-chart-line-up" style="font-size:16px;"></i> Jumlah Jualan Ejen</div>
+            <div style="font-size:26px; font-weight:800; margin-top:8px; letter-spacing:-.3px;">{{ totSales }}</div>
+            <div style="font-size:11.5px; color:#d6d9bd; margin-top:4px;">{{ totOrders }} tempahan berbayar &middot; {{ periodNote }}</div>
+          </div>
+          <div style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; padding:18px 20px;">
+            <div style="display:flex; align-items:center; gap:8px; font-size:12px; color:#64748B;"><i class="ph ph-hand-coins" style="font-size:16px; color:#9a7b12;"></i> Jumlah Komisen Ejen</div>
+            <div style="font-size:26px; font-weight:800; margin-top:8px; color:#9a7b12; letter-spacing:-.3px;">{{ totComm }}</div>
+            <div style="font-size:11.5px; color:#94A3AC; margin-top:4px;">Mengikut komisen produk (RM per unit) yang ditetapkan di halaman Produk</div>
+          </div>
+        </div>
+        <div style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; padding:18px 20px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;"><h2 style="font-size:15px; font-weight:700;">Statistik Jualan &amp; Komisen</h2><span style="font-size:11px; font-weight:700; color:#42481c; background:#edeee0; border-radius:20px; padding:3px 10px;">Top 10 Ejen</span></div>
+          <div style="display:grid; grid-template-columns:1.4fr 2fr 0.9fr; gap:12px; padding-bottom:8px; border-bottom:1px solid #F1F5F4; font-size:10.5px; font-weight:700; letter-spacing:.4px; color:#94A3AC; text-transform:uppercase;"><span>Ejen</span><span>Jualan (RM)</span><span style="text-align:right;">Komisen (RM)</span></div>
+          <div style="max-height:286px; overflow-y:auto; margin-right:-8px; padding-right:8px;">
+          <sc-for list="{{ perf }}" as="p" hint-placeholder-count="3">
+            <div style="display:grid; grid-template-columns:1.4fr 2fr 0.9fr; gap:12px; align-items:center; padding:11px 0; border-bottom:1px solid #F6F8F7;">
+              <div style="min-width:0; display:flex; align-items:center; gap:9px;"><span style="{{ p.rankStyle }}">{{ p.rank }}</span><div style="min-width:0;"><div style="font-size:13px; font-weight:600; color:#1A1D21; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ p.name }}</div><div style="font-size:11px; color:#94A3AC; font-family:monospace;">{{ p.id }} &middot; {{ p.count }} tempahan</div></div></div>
+              <div style="display:flex; align-items:center; gap:10px;"><div style="flex:1; height:8px; background:#F1F5F4; border-radius:20px; overflow:hidden;"><div style="height:100%; width:{{ p.pct }}; background:#42481c; border-radius:20px;"></div></div><span style="font-size:12.5px; font-weight:700; color:#1A1D21; min-width:86px; text-align:right;">{{ p.sales }}</span></div>
+              <span style="text-align:right; font-size:13px; font-weight:700; color:#9a7b12;">{{ p.comm }}</span>
+            </div>
+          </sc-for>
+          </div>
+        </div>
+      </div>
+
+      <section style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; overflow:hidden;">
+        <div style="padding:14px 20px; border-bottom:1px solid #F1F5F4; display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+          <div style="flex:1; max-width:320px; display:flex; align-items:center; gap:9px; background:#F6F8F7; border:1px solid #E2E8F0; border-radius:9px; padding:8px 12px;"><i class="ph ph-magnifying-glass" style="font-size:16px; color:#94A3AC;"></i><input value="{{ q }}" onInput="{{ onQ }}" placeholder="Cari ID, nama, emel&hellip;" style="flex:1; font-family:inherit; font-size:13px; border:none; outline:none; background:transparent;"></div>
+          <select value="{{ monthSel }}" onChange="{{ onMonthSel }}" style="margin-left:auto; font-family:inherit; font-size:12.5px; color:#334155; border:1px solid #E2E8F0; border-radius:9px; padding:8px 11px; outline:none; background:#fff; cursor:pointer;"><sc-for list="{{ monthOpts }}" as="m" hint-placeholder-count="6"><option value="{{ m.v }}">{{ m.l }}</option></sc-for></select>
+          <button onClick="{{ openInv }}" style="display:inline-flex; align-items:center; gap:7px; background:#fff; color:#42481c; border:1px solid #42481c; border-radius:9px; padding:9px 14px; font-size:12.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-file-text" style="font-size:16px;"></i> Pratonton Invois</button>
+          <button onClick="{{ exportExcel }}" style=" display:inline-flex; align-items:center; gap:7px; background:#16A34A; color:#fff; border:none; border-radius:9px; padding:9px 14px; font-size:12.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-microsoft-excel-logo" style="font-size:16px;"></i> Eksport Excel</button>
+        </div>
+        <div style="overflow-x:auto;"><div style="min-width:1040px;">
+        <div style="display:grid; grid-template-columns:0.7fr 1.4fr 1.6fr 1.1fr 1fr 1fr 0.8fr 1.3fr; gap:14px; padding:13px 20px; background:#F6F8F7; border-bottom:1px solid #E2E8F0; font-size:11px; font-weight:700; letter-spacing:.4px; color:#94A3AC; text-transform:uppercase;">
+          <span>ID Ejen</span><span>Nama Penuh</span><span>Emel</span><span>No. Telefon</span><span style="text-align:right;">Jualan (RM)</span><span style="text-align:right;">Komisen (RM)</span><span style="text-align:center;">Status</span><span style="text-align:right;">Tindakan</span>
+        </div>
+        <sc-for list="{{ rows }}" as="r" hint-placeholder-count="4">
+          <div style="display:grid; grid-template-columns:0.7fr 1.4fr 1.6fr 1.1fr 1fr 1fr 0.8fr 1.3fr; gap:14px; padding:14px 20px; border-bottom:1px solid #F1F5F4; align-items:center; font-size:13px;">
+            <span style="font-family:monospace; font-weight:700; color:#42481c;">{{ r.id }}</span>
+            <span style="font-weight:600; color:#1A1D21; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0;">{{ r.name }}</span>
+            <span style="color:#475569; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ r.email }}</span>
+            <span style="color:#475569;">{{ r.phone }}</span>
+            <span style="text-align:right; font-weight:600; color:#1A1D21;">{{ r.sales }}</span>
+            <span style="text-align:right; font-weight:700; color:#9a7b12;">{{ r.comm }}</span>
+            <span style="text-align:center;"><span style="{{ r.stStyle }}">{{ r.status }}</span></span>
+            <span style="display:flex; justify-content:flex-end; gap:6px;">
+              <span onClick="{{ r.onView }}" title="Detail" style="width:30px; height:30px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#42481c;"><i class="ph ph-eye" style="font-size:15px;"></i></span>
+              <span onClick="{{ r.onEdit }}" title="Edit" style="width:30px; height:30px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#42481c;"><i class="ph ph-pencil-simple" style="font-size:15px;"></i></span>
+              <span onClick="{{ r.onToggle }}" title="{{ r.toggleTitle }}" style="width:30px; height:30px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:{{ r.toggleColor }};"><i class="{{ r.toggleIcon }}" style="font-size:15px;"></i></span>
+              <span onClick="{{ r.onDelete }}" title="Buang" style="width:30px; height:30px; border-radius:8px; border:1px solid #F7CFCF; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#DC2626;"><i class="ph ph-trash" style="font-size:15px;"></i></span>
+            </span>
+          </div>
+        </sc-for>
+        <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}"><div style="padding:40px; text-align:center; font-size:13px; color:#94A3AC;">Tiada ejen dijumpai.</div></sc-if>
+        </div></div>
+      </section>
+    </main>
+  </div>
+
+  <sc-if value="{{ showInv }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; inset:0; z-index:110; background:rgba(20,24,20,.6); display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; padding:28px 16px;">
+      <div style="width:100%; max-width:860px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; background:#fff; border-radius:12px; padding:12px 18px; margin-bottom:14px;">
+          <span style="font-size:13.5px; font-weight:700;">Pratonton Invois Komisen &middot; A4</span>
+          <div style="display:flex; gap:8px;">
+            <button onClick="{{ printInv }}" style="display:inline-flex; align-items:center; gap:7px; background:#42481c; color:#fff; border:none; border-radius:8px; padding:9px 14px; font-size:12.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-printer" style="font-size:15px;"></i> Cetak</button>
+            <button onClick="{{ pdfInv }}" style="display:inline-flex; align-items:center; gap:7px; background:#C9A227; color:#fff; border:none; border-radius:8px; padding:9px 14px; font-size:12.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-download-simple" style="font-size:15px;"></i> Muat Turun PDF</button>
+            <button onClick="{{ closeInv }}" style="display:inline-flex; align-items:center; gap:6px; background:#fff; color:#334155; border:1px solid #E2E8F0; border-radius:8px; padding:9px 12px; font-size:12.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-x" style="font-size:15px;"></i> Tutup</button>
+          </div>
+        </div>
+        <div id="comm-inv" style="width:210mm; max-width:100%; min-height:297mm; margin:0 auto; background:#fff; box-shadow:0 10px 30px rgba(0,0,0,.2); box-sizing:border-box; padding:16mm 15mm; font-family:Inter,Arial,sans-serif; color:#1A1D21;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom:2px solid #42481c; padding-bottom:16px;">
+            <div style="display:flex; align-items:center; gap:12px;"><img src="uploads/Untitled design.png" alt="Nadi Qurban" style="width:50px; height:50px; border-radius:10px; object-fit:cover;"><div><div style="font-size:16px; font-weight:800; color:#42481c;">NADI QURBAN SDN. BHD.</div><div style="font-size:10.5px; color:#94A3AC; margin-top:2px;">No. SSM: 1677511-A</div><div style="font-size:10.5px; color:#64748B; margin-top:3px;">Aras 8, Menara Ilham, Jalan Binjai, 50450 Kuala Lumpur</div></div></div>
+            <div style="text-align:right;"><div style="font-size:20px; font-weight:800; letter-spacing:.5px;">INVOIS KOMISEN</div><div style="font-size:12px; font-weight:700; color:#42481c; margin-top:4px;">{{ invNo }}</div><div style="font-size:11px; color:#64748B; margin-top:2px;">Tarikh: {{ invDate }}</div><div style="font-size:11px; color:#64748B; margin-top:2px;">Tempoh: <b style="color:#1A1D21;">{{ periodNote }}</b></div></div>
+          </div>
+          <table style="width:100%; border-collapse:collapse; margin-top:18px;">
+            <thead><tr><th style="background:#42481c; color:#fff; font-size:10px; letter-spacing:.4px; text-transform:uppercase; padding:9px 10px; text-align:left;">No.</th><th style="background:#42481c; color:#fff; font-size:10px; letter-spacing:.4px; text-transform:uppercase; padding:9px 10px; text-align:left;">Ejen</th><th style="background:#42481c; color:#fff; font-size:10px; letter-spacing:.4px; text-transform:uppercase; padding:9px 10px; text-align:left;">Maklumat Bank</th><th style="background:#42481c; color:#fff; font-size:10px; letter-spacing:.4px; text-transform:uppercase; padding:9px 10px; text-align:center;">Tempahan</th><th style="background:#42481c; color:#fff; font-size:10px; letter-spacing:.4px; text-transform:uppercase; padding:9px 10px; text-align:right;">Jualan (RM)</th><th style="background:#42481c; color:#fff; font-size:10px; letter-spacing:.4px; text-transform:uppercase; padding:9px 10px; text-align:right;">Komisen (RM)</th></tr></thead>
+            <tbody>
+              <sc-for list="{{ invRows }}" as="r" hint-placeholder-count="3"><tr><td style="padding:9px 10px; font-size:11.5px; border-bottom:1px solid #E2E8F0;">{{ r.n }}</td><td style="padding:9px 10px; font-size:11.5px; border-bottom:1px solid #E2E8F0;"><b>{{ r.name }}</b><div style="font-size:10px; color:#94A3AC; font-family:monospace;">{{ r.id }}</div></td><td style="padding:9px 10px; font-size:11.5px; border-bottom:1px solid #E2E8F0;">{{ r.bank }}<div style="font-size:10px; color:#64748B;">{{ r.acc }}</div></td><td style="padding:9px 10px; font-size:11.5px; border-bottom:1px solid #E2E8F0; text-align:center;">{{ r.count }}</td><td style="padding:9px 10px; font-size:11.5px; border-bottom:1px solid #E2E8F0; text-align:right;">{{ r.sales }}</td><td style="padding:9px 10px; font-size:11.5px; border-bottom:1px solid #E2E8F0; text-align:right; font-weight:700; color:#9a7b12;">{{ r.comm }}</td></tr></sc-for>
+            </tbody>
+          </table>
+          <div style="display:flex; justify-content:flex-end; margin-top:16px;"><div style="width:280px;">
+            <div style="display:flex; justify-content:space-between; font-size:12px; color:#64748B; padding:5px 0;"><span>Jumlah Jualan</span><span>{{ totSales }}</span></div>
+            <div style="display:flex; justify-content:space-between; font-size:15px; font-weight:800; color:#42481c; border-top:2px solid #42481c; padding-top:8px; margin-top:4px;"><span>Jumlah Komisen</span><span>{{ totComm }}</span></div>
+          </div></div>
+          <div style="margin-top:46px; display:grid; grid-template-columns:1fr 1fr; gap:30px;">
+            <div style="border-top:1px solid #94A3AC; padding-top:6px; font-size:11px; color:#64748B;">Disediakan oleh</div>
+            <div style="border-top:1px solid #94A3AC; padding-top:6px; font-size:11px; color:#64748B;">Diluluskan oleh (Kewangan)</div>
+          </div>
+          <div style="margin-top:30px; text-align:center; font-size:10px; color:#94A3AC;">Dijana oleh Nadi Qurban Sdn Bhd &middot; {{ invNo }}</div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showView }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; inset:0; z-index:100; background:rgba(20,24,20,.55); display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; padding:32px 16px;">
+      <div style="width:100%; max-width:520px; background:#fff; border-radius:14px; box-shadow:0 24px 60px rgba(0,0,0,.3); overflow:hidden;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 24px; border-bottom:1px solid #E2E8F0;">
+          <div><h2 style="font-size:16px; font-weight:700;">{{ vName }}</h2><p style="font-size:12px; color:#94A3AC; margin-top:2px; font-family:monospace;">{{ vId }} &middot; {{ vStatus }}</p></div>
+          <span onClick="{{ closeView }}" style="width:32px; height:32px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#64748B;"><i class="ph ph-x" style="font-size:16px;"></i></span>
+        </div>
+        <div style="padding:18px 24px; display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div style="background:#42481c; color:#fff; border-radius:10px; padding:12px 14px;"><div style="font-size:11px; color:#d6d9bd;">Jualan</div><div style="font-size:17px; font-weight:800; margin-top:3px;">{{ vSales }}</div></div>
+          <div style="background:#FCFBF5; border:1px solid #EBDDAF; border-radius:10px; padding:12px 14px;"><div style="font-size:11px; color:#9a7b12;">Komisen</div><div style="font-size:17px; font-weight:800; color:#9a7b12; margin-top:3px;">{{ vComm }}</div></div>
+        </div>
+        <div style="padding:0 24px 20px;">
+          <sc-for list="{{ vRows }}" as="d" hint-placeholder-count="10">
+            <sc-if value="{{ d.isSec }}" hint-placeholder-val="{{ false }}"><div style="font-size:11px; font-weight:700; letter-spacing:.5px; color:#42481c; text-transform:uppercase; padding:14px 0 4px;">{{ d.k }}</div></sc-if>
+            <sc-if value="{{ d.isRow }}" hint-placeholder-val="{{ true }}"><div style="display:flex; justify-content:space-between; gap:12px; padding:9px 0; border-bottom:1px solid #F1F5F4;"><span style="font-size:12.5px; color:#94A3AC;">{{ d.k }}</span><span style="font-size:13px; font-weight:600; color:#1A1D21; text-align:right;">{{ d.v }}</span></div></sc-if>
+          </sc-for>
+        </div>
+        <div style="padding:0 24px 22px; display:flex; gap:10px; justify-content:flex-end;">
+          <button onClick="{{ closeView }}" style="background:#fff; color:#334155; border:1px solid #E2E8F0; border-radius:9px; padding:10px 16px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit;">Tutup</button>
+          <button onClick="{{ editFromView }}" style="display:inline-flex; align-items:center; gap:7px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:10px 16px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-pencil-simple" style="font-size:15px;"></i> Edit</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showNew }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; inset:0; z-index:100; background:rgba(20,24,20,.55); display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; padding:32px 16px;">
+      <div style="width:100%; max-width:560px; background:#fff; border-radius:14px; box-shadow:0 24px 60px rgba(0,0,0,.3); overflow:hidden;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 24px; border-bottom:1px solid #E2E8F0;">
+          <div style="display:flex; align-items:center; gap:11px;"><span style="width:36px; height:36px; border-radius:10px; background:#edeee0; color:#42481c; display:flex; align-items:center; justify-content:center;"><i class="ph ph-identification-badge" style="font-size:19px;"></i></span><div><h2 style="font-size:16px; font-weight:700;">{{ formTitle }}</h2><p style="font-size:12px; color:#94A3AC; margin-top:2px;">Akaun log masuk Portal Ejen</p></div></div>
+          <span onClick="{{ closeNew }}" style="width:32px; height:32px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#64748B;"><i class="ph ph-x" style="font-size:16px;"></i></span>
+        </div>
+        <div style="padding:22px 24px; display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">ID Ejen</label><input value="{{ fId }}" onInput="{{ onFId }}" placeholder="cth. AZ01" style="width:100%; font-family:monospace; font-size:13px; text-transform:uppercase; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">No. Telefon</label><input value="{{ fPhone }}" onInput="{{ onFPhone }}" placeholder="01X-XXXXXXX" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+          <div style="grid-column:1 / -1;"><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Nama Penuh Ejen</label><input value="{{ fName }}" onInput="{{ onFName }}" placeholder="Nama penuh" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+          <div style="grid-column:1 / -1;"><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Emel <span style="color:#94A3AC; font-weight:400;">(untuk log masuk)</span></label><input value="{{ fEmail }}" onInput="{{ onFEmail }}" type="email" placeholder="nama@nadiqurban.com" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+          <div style="grid-column:1 / -1;"><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Kata Laluan</label><div style="display:flex; gap:8px;"><input value="{{ fPass }}" onInput="{{ onFPass }}" placeholder="Kata laluan ejen" style="flex:1; font-family:monospace; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"><button onClick="{{ genPass }}" style="background:#edeee0; color:#42481c; border:none; border-radius:9px; padding:0 14px; font-size:12.5px; font-weight:600; cursor:pointer; font-family:inherit;">Auto</button></div></div>
+
+          <div style="grid-column:1 / -1; font-size:11px; font-weight:700; letter-spacing:.5px; color:#42481c; text-transform:uppercase; margin-top:6px; padding-top:12px; border-top:1px solid #F1F5F4;">Maklumat Peribadi</div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Jantina</label><select value="{{ fGender }}" onChange="{{ onFGender }}" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none; background:#fff;"><option>Lelaki</option><option>Perempuan</option></select></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Tarikh Lahir</label><input type="date" value="{{ fDob }}" onInput="{{ onFDob }}" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Daerah</label><input value="{{ fDaerah }}" onInput="{{ onFDaerah }}" placeholder="cth. Petaling" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Negeri</label><select value="{{ fNegeri }}" onChange="{{ onFNegeri }}" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none; background:#fff;"><option>Johor</option><option>Kedah</option><option>Kelantan</option><option>Melaka</option><option>Negeri Sembilan</option><option>Pahang</option><option>Perak</option><option>Perlis</option><option>Pulau Pinang</option><option>Sabah</option><option>Sarawak</option><option>Selangor</option><option>Terengganu</option><option>W.P. Kuala Lumpur</option><option>W.P. Labuan</option><option>W.P. Putrajaya</option></select></div>
+          <div style="grid-column:1 / -1; font-size:11px; font-weight:700; letter-spacing:.5px; color:#42481c; text-transform:uppercase; margin-top:6px; padding-top:12px; border-top:1px solid #F1F5F4;">Maklumat Bank</div>
+          <div style="grid-column:1 / -1;"><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Bank</label><select value="{{ fBank }}" onChange="{{ onFBank }}" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none; background:#fff;"><option>Maybank</option><option>CIMB Bank</option><option>Bank Islam</option><option>RHB Bank</option><option>Public Bank</option><option>Hong Leong Bank</option><option>AmBank</option><option>Bank Rakyat</option><option>BSN</option><option>Affin Bank</option><option>Bank Muamalat</option><option>Alliance Bank</option><option>OCBC Bank</option><option>Agrobank</option></select></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Nama Akaun</label><input value="{{ fAccName }}" onInput="{{ onFAccName }}" placeholder="Nama pemegang akaun" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Nombor Akaun</label><input value="{{ fAccNo }}" onInput="{{ onFAccNo }}" placeholder="cth. 5623 5782 2681" style="width:100%; font-family:inherit; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none; font-family:monospace;"></div>
+          <div style="{{ fErrStyle }}">{{ fErr }}</div>
+        </div>
+        <div style="padding:0 24px 22px; display:flex; gap:10px; justify-content:flex-end;">
+          <button onClick="{{ closeNew }}" style="background:#fff; color:#334155; border:1px solid #E2E8F0; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;">Batal</button>
+          <button onClick="{{ saveAgent }}" style="display:inline-flex; align-items:center; gap:7px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-check" style="font-size:16px;"></i> Simpan Ejen</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { q: '', showNew: false };
+  componentDidMount() {
+    let list = null;
+    try { list = JSON.parse(localStorage.getItem('nq_agents') || 'null'); } catch (e) {}
+    if (!Array.isArray(list)) {
+      list = [
+        { id: 'AZ01', name: 'Aiman Zulkifli', email: 'aiman@nadiqurban.com', phone: '012-334 5671', pass: 'ejen123', status: 'Aktif' },
+        { id: 'NS02', name: 'Nurul Syafiqah', email: 'syafiqah@nadiqurban.com', phone: '013-992 1044', pass: 'ejen123', status: 'Aktif' },
+        { id: 'HR03', name: 'Hafiz Rahman', email: 'hafiz@nadiqurban.com', phone: '019-234 5671', pass: 'ejen123', status: 'Aktif' },
+      ];
+      try { localStorage.setItem('nq_agents', JSON.stringify(list)); } catch (e) {}
+    }
+    this.setState({ agents: list });
+  }
+  saveList(list) { try { localStorage.setItem('nq_agents', JSON.stringify(list)); } catch (e) {} this.setState({ agents: list }); }
+  renderVals() {
+    const s = this.state;
+    const set = (o) => this.setState(o);
+    const navItem = (icon, label, active, badge) => ({
+      isItem: true, isSection: false, label, badge: badge || '',
+      icon, iconColor: active ? '#42481c' : '#94A3AC', bar: active ? '#42481c' : 'transparent',
+      onClick: () => { const map = { 'Dashboard': 'Dashboard Operasi.dc.html', 'Bayaran Ansuran': 'Bayaran Ansuran.dc.html', 'Tempahan & Pelanggan': 'Tempahan & Pelanggan.dc.html', 'Pengesahan Bayaran': 'Tempahan & Pelanggan.dc.html', 'Lafaz Akad': 'Lafaz Akad.dc.html', 'Agihan Negara': 'Agihan Negara.dc.html', 'Pelaksanaan & Laporan': 'Pelaksanaan & Laporan.dc.html', 'AWB & Postage': 'AWB & Postage.dc.html', 'Tempahan Selesai': 'Tempahan Selesai.dc.html', 'Vendor': 'Vendor.dc.html', 'Produk': 'Produk.dc.html', 'Dokumen': 'Dokumen.dc.html', 'Sales CRM': 'Sales CRM.dc.html', 'Kod Promosi': 'Kod Promosi.dc.html', 'Pengurusan Ejen': 'Pengurusan Ejen.dc.html', 'Kewangan': 'Kewangan.dc.html', 'Pusat Laporan': 'Pusat Laporan.dc.html', 'Audit Log': 'Audit Log.dc.html', 'Notifikasi': 'Notifikasi.dc.html', 'Pengguna': 'Pengguna & Peranan.dc.html' }; if (map[label] && !active) { try { location.href = (function(p){try{var u=new URL(p,location.href);new URLSearchParams(location.search).forEach(function(v,k){if(!u.searchParams.has(k))u.searchParams.set(k,v);});return u.href;}catch(e){return p;}})(map[label]); } catch (e) {} } },
+      rowStyle: 'position:relative; display:flex; align-items:center; gap:12px; padding:10px 14px; margin:2px 0; border-radius:9px; font-size:13.5px; cursor:pointer;' + (active ? 'background:#edeee0; color:#42481c; font-weight:700;' : 'color:#475569; font-weight:500;'),
+    });
+    const sec = (label) => ({ isSection: true, isItem: false, label });
+    const nav = [
+      sec('UTAMA'), navItem('ph ph-squares-four', 'Dashboard', false),
+      sec('OPERASI'), navItem('ph ph-calendar-check', 'Bayaran Ansuran', false), navItem('ph ph-shopping-cart-simple', 'Tempahan & Pelanggan', false, '34'), navItem('ph ph-seal-check', 'Pengesahan Bayaran', false, '5'), navItem('ph ph-hand-heart', 'Lafaz Akad', false), navItem('ph ph-globe-hemisphere-west', 'Agihan Negara', false), navItem('ph ph-shopping-bag', 'Pelaksanaan & Laporan', false), navItem('ph ph-package', 'AWB & Postage', false), navItem('ph ph-check-square-offset', 'Tempahan Selesai', false), navItem('ph ph-truck', 'Vendor', false), navItem('ph ph-cow', 'Produk', false), navItem('ph ph-folders', 'Dokumen', false),
+      sec('JUALAN & KEWANGAN'), navItem('ph ph-users-three', 'Sales CRM', false), navItem('ph ph-ticket', 'Kod Promosi', false), navItem('ph ph-identification-badge', 'Pengurusan Ejen', true), navItem('ph ph-wallet', 'Kewangan', false, '87'),
+      sec('LAPORAN'), navItem('ph ph-chart-bar', 'Pusat Laporan', false), navItem('ph ph-clock-counter-clockwise', 'Audit Log', false),
+      sec('SISTEM'), navItem('ph ph-bell', 'Notifikasi', false, '7'), navItem('ph ph-users', 'Pengguna', false), navItem('ph ph-certificate', 'Sijil', false), navItem('ph ph-gear-six', 'Tetapan', false),
+    ];
+
+    const agents = s.agents || [];
+    const q = (s.q || '').trim().toLowerCase();
+    const shown = agents.filter(a => !q || (a.id + ' ' + a.name + ' ' + a.email + ' ' + a.phone).toLowerCase().includes(q));
+    const rows = shown.map(a => {
+      const on = a.status === 'Aktif';
+      return { id: a.id, name: a.name, email: a.email, phone: a.phone, status: a.status,
+        ini: a.name.split(' ').slice(0, 2).map(w => w[0] || '').join('').toUpperCase(),
+        stStyle: 'font-size:11px; font-weight:600; border-radius:20px; padding:4px 11px;' + (on ? 'background:#EAF7EE; color:#16A34A;' : 'background:#FDECEC; color:#DC2626;'),
+        toggleIcon: on ? 'ph ph-prohibit' : 'ph ph-power', toggleColor: on ? '#D97706' : '#16A34A', toggleTitle: on ? 'Nyahaktif' : 'Aktifkan',
+        onView: () => set({ viewId: a.id }),
+        onEdit: () => set({ showNew: true, editId: a.id, fId: a.id, fName: a.name, fEmail: a.email, fPhone: a.phone, fPass: a.pass, fErr: '', fGender: a.gender || 'Lelaki', fDob: a.dob || '', fDaerah: a.daerah || '', fNegeri: a.negeri || 'Selangor', fBank: a.bank || 'Maybank', fAccName: a.accName || '', fAccNo: a.accNo || '' }),
+        onToggle: () => this.saveList(agents.map(x => x.id === a.id ? Object.assign({}, x, { status: on ? 'Tidak Aktif' : 'Aktif' }) : x)),
+        onDelete: () => { if (window.confirm('Buang ejen ' + a.name + '?')) this.saveList(agents.filter(x => x.id !== a.id)); },
+      };
+    });
+    const active = agents.filter(a => a.status === 'Aktif').length;
+    const RATE = 0.05;
+    const money = (n) => 'RM ' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    let ordersAll = []; try { ordersAll = JSON.parse(localStorage.getItem('nq_agent_orders') || '[]'); } catch (e) {}
+    const per = s.period || 'all';
+    const iso = (d) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    const refStr = s.refDate || iso(new Date());
+    const rp = refStr.split('-').map(Number);
+    const fromStr = s.fromDate || (refStr.slice(0, 8) + '01'), toStr = s.toDate || refStr;
+    const inPer = (ts) => { if (per === 'all') return true; if (per === 'range') { const k = iso(new Date(ts || Date.now())); return k >= fromStr && k <= toStr; } const d = new Date(ts || Date.now()); if (d.getFullYear() !== rp[0]) return false; if (per === 'year') return true; if (d.getMonth() + 1 !== rp[1]) return false; if (per === 'month') return true; return d.getDate() === rp[2]; };
+    const mAgo = (m, d) => { const x = new Date(); x.setDate(1); x.setMonth(x.getMonth() - m); x.setDate(d); return x.getTime(); };
+    const demoOrders = [
+      ['AZ01', 0, 3, 850, 50], ['AZ01', 0, 12, 299, 20], ['AZ01', 1, 8, 550, 30], ['AZ01', 2, 15, 497, 20],
+      ['NS02', 0, 5, 900, 40], ['NS02', 1, 20, 250, 20],
+      ['HR03', 1, 2, 850, 30], ['HR03', 3, 10, 1200, 60],
+    ].map(([ref, m, d, total, comm], i) => ({ no: 'DEMO-' + i, ref, total, comm, status: 'Dibayar', at: mAgo(m, d) }));
+    const orders = ordersAll.concat(demoOrders).filter(o => inPer(o.at));
+    const bln = ['Jan','Feb','Mac','Apr','Mei','Jun','Jul','Ogos','Sep','Okt','Nov','Dis'];
+    const dmy = (x) => { const p = x.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; };
+    const periodNote = per === 'range' ? (dmy(fromStr) + ' \u2013 ' + dmy(toStr)) : per === 'all' ? 'Semua tempoh' : per === 'year' ? ('Tahun ' + rp[0]) : per === 'month' ? (bln[rp[1] - 1] + ' ' + rp[0]) : (rp[2] + ' ' + bln[rp[1] - 1] + ' ' + rp[0]);
+    const perSlug = per === 'range' ? (fromStr + '_' + toStr) : per === 'all' ? 'Semua' : per === 'year' ? String(rp[0]) : per === 'month' ? (rp[0] + '-' + String(rp[1]).padStart(2, '0')) : refStr;
+    let cat = []; try { cat = JSON.parse(localStorage.getItem('nq_products') || '[]'); } catch (e) {}
+    const commOf = (o) => { if (o.comm != null) return Number(o.comm) || 0; const nm = String(o.product || '').split(' \u2014 ')[0]; const p = cat.find(x => x.name === nm); return p ? (Number(p.comm) || 0) * (Number(o.qty) || 1) : 0; };
+    const seed = { AZ01: [4, 2196, 120], NS02: [2, 1150, 60], HR03: [1, 850, 30] };
+    const perfRaw = agents.map(a => {
+      const mine = orders.filter(o => o.ref === a.id && o.status !== 'Ditolak' && o.status !== 'Menunggu Pengesahan');
+      const sd = [0, 0, 0];
+      const sales = mine.reduce((t, o) => t + (Number(o.total) || 0), 0) + sd[1];
+      const comm = mine.reduce((t, o) => t + commOf(o), 0) + sd[2];
+      return { id: a.id, name: a.name, count: mine.length + sd[0], sales, comm };
+    }).sort((x, y) => y.sales - x.sales);
+    const totC = perfRaw.reduce((t, p) => t + p.comm, 0);
+    const maxS = Math.max(1, ...perfRaw.map(p => p.sales));
+    const totS = perfRaw.reduce((t, p) => t + p.sales, 0);
+    return {
+      nav, rows: rows.map(r => { const p = perfRaw.find(x => x.id === r.id) || { sales: 0, comm: 0 }; return Object.assign({}, r, { sales: money(p.sales), comm: money(p.comm) }); }), empty: shown.length === 0,
+      periodTabs: [['all', 'Semua'], ['day', 'Hari'], ['month', 'Bulan'], ['year', 'Tahun'], ['range', 'Julat Tarikh']].map(([k, label]) => ({ label, onClick: () => set({ period: k }), style: 'font-size:12.5px; font-weight:600; border-radius:7px; padding:6px 12px; cursor:pointer;' + (per === k ? 'background:#42481c; color:#fff;' : 'color:#475569;') })),
+      refDate: refStr, onRefDate: (e) => set({ refDate: e.target.value, period: per !== 'all' ? per : 'month' }),
+      monthSel: per === 'month' ? refStr.slice(0, 7) : '__all',
+      monthOpts: [{ v: '__all', l: 'Semua Bulan' }].concat(Array.from({ length: 12 }).map((_, i) => { const d = new Date(); d.setDate(1); d.setMonth(d.getMonth() - i); const v = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0'); return { v, l: bln[d.getMonth()] + ' ' + d.getFullYear() }; })),
+      onMonthSel: (e) => { const v = e.target.value; if (v === '__all') set({ period: 'all' }); else set({ period: 'month', refDate: v + '-01' }); },
+      showInv: s.showInv === true, openInv: () => set({ showInv: true }), closeInv: () => set({ showInv: false }),
+      invNo: 'INV-KOM-' + perSlug.replace(/_/g, '-'),
+      invDate: (function () { const d = new Date(); return String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0') + '/' + d.getFullYear(); })(),
+      invRows: perfRaw.filter(p => p.comm > 0).map((p, i) => { const ag = agents.find(x => x.id === p.id) || {}; return { n: String(i + 1), id: p.id, name: p.name, bank: ag.bank || '-', acc: [ag.accName, ag.accNo].filter(Boolean).join(' \u00b7 ') || '-', count: String(p.count), sales: money(p.sales), comm: money(p.comm) }; }),
+      printInv: () => { window.print(); },
+      pdfInv: () => { const el = document.getElementById('comm-inv'); if (!el || typeof html2pdf === 'undefined') { window.print(); return; } const sh = el.style.boxShadow; el.style.boxShadow = 'none'; const done = () => { el.style.boxShadow = sh; }; html2pdf().set({ margin: 0, filename: 'Invois-Komisen-' + perSlug + '.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' }, pagebreak: { mode: ['avoid-all'] }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(el).save().then(done).catch(done); },
+      periodNote, isRange: per === 'range', notRange: per !== 'range',
+      fromDate: fromStr, toDate: toStr,
+      onFromDate: (e) => { const v = e.target.value; set({ fromDate: v, toDate: (s.toDate && s.toDate < v) ? v : s.toDate }); },
+      onToDate: (e) => { const v = e.target.value; set({ toDate: v, fromDate: (s.fromDate && s.fromDate > v) ? v : s.fromDate }); },
+      ...(function (self) {
+        const va = s.viewId ? agents.find(x => x.id === s.viewId) : null;
+        const vp = va ? perfRaw.find(p => p.id === va.id) : null;
+        const fmtD = (d) => { if (!d) return '-'; const p = d.split('-'); return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : d; };
+        const R = (k, v) => ({ isRow: true, isSec: false, k, v: v || '-' }), S = (k) => ({ isRow: false, isSec: true, k, v: '' });
+        return {
+          showView: !!va, vName: va ? va.name : '', vId: va ? va.id : '', vStatus: va ? va.status : '',
+          vSales: money(vp ? vp.sales : 0), vComm: money(vp ? vp.comm : 0),
+          vRows: va ? [S('Hubungan'), R('Emel', va.email), R('No. Telefon', va.phone), S('Maklumat Peribadi'), R('Jantina', va.gender), R('Tarikh Lahir', fmtD(va.dob)), R('Daerah', va.daerah), R('Negeri', va.negeri), S('Maklumat Bank'), R('Bank', va.bank), R('Nama Akaun', va.accName), R('Nombor Akaun', va.accNo), S('Prestasi'), R('Bilangan Tempahan', vp ? String(vp.count) : '0')] : [],
+          closeView: () => self.setState({ viewId: null }),
+          editFromView: () => { if (!va) return; self.setState({ viewId: null, showNew: true, editId: va.id, fId: va.id, fName: va.name, fEmail: va.email, fPhone: va.phone, fPass: va.pass, fErr: '', fGender: va.gender || 'Lelaki', fDob: va.dob || '', fDaerah: va.daerah || '', fNegeri: va.negeri || 'Selangor', fBank: va.bank || 'Maybank', fAccName: va.accName || '', fAccNo: va.accNo || '' }); },
+          exportExcel: () => {
+            if (typeof XLSX === 'undefined') { alert('Pustaka Excel belum dimuat. Sila cuba semula.'); return; }
+            const aoa = [['Tempoh: ' + periodNote], [], ['ID Ejen', 'Nama Penuh', 'Emel', 'No. Telefon', 'Jantina', 'Tarikh Lahir', 'Daerah', 'Negeri', 'Bank', 'Nama Akaun', 'Nombor Akaun', 'Status', 'Bil. Tempahan', 'Jualan (RM)', 'Komisen (RM)']];
+            shown.forEach(x => { const p = perfRaw.find(y => y.id === x.id) || { count: 0, sales: 0, comm: 0 }; aoa.push([x.id, x.name, x.email, x.phone, x.gender || '', fmtD(x.dob), x.daerah || '', x.negeri || '', x.bank || '', x.accName || '', x.accNo || '', x.status, p.count, Number(p.sales.toFixed(2)), Number(p.comm.toFixed(2))]); });
+            const ws = XLSX.utils.aoa_to_sheet(aoa);
+            ws['!cols'] = [{ wch: 9 }, { wch: 24 }, { wch: 26 }, { wch: 14 }, { wch: 10 }, { wch: 12 }, { wch: 14 }, { wch: 16 }, { wch: 16 }, { wch: 22 }, { wch: 18 }, { wch: 11 }, { wch: 12 }, { wch: 13 }, { wch: 13 }];
+            const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Ejen');
+            XLSX.writeFile(wb, 'Komisen-Ejen-' + perSlug + '.xlsx');
+          },
+        };
+      })(this),
+      totSales: money(totS), totComm: money(totC), totOrders: String(perfRaw.reduce((t, p) => t + p.count, 0)),
+      perf: perfRaw.slice(0, 10).map((p, i) => ({ rank: String(i + 1), rankStyle: 'width:22px; height:22px; border-radius:6px; font-size:11px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0;' + (i === 0 ? 'background:#C9A227; color:#fff;' : i < 3 ? 'background:#42481c; color:#fff;' : 'background:#F1F5F4; color:#64748B;'), id: p.id, name: p.name, count: String(p.count), sales: money(p.sales), comm: money(p.comm), pct: Math.round(p.sales / maxS * 100) + '%' })),
+      stats: [
+        { icon: 'ph ph-users-three', tint: '#edeee0', color: '#42481c', value: String(agents.length), label: 'Jumlah Ejen' },
+        { icon: 'ph ph-check-circle', tint: '#EAF7EE', color: '#16A34A', value: String(active), label: 'Ejen Aktif' },
+        { icon: 'ph ph-prohibit', tint: '#FDECEC', color: '#DC2626', value: String(agents.length - active), label: 'Tidak Aktif' },
+      ],
+      q: s.q || '', onQ: (e) => set({ q: e.target.value }),
+      showNew: s.showNew === true,
+      formTitle: s.editId ? 'Edit Ejen' : 'Tambah Ejen',
+      openNew: () => set({ showNew: true, editId: null, fId: '', fName: '', fEmail: '', fPhone: '', fPass: '', fErr: '', fGender: 'Lelaki', fDob: '', fDaerah: '', fNegeri: 'Selangor', fBank: 'Maybank', fAccName: '', fAccNo: '' }),
+      closeNew: () => set({ showNew: false, editId: null }),
+      fId: s.fId || '', onFId: (e) => set({ fId: e.target.value.toUpperCase(), fErr: '' }),
+      fName: s.fName || '', onFName: (e) => set({ fName: e.target.value, fErr: '' }),
+      fEmail: s.fEmail || '', onFEmail: (e) => set({ fEmail: e.target.value, fErr: '' }),
+      fPhone: s.fPhone || '', onFPhone: (e) => set({ fPhone: e.target.value }),
+      fGender: s.fGender || 'Lelaki', onFGender: (e) => set({ fGender: e.target.value }),
+      fDob: s.fDob || '', onFDob: (e) => set({ fDob: e.target.value }),
+      fDaerah: s.fDaerah || '', onFDaerah: (e) => set({ fDaerah: e.target.value }),
+      fNegeri: s.fNegeri || 'Selangor', onFNegeri: (e) => set({ fNegeri: e.target.value }),
+      fBank: s.fBank || 'Maybank', onFBank: (e) => set({ fBank: e.target.value }),
+      fAccName: s.fAccName || '', onFAccName: (e) => set({ fAccName: e.target.value }),
+      fAccNo: s.fAccNo || '', onFAccNo: (e) => set({ fAccNo: e.target.value }),
+      fPass: s.fPass || '', onFPass: (e) => set({ fPass: e.target.value, fErr: '' }),
+      genPass: () => { const c = 'abcdefghjkmnpqrstuvwxyz23456789'; let p = ''; for (let i = 0; i < 8; i++) p += c[Math.floor(Math.random() * c.length)]; set({ fPass: p }); },
+      fErr: s.fErr || '', fErrStyle: 'grid-column:1 / -1; font-size:12px; font-weight:600; color:#DC2626;' + (s.fErr ? '' : 'display:none;'),
+      saveAgent: () => {
+        const id = (s.fId || '').trim().toUpperCase(), email = (s.fEmail || '').trim().toLowerCase();
+        if (!id || !(s.fName || '').trim() || !email || !s.fPass) { set({ fErr: 'Sila isi ID, nama, emel dan kata laluan.' }); return; }
+        if (agents.some(x => x.id !== s.editId && (x.id === id || x.email === email))) { set({ fErr: 'ID atau emel sudah digunakan.' }); return; }
+        const rec = { id, name: s.fName.trim(), email, phone: s.fPhone || '-', pass: s.fPass, status: 'Aktif', gender: s.fGender || 'Lelaki', dob: s.fDob || '', daerah: s.fDaerah || '', negeri: s.fNegeri || 'Selangor', bank: s.fBank || 'Maybank', accName: s.fAccName || '', accNo: s.fAccNo || '' };
+        const list = s.editId ? agents.map(x => x.id === s.editId ? Object.assign({}, x, rec, { status: x.status }) : x) : [rec].concat(agents);
+        this.saveList(list); set({ showNew: false, editId: null });
+      },
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -52,6 +52,9 @@ class Index extends Component
 
     public string $stock = '';
 
+    /** Komisen Ejen (RM) per unit. */
+    public string $commission = '';
+
     public string $description = '';
 
     public bool $isActive = true;
@@ -134,6 +137,7 @@ class Index extends Component
         $this->countryId = $p->country_id;
         $this->price = number_format($p->price_sen / 100, $p->price_sen % 100 ? 2 : 0, '.', '');
         $this->stock = (string) $p->stock;
+        $this->commission = $p->commission_sen ? number_format($p->commission_sen / 100, $p->commission_sen % 100 ? 2 : 0, '.', '') : '';
         $this->description = (string) $p->description;
         $this->isActive = $p->is_active;
         $this->showForm = true;
@@ -156,10 +160,18 @@ class Index extends Component
                 }
             }],
             'stock' => ['required', 'integer', 'min:0', 'max:1000000'],
+            'commission' => ['nullable', function (string $attr, mixed $value, \Closure $fail) {
+                $sen = parse_rm(is_scalar($value) ? (string) $value : null);
+                if ($sen === null || $sen < 0) {
+                    $fail('Komisen mesti jumlah RM yang sah (cth. 50).');
+                } elseif ($sen >= (int) parse_rm($this->price)) {
+                    $fail('Komisen mesti kurang daripada harga produk.');
+                }
+            }],
             'description' => ['nullable', 'string', 'max:500'],
         ], attributes: [
             'name' => 'nama produk', 'serviceField' => 'servis', 'animal' => 'haiwan', 'packageId' => 'pakej',
-            'countryId' => 'negara', 'price' => 'harga', 'stock' => 'stok', 'description' => 'keterangan',
+            'countryId' => 'negara', 'price' => 'harga', 'stock' => 'stok', 'commission' => 'komisen ejen', 'description' => 'keterangan',
         ]);
 
         /** @var User $actor */
@@ -174,6 +186,7 @@ class Index extends Component
                 'package_id' => (int) $this->packageId,
                 'country_id' => (int) $this->countryId,
                 'price_sen' => (int) parse_rm($this->price),
+                'commission_sen' => trim($this->commission) === '' ? 0 : (int) parse_rm($this->commission),
                 'stock' => (int) $this->stock,
                 'description' => trim($this->description) ?: null,
                 'is_active' => $this->isActive,
@@ -199,7 +212,7 @@ class Index extends Component
 
     private function resetForm(): void
     {
-        $this->reset('editingId', 'name', 'price', 'stock', 'description');
+        $this->reset('editingId', 'name', 'price', 'stock', 'commission', 'description');
         $this->serviceField = Service::Qurban->value;
         $this->animal = Animal::Cow->value;
         $this->packageId = $this->packages->first()?->id;

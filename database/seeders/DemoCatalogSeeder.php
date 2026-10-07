@@ -52,6 +52,9 @@ class DemoCatalogSeeder extends Seeder
                 'package_id' => $packageModel->id,
                 'country_id' => $country($countryName),
                 'price_sen' => $price * 100,
+                'commission_sen' => match ($animal) {
+                    Animal::Goat => 2000, Animal::Camel => 6000, default => 5000
+                },
                 'stock' => $stock,
                 'description' => $desc,
                 'is_active' => true,

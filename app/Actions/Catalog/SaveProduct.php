@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 class SaveProduct
 {
     /**
-     * @param  array{name: string, service: string, animal: string, package_id: int, country_id: int, price_sen: int, stock: int, description: ?string, is_active: bool}  $data
+     * @param  array{name: string, service: string, animal: string, package_id: int, country_id: int, price_sen: int, commission_sen: int, stock: int, description: ?string, is_active: bool}  $data
      */
     public function handle(?Product $product, array $data, User $actor): Product
     {
@@ -27,7 +27,7 @@ class SaveProduct
 
             $isNew = $product === null;
             $product ??= new Product;
-            $before = $isNew ? [] : $product->only(['name', 'price_sen', 'stock', 'is_active', 'country_id', 'package_id']);
+            $before = $isNew ? [] : $product->only(['name', 'price_sen', 'commission_sen', 'stock', 'is_active', 'country_id', 'package_id']);
 
             $product->fill($data + ['code' => $code])->save();
 

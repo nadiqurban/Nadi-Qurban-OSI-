@@ -213,3 +213,30 @@ it('numbers customers CUST-10240, CUST-10241 …', function () {
         ->and(Sequence::next('test', 5))->toBe(5)
         ->and(Sequence::next('test', 5))->toBe(6);
 });
+
+it('stores the agent commission per product and shows it on the card', function () {
+    $admin = superAdmin();
+    $p = Product::where('name', 'Qurban Lembu Uganda')->firstOrFail();
+
+    Livewire::actingAs($admin)->test(ProductsIndex::class)
+        ->assertSee('Komisen')
+        ->call('edit', $p->id)
+        ->assertSet('commission', '50')
+        ->set('commission', '75')
+        ->call('save')
+        ->assertHasNoErrors();
+
+    expect($p->fresh()->commission_sen)->toBe(7500);
+
+    $this->actingAs($admin)->get('/produk')->assertSee('RM 75');
+});
+
+it('rejects a commission that is invalid or not below the price', function () {
+    Livewire::actingAs(superAdmin())->test(ProductsIndex::class)
+        ->call('edit', Product::where('name', 'Aqiqah Kambing Malaysia')->value('id'))
+        ->set('commission', 'abc')->call('save')->assertHasErrors('commission')
+        ->set('commission', '850')->call('save')->assertHasErrors('commission')
+        ->set('commission', '')->call('save')->assertHasNoErrors();
+
+    expect(Product::where('name', 'Aqiqah Kambing Malaysia')->value('commission_sen'))->toBe(0);
+});

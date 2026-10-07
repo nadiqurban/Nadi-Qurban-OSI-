@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $package_id
  * @property int $country_id
  * @property int $price_sen
+ * @property int $commission_sen agent commission per unit
  * @property int $stock
  * @property string|null $description
  * @property bool $is_active
@@ -31,7 +32,7 @@ class Product extends Model
 
     protected $fillable = [
         'code', 'name', 'service', 'animal', 'package_id', 'country_id',
-        'price_sen', 'stock', 'description', 'is_active',
+        'price_sen', 'commission_sen', 'stock', 'description', 'is_active',
     ];
 
     protected function casts(): array
@@ -40,6 +41,7 @@ class Product extends Model
             'service' => Service::class,
             'animal' => Animal::class,
             'price_sen' => 'integer',
+            'commission_sen' => 'integer',
             'stock' => 'integer',
             'is_active' => 'boolean',
         ];

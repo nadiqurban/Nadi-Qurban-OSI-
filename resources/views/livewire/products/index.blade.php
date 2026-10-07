@@ -52,6 +52,10 @@
                             </div>
                             <div class="flex items-end gap-3">
                                 <div class="text-right">
+                                    <div class="text-[11px] text-faint">Komisen</div>
+                                    <div class="text-[14px] font-bold text-gold-ink">{{ $p->commission_sen ? rm($p->commission_sen) : '-' }}</div>
+                                </div>
+                                <div class="text-right">
                                     <div class="text-[11px] text-faint">Stok</div>
                                     <div class="text-[14px] font-bold {{ $p->stockClass() }}">{{ $p->stock }} unit</div>
                                 </div>
@@ -101,6 +105,7 @@
             </x-ui.field>
             <x-ui.field label="Harga (RM)" wire:model="price" placeholder="cth. 3500" inputmode="decimal" />
             <x-ui.field label="Stok" type="number" min="0" wire:model="stock" placeholder="cth. 50" inputmode="numeric" />
+            <x-ui.field label="Komisen Ejen (RM)" wire:model="commission" placeholder="cth. 50" inputmode="decimal" />
             <x-ui.field label="Keterangan" as="textarea" rows="2" wire:model="description" placeholder="Butiran produk..." span />
             <div class="col-span-full">
                 <x-ui.checkbox wire:model="isActive" label="Produk aktif (boleh dipilih dalam tempahan)" />

@@ -138,7 +138,8 @@ it('logs agents in on Log Masuk Ejen and keeps them inside the portal', function
         ->assertRedirect(route('agent.portal'));
 
     $this->actingAs($agent->user);
-    $this->get('/ejen/portal')->assertOk()->assertSee('Assalamualaikum, Aiman')->assertSee('/tempah/aiman-zulkifli');
+    $this->get('/ejen/portal')->assertOk()->assertSee('Assalamualaikum, Aiman')->assertSee('/tempah/aiman-zulkifli')
+        ->assertSee('href="'.url('/tempah/aiman-zulkifli').'?pratonton=1" target="_blank"', false);
     $this->get('/tempahan')->assertRedirect(route('agent.portal'));
     $this->get('/')->assertRedirect(route('agent.portal'));
 });

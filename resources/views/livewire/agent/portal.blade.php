@@ -70,10 +70,10 @@
                    class="inline-flex h-[42px] flex-1 items-center justify-center gap-[7px] rounded-[9px] bg-success px-4 text-[13px] font-semibold text-white hover:text-white sm:flex-none max-md:h-11">
                     <i class="ph ph-whatsapp-logo text-[16px]"></i> WhatsApp
                 </a>
-                <button type="button" x-on:click="$dispatch('open-modal', 'link-preview')"
-                        class="inline-flex h-[42px] flex-1 items-center justify-center gap-[7px] rounded-[9px] border border-primary bg-surface px-4 text-[13px] font-semibold text-primary sm:flex-none max-md:h-11">
+                <a href="{{ $link }}?pratonton=1" target="_blank" rel="noopener"
+                   class="inline-flex h-[42px] flex-1 items-center justify-center gap-[7px] rounded-[9px] border border-primary bg-surface px-4 text-[13px] font-semibold text-primary hover:text-primary sm:flex-none max-md:h-11">
                     <i class="ph ph-eye text-[16px]"></i> Pratonton
-                </button>
+                </a>
             </div>
         </section>
 
@@ -146,8 +146,4 @@
         </x-slot:footer>
     </x-ui.modal>
 
-    {{-- Pratonton Link Jualan --}}
-    <x-ui.modal name="link-preview" title="Pratonton Link Jualan" :subtitle="$link" icon="eye" max-width="980px" body-class="p-0">
-        <iframe src="{{ $link }}?pratonton=1" title="Pratonton Tempahan Awam" loading="lazy" class="block h-[70vh] w-full border-0"></iframe>
-    </x-ui.modal>
 </div>

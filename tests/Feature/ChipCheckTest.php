@@ -15,13 +15,13 @@ it('reports the CHIP connection without printing keys', function () {
 
     Http::fake([
         '*/public_key/' => Http::response('"-----BEGIN PUBLIC KEY-----"', 200),
-        '*/purchases/*' => Http::response(['results' => []], 200),
+        '*/payment_methods/*' => Http::response(['available_payment_methods' => ['fpx', 'visa']], 200),
     ]);
 
     $this->artisan('chip:check')
         ->expectsOutputToContain('CHIP sebenar')
         ->expectsOutputToContain('Secret Key: DITERIMA (200)')
-        ->expectsOutputToContain('Brand ID  : DITERIMA (200)')
+        ->expectsOutputToContain('Brand ID  : DITERIMA (200) · kaedah: fpx, visa')
         ->doesntExpectOutputToContain('sk_live_secret_value')
         ->assertSuccessful();
 });

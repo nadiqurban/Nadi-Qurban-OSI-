@@ -39,11 +39,14 @@ class ChipCheck extends Command
             $key = Http::baseUrl($base)->withToken($secret)->acceptJson()->timeout(15)->get('public_key/');
             $this->line('Secret Key: '.($key->successful() ? 'DITERIMA ('.$key->status().')' : 'DITOLAK ('.$key->status().')'));
 
-            // A purchase list filtered by brand: 2xx = the key may use this brand.
-            $brandCheck = Http::baseUrl($base)->withToken($secret)->acceptJson()->timeout(15)->get('purchases/', ['brand_id' => $brand, 'limit' => 1]);
-            $this->line('Brand ID  : '.($brandCheck->successful() ? 'DITERIMA ('.$brandCheck->status().')' : 'SEMAK ('.$brandCheck->status().': '.mb_substr((string) $brandCheck->body(), 0, 160).')'));
+            // Read-only: the payment methods available to this brand (no purchase is created).
+            $brandCheck = Http::baseUrl($base)->withToken($secret)->acceptJson()->timeout(15)->get('payment_methods/', ['brand_id' => $brand, 'currency' => 'MYR']);
+            $methods = (array) $brandCheck->json('available_payment_methods', []);
+            $this->line('Brand ID  : '.($brandCheck->successful()
+                ? 'DITERIMA ('.$brandCheck->status().') · kaedah: '.(implode(', ', array_map(strval(...), $methods)) ?: '-')
+                : 'DITOLAK ('.$brandCheck->status().': '.mb_substr((string) $brandCheck->body(), 0, 160).')'));
 
-            return $key->successful() ? self::SUCCESS : self::FAILURE;
+            return $key->successful() && $brandCheck->successful() ? self::SUCCESS : self::FAILURE;
         } catch (Throwable $e) {
             $this->error('Tidak dapat menghubungi CHIP: '.$e->getMessage());
 

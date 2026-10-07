@@ -157,7 +157,7 @@ class Integrations extends Component
         $has = fn (string $key) => (string) $settings->get($key) !== '';
 
         // Pasted keys often carry spaces / line breaks around them.
-        $this->form = array_map(fn ($v) => is_string($v) ? trim($v) : $v, $this->form);
+        $this->form = array_map(trim(...), $this->form);
         $this->secret = trim($this->secret);
 
         match ($g) {

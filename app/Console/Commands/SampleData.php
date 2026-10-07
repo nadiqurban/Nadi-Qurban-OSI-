@@ -10,13 +10,13 @@ use Illuminate\Support\Facades\Schema;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 /**
- * Clear all business data and leave one clean example per segment.
+ * Clear all business data and leave one clean example per segment (or nothing, with --kosong).
  * Kept: users, roles & permissions, settings, countries & packages, API clients,
  * webhooks and the audit log (immutable).
  */
 class SampleData extends Command
 {
-    protected $signature = 'nq:sample-data {--force : Jalankan tanpa pengesahan}';
+    protected $signature = 'nq:sample-data {--force : Jalankan tanpa pengesahan} {--kosong : Kosongkan sahaja, tanpa data contoh (sebelum guna sebenar)}';
 
     protected $description = 'Kosongkan data operasi dan masukkan 1 contoh bagi setiap segmen';
 
@@ -61,6 +61,13 @@ class SampleData extends Command
         }
 
         $this->info('Data operasi dikosongkan.');
+
+        if ($this->option('kosong')) {
+            DashboardStats::flush();
+            $this->info('Siap: sistem kosong dan sedia untuk data sebenar.');
+
+            return self::SUCCESS;
+        }
 
         $this->call('db:seed', ['--class' => SampleDataSeeder::class, '--force' => true]);
         DashboardStats::flush();

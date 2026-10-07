@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\OrderStage;
+use App\Models\Country;
 use App\Models\Customer;
 use App\Models\Document;
 use App\Models\InstallmentPlan;
@@ -69,4 +70,20 @@ it('runs on an empty database too (fresh install)', function () {
 
     expect(Order::query()->count())->toBeGreaterThanOrEqual(6)
         ->and(Vendor::query()->count())->toBe(1);
+});
+
+it('empties the operational data without examples when --kosong is given', function () {
+    $this->seed(DatabaseSeeder::class);
+    $users = User::query()->count();
+
+    $this->artisan('nq:sample-data', ['--force' => true, '--kosong' => true])->assertSuccessful()->run();
+
+    expect(Order::query()->count())->toBe(0)
+        ->and(Product::query()->count())->toBe(0)
+        ->and(Vendor::query()->count())->toBe(0)
+        ->and(User::query()->count())->toBe($users)
+        ->and(Country::query()->count())->toBeGreaterThan(0);
+
+    $this->actingAs(User::query()->where('email', 'nurfitri@nadiqurban.com')->firstOrFail())
+        ->get('/dashboard')->assertOk();
 });

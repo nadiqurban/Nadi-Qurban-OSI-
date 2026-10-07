@@ -15,6 +15,10 @@ class HomeController extends Controller
         /** @var User $user */
         $user = $request->user();
 
+        if ($user->isAgent()) {
+            return redirect()->route('agent.portal');
+        }
+
         $first = $navigation->for($user)->flatMap(fn (array $group) => $group['items'])->first();
 
         return redirect($first['href'] ?? route('settings.profile'));

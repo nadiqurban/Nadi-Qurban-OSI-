@@ -108,6 +108,11 @@
                     @if ($o->is_instalment)
                         <x-ui.badge tone="purple" variant="label" icon="calendar-check" class="mt-1">ANSURAN</x-ui.badge>
                     @endif
+                    @if ($o->agent)
+                        <x-ui.badge tone="gold-ink" variant="label" icon="identification-badge" class="mt-1">EJEN {{ $o->agent->code }}</x-ui.badge>
+                    @elseif ($o->source === 'public')
+                        <x-ui.badge tone="info" variant="label" icon="globe" class="mt-1">AWAM</x-ui.badge>
+                    @endif
                 </x-ui.td>
                 <x-ui.td span>
                     <div class="text-[13px] font-semibold text-ink">{{ $o->customer->name }}</div>

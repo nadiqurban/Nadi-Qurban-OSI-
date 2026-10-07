@@ -27,7 +27,7 @@ class SampleData extends Command
         'payments', 'orders', 'vendor_reports', 'vendor_payments', 'purchase_orders', 'vendor_rank_histories',
         'invoice_payments', 'invoice_items', 'invoices', 'quotations', 'lead_activities', 'leads',
         'documents', 'report_exports', 'customers', 'promo_codes', 'products', 'vendors', 'sequences',
-        'notifications',
+        'notifications', 'agent_clicks',
     ];
 
     public function handle(): int

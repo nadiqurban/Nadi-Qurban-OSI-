@@ -63,7 +63,7 @@
             <div>
                 <span class="mb-2 block text-[12px] font-semibold text-ink-2">Kebenaran Modul <span class="font-normal text-faint">(klik lencana untuk tukar)</span></span>
                 @if ($role->isLockedMatrix())
-                    <p class="mb-2 text-[11.5px] text-faint">Super Admin sentiasa mempunyai akses penuh ke semua modul.</p>
+                    <p class="mb-2 text-[11.5px] text-faint">{{ $role->lockedNote() }}</p>
                 @endif
                 <div class="max-h-[230px] overflow-y-auto rounded-[10px] border border-border max-md:max-h-none">
                     @foreach (\App\Enums\Module::cases() as $m)

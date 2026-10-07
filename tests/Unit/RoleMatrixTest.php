@@ -4,9 +4,9 @@ use App\Enums\AccessLevel;
 use App\Enums\Module;
 use App\Enums\RoleName;
 
-it('has 23 modules and 46 permissions', function () {
-    expect(Module::cases())->toHaveCount(23)
-        ->and(Module::allPermissions())->toHaveCount(46);
+it('has 24 modules and 48 permissions', function () {
+    expect(Module::cases())->toHaveCount(24)
+        ->and(Module::allPermissions())->toHaveCount(48);
 });
 
 it('matches the design matrix for the five design roles', function (RoleName $role, string $module, AccessLevel $level) {

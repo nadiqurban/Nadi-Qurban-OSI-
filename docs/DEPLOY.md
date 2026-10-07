@@ -100,7 +100,7 @@ SESSION_SAME_SITE=lax
 CACHE_STORE=database
 QUEUE_CONNECTION=database
 DB_QUEUE_RETRY_AFTER=330      # mesti > --timeout worker (300)
-FILESYSTEM_DISK=local          # lihat §7 Storan fail
+FILESYSTEM_DISK=local          # lihat §8 Storan fail
 
 MAIL_MAILER=smtp
 MAIL_HOST=                     # cth. smtp.mailgun.org / Amazon SES
@@ -182,7 +182,14 @@ Dalam produksi seeder hanya memasukkan peranan & matriks kebenaran, tetapan lala
 
 ---
 
-## 6. Integrasi selepas live
+## 6. Fasa 12 — Ejen & Tempahan Awam
+
+- Halaman awam: `/tempah` (tempahan terus) dan `/e/{nama-ejen}` (link ejen). Bayaran FPX melalui CHIP — pastikan kunci CHIP diisi & `CHIP_FAKE=false`; tanpa CHIP, pelanggan masih boleh pilih Pindahan Bank / Cek (bukti → Pengesahan Bayaran).
+- Portal ejen: `/ejen` (log masuk) → `/ejen/portal`. Ejen didaftarkan di **Pengurusan Ejen** (staf).
+- Peranan **Ejen** & kebenaran `agents.*` ditambah automatik oleh migration semasa deploy (matriks sedia ada tidak ditimpa).
+- Komisen = komisen produk (RM/unit, halaman Produk) × kuantiti, dikira selepas bayaran disahkan.
+
+## 7. Integrasi selepas live
 
 1. **CHIP Collect** — dalam dashboard CHIP daftar webhook:
    `https://osi.nadiqurban.com/webhooks/chip` untuk acara `purchase.paid` dan `purchase.payment_failure`. Salin *public key* webhook ke Tetapan › Integrasi API › CHIP IN.
@@ -191,15 +198,15 @@ Dalam produksi seeder hanya memasukkan peranan & matriks kebenaran, tetapan lala
 
 ---
 
-## 7. Storan fail
+## 8. Storan fail
 
-Semua fail sulit (bukti bayaran, resit vendor, media pelaksanaan, dokumen, laporan) disimpan pada disk `local` (`storage/app/private`) dan dihidang melalui URL bertandatangan + semakan kebenaran. Untuk satu pelayan Forge ini paling ringkas; pastikan **backup** (§8) merangkumi folder `storage/app`.
+Semua fail sulit (bukti bayaran, resit vendor, media pelaksanaan, dokumen, laporan) disimpan pada disk `local` (`storage/app/private`) dan dihidang melalui URL bertandatangan + semakan kebenaran. Untuk satu pelayan Forge ini paling ringkas; pastikan **backup** (§9) merangkumi folder `storage/app`.
 
 > DigitalOcean Spaces / S3 belum diaktifkan. Jika mahu, ia perlu perubahan kod kecil (disk media-library & laporan menjadi boleh-konfigur) — buat sebagai tugasan berasingan sebelum menukar `FILESYSTEM_DISK`.
 
 ---
 
-## 8. Backup & pemantauan
+## 9. Backup & pemantauan
 
 - Forge › Server › *Backups*: **database harian** (simpan 14 hari) ke Spaces/S3.
 - Backup fail `storage/app` mingguan (rsync / snapshot pelayan).
@@ -207,7 +214,7 @@ Semua fail sulit (bukti bayaran, resit vendor, media pelaksanaan, dokumen, lapor
 
 ---
 
-## 9. Aliran keluaran (release)
+## 10. Aliran keluaran (release)
 
 ```bash
 # di develop: pastikan CI hijau (badge dalam README)

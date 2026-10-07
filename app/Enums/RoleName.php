@@ -14,6 +14,7 @@ enum RoleName: string
     case Sales = 'Sales';
     case Operations = 'Operasi';
     case VendorPic = 'Vendor PIC';
+    case Agent = 'Ejen';
 
     public function description(): string
     {
@@ -24,6 +25,7 @@ enum RoleName: string
             self::Sales => 'Urus lead, CRM & tempahan pelanggan.',
             self::Operations => 'Urus agihan, pelaksanaan & penghantaran AWB.',
             self::VendorPic => 'Akses PO & muat naik laporan pelaksanaan.',
+            self::Agent => 'Portal Ejen sahaja: link jualan, tempahan & komisen.',
         };
     }
 
@@ -36,6 +38,7 @@ enum RoleName: string
             self::Sales => 'handshake',
             self::Operations => 'gear-six',
             self::VendorPic => 'truck',
+            self::Agent => 'identification-badge',
         };
     }
 
@@ -49,6 +52,7 @@ enum RoleName: string
             self::Sales => 'info',
             self::Operations => 'purple',
             self::VendorPic => 'gold',
+            self::Agent => 'warning',
         };
     }
 
@@ -61,21 +65,23 @@ enum RoleName: string
     /**
      * Default permission matrix column, in Module::cases() order:
      * Dashboard, Ansuran, Tempahan, Pengesahan, Akad, Agihan, Pelaksanaan, AWB,
-     * Selesai, Vendor, Produk, Dokumen, CRM, Promo, Kewangan, Laporan, Audit,
+     * Selesai, Vendor, Produk, Dokumen, CRM, Promo, Ejen, Kewangan, Laporan, Audit,
      * Notifikasi, Pengguna, Sijil, Tetapan, Webhooks, API.
-     * Columns 1–5 = design `mrows`; Operasi is new (PRD §12.20).
+     * Columns 1–5 = design `mrows`; Operasi is new (PRD §12.20). Ejen (Phase 12)
+     * never gets staff modules: agents only use the Portal Ejen.
      *
      * @return array<string, AccessLevel>
      */
     public function defaultMatrix(): array
     {
         $column = match ($this) {
-            self::SuperAdmin => 'FFFFFFFFFFFFFFFFFFFFFFF',
-            self::AdminHq => 'FFFFFFFFFFFFVFVFVFVFVNN',
-            self::Finance => 'VFVFNNNNVNNVNNFFVVNVNNN',
-            self::Sales => 'VVFNNNNNVNFVFFNVNVNVNNN',
-            self::Operations => 'VNVNFFFFVVVVNNNNNVNVNNN',
-            self::VendorPic => 'NNNNVVFVVVNVNNNNNVNNNNN',
+            self::SuperAdmin => 'FFFFFFFFFFFFFFFFFFFFFFFF',
+            self::AdminHq => 'FFFFFFFFFFFFVFFVFVFVFVNN',
+            self::Finance => 'VFVFNNNNVNNVNNVFFVVNVNNN',
+            self::Sales => 'VVFNNNNNVNFVFFVNVNVNVNNN',
+            self::Operations => 'VNVNFFFFVVVVNNNNNNVNVNNN',
+            self::Agent => str_repeat('N', 24),
+            self::VendorPic => 'NNNNVVFVVVNVNNNNNNVNNNNN',
         };
 
         $codes = str_split($column);

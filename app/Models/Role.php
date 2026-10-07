@@ -20,10 +20,20 @@ class Role extends SpatieRole
         return RoleName::tryFrom($this->name);
     }
 
-    /** Super Admin permissions are fixed (always full) so nobody can lock the system out. */
+    /**
+     * Fixed columns: Super Admin always full (nobody can lock the system out);
+     * Ejen always none (agents only use the Portal Ejen, never staff modules).
+     */
     public function isLockedMatrix(): bool
     {
-        return $this->roleName() === RoleName::SuperAdmin;
+        return in_array($this->roleName(), [RoleName::SuperAdmin, RoleName::Agent], true);
+    }
+
+    public function lockedNote(): string
+    {
+        return $this->roleName() === RoleName::Agent
+            ? 'Ejen hanya menggunakan Portal Ejen — tiada akses ke modul staf.'
+            : 'Super Admin sentiasa mempunyai akses penuh ke semua modul.';
     }
 
     public function tagTone(): string

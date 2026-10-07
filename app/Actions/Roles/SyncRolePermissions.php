@@ -4,6 +4,7 @@ namespace App\Actions\Roles;
 
 use App\Enums\AccessLevel;
 use App\Enums\Module;
+use App\Enums\RoleName;
 use App\Models\Role;
 
 /**
@@ -18,7 +19,8 @@ class SyncRolePermissions
     public function handle(Role $role, array $levels): array
     {
         if ($role->isLockedMatrix()) {
-            $levels = collect(Module::cases())->mapWithKeys(fn (Module $m) => [$m->value => AccessLevel::Full])->all();
+            $fixed = $role->roleName() === RoleName::Agent ? AccessLevel::None : AccessLevel::Full;
+            $levels = collect(Module::cases())->mapWithKeys(fn (Module $m) => [$m->value => $fixed])->all();
         }
 
         $before = self::levelsFor($role);

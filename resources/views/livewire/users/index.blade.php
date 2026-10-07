@@ -156,7 +156,7 @@
                                             <i class="{{ $level->icon() }} {{ $level->iconClass() }} text-[19px]"></i>
                                         </button>
                                     @else
-                                        <span class="flex size-11 items-center justify-center md:-my-[2.5px] md:size-6" title="{{ $r->isLockedMatrix() ? 'Super Admin sentiasa akses penuh' : $level->shortLabel() }}">
+                                        <span class="flex size-11 items-center justify-center md:-my-[2.5px] md:size-6" title="{{ $r->isLockedMatrix() ? $r->lockedNote() : $level->shortLabel() }}">
                                             <i class="{{ $level->icon() }} {{ $level->iconClass() }} text-[19px]"></i>
                                         </span>
                                     @endif
@@ -183,7 +183,7 @@
             <div class="col-span-full">
                 <span class="mb-2 block text-[12px] font-semibold text-ink-2">Peranan <span class="font-normal text-faint">(boleh pilih lebih daripada satu)</span></span>
                 <div class="flex flex-wrap gap-2" role="group" aria-label="Peranan">
-                    @foreach ($allRoles as $r)
+                    @foreach ($allRoles->reject(fn ($r) => $r->roleName() === \App\Enums\RoleName::Agent) as $r)
                         @php $on = in_array($r->name, $roles, true); @endphp
                         <button type="button" wire:click="toggleRole('{{ $r->name }}')" aria-pressed="{{ $on ? 'true' : 'false' }}"
                                 @class([

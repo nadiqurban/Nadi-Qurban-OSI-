@@ -7,7 +7,7 @@ it('redirects the root to the first module', function () {
 it('renders every sidebar route inside the app shell for a Super Admin', function () {
     $routes = collect(config('navigation'))->flatMap(fn (array $group) => $group['items'])->pluck('route');
 
-    expect($routes)->toHaveCount(21);
+    expect($routes)->toHaveCount(22);
 
     $this->actingAs($admin = superAdmin());
 

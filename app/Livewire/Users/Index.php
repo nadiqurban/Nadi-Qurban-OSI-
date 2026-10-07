@@ -113,8 +113,8 @@ class Index extends Component
     #[Computed]
     public function stats(): array
     {
-        $total = User::query()->count();
-        $suspended = User::query()->where('status', UserStatus::Suspended)->count();
+        $total = User::query()->staff()->count();
+        $suspended = User::query()->staff()->where('status', UserStatus::Suspended)->count();
 
         return [
             ['icon' => 'users-three', 'tone' => 'primary', 'value' => number_format($total), 'label' => 'Jumlah Pengguna'],
@@ -129,6 +129,7 @@ class Index extends Component
     public function users(): LengthAwarePaginator
     {
         return User::query()
+            ->staff()
             ->with('roles')
             ->when($this->search !== '', fn (Builder $q) => $q->where(fn (Builder $w) => $w
                 ->where('name', 'like', '%'.$this->search.'%')
@@ -206,7 +207,8 @@ class Index extends Component
         $this->newPassword = trim($this->newPassword);
         abort_if($this->newPassword !== '' && ! $this->actorIsSuperAdmin(), 403);
 
-        $roleNames = Role::query()->pluck('name')->all();
+        // Agents are created in Pengurusan Ejen, never here.
+        $roleNames = Role::query()->where('name', '!=', RoleName::Agent->value)->pluck('name')->all();
 
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:120'],

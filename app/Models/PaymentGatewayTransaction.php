@@ -15,6 +15,7 @@ use Illuminate\Support\Carbon;
  * @property string $reference
  * @property string|null $purchase_id
  * @property int|null $installment_plan_id
+ * @property int|null $order_id Tempahan Awam (online payment of a public booking)
  * @property list<int> $installment_ids
  * @property int $amount_sen
  * @property PortalPayMethod|null $method
@@ -24,6 +25,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $paid_at
  * @property Carbon $created_at
  * @property-read InstallmentPlan|null $plan
+ * @property-read Order|null $order
  */
 class PaymentGatewayTransaction extends Model
 {
@@ -50,6 +52,12 @@ class PaymentGatewayTransaction extends Model
     public function plan(): BelongsTo
     {
         return $this->belongsTo(InstallmentPlan::class, 'installment_plan_id');
+    }
+
+    /** @return BelongsTo<Order, $this> */
+    public function order(): BelongsTo
+    {
+        return $this->belongsTo(Order::class);
     }
 
     public function isPaid(): bool

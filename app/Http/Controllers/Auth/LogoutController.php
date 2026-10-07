@@ -16,6 +16,7 @@ class LogoutController extends Controller
         /** @var User|null $user */
         $user = $request->user();
         $idle = $request->boolean('idle');
+        $isAgent = $user?->isAgent() ?? false;
 
         if ($user) {
             Audit::log('logout', $idle ? 'Log keluar automatik (tidak aktif 30 minit)' : 'Log keluar', $user, causer: $user, logName: 'auth');
@@ -25,7 +26,7 @@ class LogoutController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login')->with(
+        return redirect()->route($isAgent ? 'agent.login' : 'login')->with(
             $idle ? 'warning' : 'status',
             $idle ? 'Sesi anda tamat selepas 30 minit tidak aktif. Sila log masuk semula.' : 'Anda telah log keluar.',
         );

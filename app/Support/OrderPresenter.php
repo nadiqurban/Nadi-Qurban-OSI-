@@ -52,6 +52,14 @@ final class OrderPresenter
 
         $rows[] = ['k' => 'Harga', 'v' => rm($order->total_sen)];
 
+        if ($order->source === 'public') {
+            $rows[] = ['k' => 'Sumber', 'v' => 'Tempahan Awam (dalam talian)'];
+        }
+
+        if ($order->agent) {
+            $rows[] = ['k' => 'Ejen', 'v' => $order->agent->user->name.' ('.$order->agent->code.') · komisen '.rm($order->commission_sen)];
+        }
+
         return $rows;
     }
 

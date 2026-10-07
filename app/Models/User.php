@@ -7,10 +7,12 @@ use App\Enums\UserStatus;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
@@ -24,6 +26,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string|null $phone
  * @property string|null $position
  * @property string|null $avatar_path
+ * @property-read Agent|null $agent
  * @property int|null $vendor_id
  * @property UserStatus $status
  * @property bool $must_change_password
@@ -82,6 +85,29 @@ class User extends Authenticatable
     public function vendor(): BelongsTo
     {
         return $this->belongsTo(Vendor::class);
+    }
+
+    /** @return HasOne<Agent, $this> */
+    public function agent(): HasOne
+    {
+        return $this->hasOne(Agent::class);
+    }
+
+    /**
+     * Staff accounts only (everyone except sales agents).
+     *
+     * @param  Builder<User>  $query
+     * @return Builder<User>
+     */
+    public function scopeStaff(Builder $query): Builder
+    {
+        return $query->whereDoesntHave('roles', fn (Builder $r) => $r->where('name', RoleName::Agent->value));
+    }
+
+    /** Sales agents (role "Ejen") only use the Portal Ejen. */
+    public function isAgent(): bool
+    {
+        return $this->hasRole(RoleName::Agent->value);
     }
 
     public function isVendorPic(): bool

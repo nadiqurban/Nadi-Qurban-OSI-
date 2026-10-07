@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
  * For every authenticated request:
  *  - suspended accounts are logged out immediately;
  *  - users flagged `must_change_password` can only reach the change-password screen;
+ *  - sales agents (role Ejen) are kept inside the Portal Ejen;
  *  - `last_seen_at` is refreshed (at most once a minute) for "Akses Terakhir".
  */
 class EnsureAccountIsUsable
@@ -35,6 +36,11 @@ class EnsureAccountIsUsable
 
         if ($user->must_change_password && ! $request->routeIs('password.force', 'logout', 'livewire.*')) {
             return redirect()->route('password.force');
+        }
+
+        // Sales agents only use the Portal Ejen.
+        if ($user->isAgent() && ! $request->routeIs('agent.*', 'logout', 'livewire.*', 'password.force')) {
+            return redirect()->route('agent.portal');
         }
 
         if (! $user->last_seen_at || $user->last_seen_at->lt(now()->subMinute())) {

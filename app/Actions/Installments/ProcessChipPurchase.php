@@ -2,6 +2,7 @@
 
 namespace App\Actions\Installments;
 
+use App\Actions\Booking\ConfirmBookingPayment;
 use App\Enums\InstallmentStatus;
 use App\Enums\Severity;
 use App\Models\Installment;
@@ -12,14 +13,17 @@ use Illuminate\Support\Facades\DB;
 /**
  * Applies a (verified) CHIP Purchase to its transaction. Idempotent: callbacks,
  * webhooks and the return-page check may all deliver the same purchase.
- * paid → instalments Dibayar; error/cancelled/expired → transaction failed and the
+ * paid → instalments Dibayar / public booking verified; error/cancelled/expired → transaction failed and the
  * instalments stay "Perlu Bayar".
  */
 class ProcessChipPurchase
 {
     private const FAILED_STATUSES = ['error', 'cancelled', 'expired', 'blocked'];
 
-    public function __construct(private readonly RefreshPlanStatus $refresh) {}
+    public function __construct(
+        private readonly RefreshPlanStatus $refresh,
+        private readonly ConfirmBookingPayment $confirmBooking,
+    ) {}
 
     /** @param  array<string, mixed>  $purchase */
     public function handle(array $purchase): ?PaymentGatewayTransaction
@@ -42,10 +46,16 @@ class ProcessChipPurchase
             if ($status === 'paid') {
                 $method = 'CHIP · '.($tx->method?->shortLabel() ?? (string) data_get($purchase, 'transaction_data.payment_method', 'Online'));
 
-                Installment::query()->whereIn('id', $tx->installment_ids)->where('status', InstallmentStatus::Unpaid)
-                    ->update(['status' => InstallmentStatus::Paid, 'paid_at' => now(), 'method' => $method, 'gateway_ref' => $tx->reference]);
+                if ($tx->installment_ids !== []) {
+                    Installment::query()->whereIn('id', $tx->installment_ids)->where('status', InstallmentStatus::Unpaid)
+                        ->update(['status' => InstallmentStatus::Paid, 'paid_at' => now(), 'method' => $method, 'gateway_ref' => $tx->reference]);
+                }
 
                 $tx->forceFill(['status' => PaymentGatewayTransaction::PAID, 'paid_at' => now(), 'payload' => $this->slim($purchase)])->save();
+
+                if ($tx->order) {
+                    $this->confirmBooking->handle($tx->order, $tx->reference, $method);
+                }
 
                 if ($tx->plan) {
                     $this->refresh->handle($tx->plan);

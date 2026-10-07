@@ -55,7 +55,7 @@ class Show extends Component
 
     private function loadParticipants(): void
     {
-        $this->order->load(['customer', 'country', 'participants', 'stageHistories', 'payment.media', 'payment.order']);
+        $this->order->load(['customer', 'country', 'participants', 'stageHistories', 'payment.media', 'payment.order', 'agent.user']);
         $this->participants = $this->order->participantNames()->all();
     }
 

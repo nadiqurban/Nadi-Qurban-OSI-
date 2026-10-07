@@ -22,6 +22,7 @@ enum Module: string
     case Documents = 'documents';
     case Crm = 'crm';
     case Promo = 'promo';
+    case Agents = 'agents';
     case Finance = 'finance';
     case Reports = 'reports';
     case Audit = 'audit';
@@ -49,6 +50,7 @@ enum Module: string
             self::Documents => 'Dokumen',
             self::Crm => 'Sales CRM',
             self::Promo => 'Kod Promosi',
+            self::Agents => 'Pengurusan Ejen',
             self::Finance => 'Kewangan',
             self::Reports => 'Pusat Laporan',
             self::Audit => 'Audit Log',
@@ -79,6 +81,7 @@ enum Module: string
             self::Documents => 'folders',
             self::Crm => 'users-three',
             self::Promo => 'ticket',
+            self::Agents => 'identification-badge',
             self::Finance => 'wallet',
             self::Reports => 'chart-bar',
             self::Audit => 'clock-counter-clockwise',

@@ -65,6 +65,16 @@ class Product extends Model
         return $service->code().'-'.$animal->code().'-'.$package->code;
     }
 
+    /** Unit sold (Tempahan Awam): "1 ekor" (goat), "1/7 bahagian" (shared camel), otherwise "1 bahagian". */
+    public function unitLabel(): string
+    {
+        return match (true) {
+            $this->animal === Animal::Goat => '1 ekor',
+            str_contains((string) $this->description, '1/7') => '1/7 bahagian',
+            default => '1 bahagian',
+        };
+    }
+
     /** Stock colour rule: 0 red, < 20 amber, otherwise green. */
     public function stockClass(): string
     {

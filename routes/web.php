@@ -1,8 +1,11 @@
 <?php
 
 use App\Enums\Courier;
+use App\Http\Controllers\AgentDocumentController;
+use App\Http\Controllers\AgentProofController;
 use App\Http\Controllers\AuditExportController;
 use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\BookingDocumentController;
 use App\Http\Controllers\ChipWebhookController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\ExecutionMediaController;
@@ -13,6 +16,9 @@ use App\Http\Controllers\OrderDocumentController;
 use App\Http\Controllers\ReportDownloadController;
 use App\Http\Controllers\ThemeController;
 use App\Http\Controllers\VendorDocumentController;
+use App\Livewire\Agent\Login as AgentLogin;
+use App\Livewire\Agent\Portal as AgentPortal;
+use App\Livewire\Agents\Index as AgentsIndex;
 use App\Livewire\Akad\Index as AkadIndex;
 use App\Livewire\Allocation\Index as AllocationIndex;
 use App\Livewire\Audit\Index as AuditIndex;
@@ -39,6 +45,8 @@ use App\Livewire\Orders\Show as OrdersShow;
 use App\Livewire\Payments\Verify as PaymentsVerify;
 use App\Livewire\Products\Index as ProductsIndex;
 use App\Livewire\Promo\Index as PromoIndex;
+use App\Livewire\Public\Booking;
+use App\Livewire\Public\BookingReceipt;
 use App\Livewire\Public\InstallmentPortal;
 use App\Livewire\Public\Tracking;
 use App\Livewire\Reports\Index as ReportsIndex;
@@ -65,6 +73,14 @@ use Illuminate\Support\Facades\Route;
 // Public: customer tracking (masked names unless ?t=token), rate-limited in the component.
 Route::livewire('/jejak', Tracking::class)->name('tracking');
 
+// Tempahan Awam (public booking) — own page or an agent's link.
+Route::middleware('throttle:60,1')->group(function () {
+    Route::livewire('/tempah', Booking::class)->name('booking');
+    Route::livewire('/e/{slug}', Booking::class)->where('slug', '[a-z0-9-]{1,80}')->name('booking.agent');
+    Route::livewire('/tempah/resit/{token}', BookingReceipt::class)->where('token', '[A-Za-z0-9]{40}')->name('booking.receipt');
+    Route::get('/tempah/resit/{token}/resit.pdf', [BookingDocumentController::class, 'receipt'])->where('token', '[A-Za-z0-9]{40}')->name('booking.receipt.pdf');
+});
+
 // Public: instalment portal (one permanent token link per plan) + CHIP Collect callback.
 Route::livewire('/bayar/{token}', InstallmentPortal::class)->where('token', '[A-Za-z0-9]{32,64}')->name('installments.portal');
 Route::get('/bayar/{token}/resit/{reference}.pdf', [InstallmentDocumentController::class, 'portalReceipt'])
@@ -73,6 +89,7 @@ Route::post('/webhooks/chip', ChipWebhookController::class)->middleware('throttl
 
 Route::middleware('guest')->group(function () {
     Route::livewire('/login', Login::class)->name('login');
+    Route::livewire('/ejen', AgentLogin::class)->name('agent.login');
     Route::livewire('/lupa-kata-laluan', ForgotPassword::class)->name('password.request');
     Route::livewire('/reset-kata-laluan/{token}', ResetPassword::class)->name('password.reset');
     Route::livewire('/akaun-dikunci', Locked::class)->name('login.locked');
@@ -81,6 +98,10 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::post('/log-keluar', LogoutController::class)->name('logout');
+    Route::middleware('role:Ejen')->group(function () {
+        Route::livewire('/ejen/portal', AgentPortal::class)->name('agent.portal');
+        Route::get('/ejen/bukti/{payment}', AgentProofController::class)->name('agent.proof');
+    });
     Route::livewire('/tukar-kata-laluan', ForceChangePassword::class)->name('password.force');
     Route::livewire('/sejarah-log-masuk', LoginHistory::class)->name('login.history');
 });
@@ -143,6 +164,10 @@ Route::middleware('auth')->group(function () {
         Route::livewire('/crm/{lead}', CrmShow::class)->name('crm.show');
     });
     Route::livewire('/kod-promosi', PromoIndex::class)->middleware('can:promo.view')->name('promo.index');
+    Route::middleware('can:agents.view')->group(function () {
+        Route::livewire('/pengurusan-ejen', AgentsIndex::class)->name('agents.index');
+        Route::get('/pengurusan-ejen/invois-komisen.pdf', [AgentDocumentController::class, 'commissionInvoice'])->name('agents.invoice');
+    });
     Route::middleware('can:finance.view')->group(function () {
         Route::livewire('/kewangan', FinanceIndex::class)->name('finance.index');
         Route::livewire('/kewangan/invois/{invoice}', FinanceInvoiceShow::class)->name('finance.invoice');

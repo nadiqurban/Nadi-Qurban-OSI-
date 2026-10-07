@@ -23,7 +23,8 @@ class VerifyPayment
 {
     public function __construct(private readonly AdvanceStage $stage) {}
 
-    public function handle(Order $order, User $actor): void
+    /** $actor null = the system (CHIP confirmed an online payment of a public booking). */
+    public function handle(Order $order, ?User $actor): void
     {
         DB::transaction(function () use ($order, $actor) {
             /** @var Order $order */
@@ -51,7 +52,7 @@ class VerifyPayment
 
             $payment->forceFill([
                 'status' => PaymentStatus::Verified,
-                'verified_by' => $actor->id,
+                'verified_by' => $actor?->id,
                 'verified_at' => now(),
                 'paid_at' => $payment->paid_at ?? now(),
             ])->save();

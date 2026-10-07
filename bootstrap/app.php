@@ -34,7 +34,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'ability' => CheckForAnyAbility::class,
         ]);
 
-        $middleware->redirectGuestsTo(fn () => route('login'));
+        $middleware->redirectGuestsTo(fn (Request $request) => $request->is('ejen', 'ejen/*') ? route('agent.login') : route('login'));
         // First module the user may view — not /dashboard, which may be "Tiada" for their role.
         $middleware->redirectUsersTo(fn () => route('home'));
     })

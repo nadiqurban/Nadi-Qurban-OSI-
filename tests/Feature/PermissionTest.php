@@ -9,8 +9,8 @@ use App\Models\Role;
 use Livewire\Livewire;
 use Spatie\Activitylog\Models\Activity;
 
-it('seeds six roles and the design permission matrix', function () {
-    expect(Role::count())->toBe(6);
+it('seeds seven roles and the design permission matrix', function () {
+    expect(Role::count())->toBe(7);
 
     $sales = Role::findByName(RoleName::Sales->value);
     expect($sales->hasPermissionTo('crm.manage'))->toBeTrue()

@@ -48,11 +48,15 @@ use Illuminate\Support\Collection;
  * @property Carbon|null $accepted_at
  * @property string|null $notes
  * @property int|null $created_by
+ * @property int|null $agent_id agent whose link brought the order
+ * @property int $commission_sen agent commission snapshot (product commission × qty)
+ * @property string $source staff | public
  * @property Carbon $created_at
  * @property-read Customer $customer
  * @property-read Country $country
  * @property-read Product|null $product
  * @property-read Payment|null $payment
+ * @property-read Agent|null $agent
  * @property-read \Illuminate\Database\Eloquent\Collection<int, OrderParticipant> $participants
  * @property-read \Illuminate\Database\Eloquent\Collection<int, OrderStageHistory> $stageHistories
  * @property-read AkadRecord|null $akad
@@ -85,7 +89,14 @@ class Order extends Model
             'subtotal_sen' => 'integer',
             'discount_sen' => 'integer',
             'total_sen' => 'integer',
+            'commission_sen' => 'integer',
         ];
+    }
+
+    /** @return BelongsTo<Agent, $this> */
+    public function agent(): BelongsTo
+    {
+        return $this->belongsTo(Agent::class);
     }
 
     /** @return BelongsTo<Customer, $this> */

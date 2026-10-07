@@ -166,7 +166,7 @@ class Index extends Component
     public function orders(): LengthAwarePaginator
     {
         return $this->filtered()
-            ->with(['customer', 'country', 'payment.order', 'payment.media'])
+            ->with(['customer', 'country', 'payment.order', 'payment.media', 'agent'])
             ->latest()
             ->latest('id')
             ->paginate(10);

@@ -32,6 +32,7 @@ class SampleDataSeeder extends Seeder
                 DemoFinanceSeeder::class,
                 DemoCrmSeeder::class,
                 DemoDocumentSeeder::class,
+                DemoAgentSeeder::class,
             ]);
         } finally {
             self::$active = false;

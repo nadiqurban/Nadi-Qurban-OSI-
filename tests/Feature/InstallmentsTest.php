@@ -175,7 +175,7 @@ it('pays selected months through CHIP from the public portal', function () {
 
     Livewire::test(InstallmentPortal::class, ['token' => $plan->pay_token])
         ->call('toggle', 1)->call('toggle', 2)
-        ->set('method', 'duitnow')
+        ->set('method', 'kad')
         ->assertSee('Bayar RM 1,166 Sekarang')
         ->call('pay')
         ->assertRedirect();
@@ -192,7 +192,7 @@ it('pays selected months through CHIP from the public portal', function () {
 
     $plan->refresh()->load('installments');
     expect($plan->paidCount())->toBe(2)
-        ->and($plan->installments->first()->method)->toBe('CHIP · DuitNow QR')
+        ->and($plan->installments->first()->method)->toBe('CHIP · Kad Kredit/Debit')
         ->and($tx->refresh()->status)->toBe('paid');
 });
 
@@ -259,4 +259,13 @@ it('lets only instalment managers change plans', function () {
     $vendor = userWithRoles(RoleName::VendorPic);
     $this->actingAs($vendor)->get(route('installments.index'))->assertForbidden();
     $this->actingAs($vendor)->get(route('installments.receipt', $plan))->assertForbidden();
+});
+
+it('offers only FPX and card in the portal (no DuitNow QR or e-wallet)', function () {
+    $plan = makePlan();
+
+    $this->get(route('installments.portal', $plan->pay_token))
+        ->assertOk()
+        ->assertSee('FPX Online Banking')->assertSee('Kad Kredit / Debit')
+        ->assertDontSee('DuitNow QR')->assertDontSee('E-Wallet (TnG, GrabPay)');
 });

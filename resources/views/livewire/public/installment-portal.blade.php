@@ -60,7 +60,7 @@
         <div class="{{ $card }} mb-4 px-5 py-[18px]">
             <div class="mb-3 flex items-center justify-between gap-2"><span class="text-[13.5px] font-bold text-ink">Pilih Kaedah Bayaran</span><span class="inline-flex items-center gap-[5px] rounded-[20px] bg-success-soft px-[9px] py-[3px] text-[10.5px] font-semibold whitespace-nowrap text-success"><i class="ph ph-shield-check text-[12px]"></i> Dikuasakan CHIP IN</span></div>
             <div class="flex flex-col gap-[9px]" role="radiogroup" aria-label="Kaedah bayaran">
-                @foreach (\App\Enums\PortalPayMethod::cases() as $pm)
+                @foreach (\App\Enums\PortalPayMethod::offered() as $pm)
                     @php $sel = $method === $pm->value; @endphp
                     <button type="button" wire:click="$set('method', '{{ $pm->value }}')" role="radio" aria-checked="{{ $sel ? 'true' : 'false' }}"
                             @class(['flex min-h-11 items-center gap-3 rounded-[10px] border-[1.5px] px-[13px] py-[11px] text-left', 'border-primary bg-bg' => $sel, 'border-border' => ! $sel])>
@@ -90,7 +90,7 @@
     @endif
 
     <div class="w-full max-w-[520px]">
-        <p class="mt-3 text-center text-[11.5px] leading-[1.6] text-faint"><i class="ph-fill ph-shield-check align-[-2px] text-[13px] text-success"></i> Pembayaran dilindungi &amp; disulitkan. Dikuasakan oleh gerbang pembayaran FPX &middot; DuitNow.</p>
+        <p class="mt-3 text-center text-[11.5px] leading-[1.6] text-faint"><i class="ph-fill ph-shield-check align-[-2px] text-[13px] text-success"></i> Pembayaran dilindungi &amp; disulitkan. Dikuasakan oleh gerbang pembayaran FPX &middot; Kad Kredit/Debit.</p>
         <div class="mt-2 text-center text-[11px] text-faint">nadiqurban.com &middot; {{ app(\App\Support\Settings::class)->get('company.name', 'Nadi Qurban Sdn. Bhd.') }} ({{ app(\App\Support\Settings::class)->get('company.ssm', '1677511-A') }})</div>
     </div>
 

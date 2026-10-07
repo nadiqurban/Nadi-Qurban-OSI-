@@ -10,6 +10,17 @@ enum PortalPayMethod: string
     case Card = 'kad';
     case EWallet = 'ewallet';
 
+    /**
+     * Methods offered in the Portal Ansuran (DuitNow QR & e-wallets removed on request).
+     * The other cases stay so past transactions keep their label.
+     *
+     * @return list<self>
+     */
+    public static function offered(): array
+    {
+        return [self::Fpx, self::Card];
+    }
+
     public function label(): string
     {
         return match ($this) {

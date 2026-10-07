@@ -95,7 +95,8 @@ class InstallmentPortal extends Component
 
         RateLimiter::hit($key, 60);
 
-        $method = PortalPayMethod::tryFrom($this->method) ?? PortalPayMethod::Fpx;
+        $method = PortalPayMethod::tryFrom($this->method);
+        $method = in_array($method, PortalPayMethod::offered(), true) ? $method : PortalPayMethod::Fpx;
         $seqs = array_keys(array_filter($this->selected));
 
         try {

@@ -15,8 +15,8 @@ use Livewire\Component;
 
 /**
  * Public "Jejak Status Tempahan" (Tracking Pelanggan.dc.html). Search by tracking
- * no. or order no.; the main participant is shown in full, other names are masked unless the link carries the
- * order's secret token (?t=…). Rate-limited per IP.
+ * no. or order no.; participant names are shown in full (the ?t= token of older
+ * links is still accepted). Rate-limited per IP.
  */
 #[Layout('layouts::public', ['title' => 'Jejak Status'])]
 #[Title('Jejak Status')]
@@ -104,14 +104,12 @@ class Tracking extends Component
         $data = ['order' => $order, 'settings' => app(Settings::class)];
 
         if ($order) {
-            $unmasked = $this->token !== '' && hash_equals($order->tracking_token, $this->token);
-            $name = fn (string $n) => $unmasked ? $n : self::mask($n);
             $done = collect(self::STEP_STAGE)->filter(fn (OrderStage $s) => $order->stage->position() >= $s->position())->count();
 
             $data += [
-                // Participant 1 is the main participant: shown in full like "Peserta Utama".
-                'names' => $order->participantNames()->map(fn (string $n, int $i) => $i === 0 && $n !== '' ? $n : $name($n ?: 'Peserta '.($i + 1)))->all(),
-                'mainName' => $order->customer->name,   // shown in full (business request); other names stay masked
+                // All names are shown in full (business request).
+                'names' => $order->participantNames()->map(fn (string $n, int $i) => $n ?: 'Peserta '.($i + 1))->all(),
+                'mainName' => $order->customer->name,
                 'done' => $done,
                 'pct' => (int) round($done / count(self::STEPS) * 100),
                 'times' => collect(self::STEP_STAGE)->map(fn (OrderStage $s) => $order->stageHistories->firstWhere('stage', $s)?->created_at)->all(),

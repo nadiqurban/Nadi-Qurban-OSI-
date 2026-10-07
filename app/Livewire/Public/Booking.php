@@ -99,10 +99,10 @@ class Booking extends Component
         }
     }
 
-    /** One click per visitor per agent per day; previews from the Portal Ejen are not counted. */
+    /** One click per visitor per agent per day; previews and the agent's own visits are not counted. */
     private function countClick(Agent $agent): void
     {
-        if (request()->boolean('pratonton')) {
+        if (request()->boolean('pratonton') || auth()->id() === $agent->user_id) {
             return;
         }
 

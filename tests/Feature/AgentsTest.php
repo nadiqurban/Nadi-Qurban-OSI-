@@ -141,6 +141,12 @@ it('logs agents in on Log Masuk Ejen and keeps them inside the portal', function
     $this->get('/ejen/portal')->assertOk()->assertSee('Assalamualaikum, Aiman')->assertSee('/tempah/aiman-zulkifli')
         ->assertSee('href="'.url('/tempah/aiman-zulkifli').'?pratonton=1" target="_blank"', false);
     $this->get('/tempahan')->assertRedirect(route('agent.portal'));
+
+    // Their own public sales link opens normally (not bounced to the portal) and is not counted.
+    $this->get('/tempah/aiman-zulkifli')->assertOk()->assertSee('Mulakan Tempahan');
+    $this->get('/tempah')->assertOk();
+    $this->get('/jejak')->assertOk();
+    expect(AgentClick::where('agent_id', $agent->id)->sum('clicks'))->toBe(0);
     $this->get('/')->assertRedirect(route('agent.portal'));
 });
 

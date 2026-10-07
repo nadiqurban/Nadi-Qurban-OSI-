@@ -38,8 +38,9 @@ class EnsureAccountIsUsable
             return redirect()->route('password.force');
         }
 
-        // Sales agents only use the Portal Ejen.
-        if ($user->isAgent() && ! $request->routeIs('agent.*', 'logout', 'livewire.*', 'password.force')) {
+        // Sales agents only use the Portal Ejen among the signed-in (staff) pages; public pages
+        // such as their own booking link (/tempah/{nama}), /jejak and receipts stay open to them.
+        if ($user->isAgent() && $this->isStaffPage($request) && ! $request->routeIs('agent.*', 'logout', 'livewire.*', 'password.force')) {
             return redirect()->route('agent.portal');
         }
 
@@ -48,5 +49,11 @@ class EnsureAccountIsUsable
         }
 
         return $next($request);
+    }
+
+    /** Pages behind the "auth" middleware (the staff app); public pages have none. */
+    private function isStaffPage(Request $request): bool
+    {
+        return in_array('auth', $request->route()?->gatherMiddleware() ?? [], true);
     }
 }

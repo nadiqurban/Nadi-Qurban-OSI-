@@ -83,7 +83,7 @@
                                     <div class="flex size-[58px] shrink-0 items-center justify-center rounded-[14px] bg-primary-soft"><span class="{{ $p->animal->maskClass() }} size-10 text-primary" role="img" aria-label="{{ $p->animal->label() }}"></span></div>
                                     <div class="text-[14.5px] font-bold text-ink">{{ $p->name }}</div>
                                 </div>
-                                <div class="mt-[3px] text-[12px] text-muted">{{ $p->country->name }} &middot; {{ $p->unitLabel() }}</div>
+                                <div class="mt-[3px] text-[12px] text-muted">{{ $p->unitLabel() }}</div>
                                 <div class="mt-[10px] text-[18px] font-extrabold text-primary">{{ rm($p->price_sen, true) }} / {{ \Illuminate\Support\Str::after($p->unitLabel(), '1 ') }}</div>
                             </button>
                         @empty
@@ -180,7 +180,6 @@
                     <div class="mt-4 flex flex-col gap-[9px] rounded-[11px] bg-bg p-4">
                         @foreach ([
                             'Produk' => $product ? $product->name.' — '.$product->package->name : '-',
-                            'Negara Pelaksanaan' => $product?->country->name ?? '-',
                             'Kuantiti' => $qty.' '.$unit,
                             'Nama Pelanggan' => $name ?: '-',
                             'Peserta' => collect($participants)->filter()->implode(', ') ?: '-',

@@ -255,6 +255,10 @@ it('counts one link click per visitor per day and none for portal previews', fun
     $agent = makeAgent();
 
     $this->get('/tempah/aiman-zulkifli')->assertOk()->assertSee('Mulakan Tempahan')->assertSee('Aiman bin Zulkifli');
+
+    // The country is not shown on the public booking cards.
+    Livewire::test(Booking::class)->call('start')
+        ->assertSee('1 bahagian')->assertDontSee('Uganda &middot;', false)->assertDontSee('Negara Pelaksanaan');
     $this->get('/tempah/aiman-zulkifli')->assertOk();
     $this->get('/tempah/aiman-zulkifli?pratonton=1')->assertOk();
     // Old /e/ links still lead to the agent's booking page.

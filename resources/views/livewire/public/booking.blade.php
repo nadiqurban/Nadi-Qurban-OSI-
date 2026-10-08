@@ -81,7 +81,7 @@
                                     @if ($on)<i class="ph-fill ph-check-circle text-[20px] text-primary"></i>@endif
                                 </div>
                                 <div class="mt-3 flex items-center gap-3">
-                                    <div class="flex size-[58px] shrink-0 items-center justify-center rounded-[14px] bg-primary-soft"><span class="{{ $p->animal->maskClass() }} size-10 text-primary" role="img" aria-label="{{ $p->animal->label() }}"></span></div>
+                                    <div class="flex size-[58px] shrink-0 items-center justify-center rounded-[14px] bg-primary-soft"><span class="{{ $p->iconClass() }} size-10 text-primary" role="img" aria-label="{{ $p->iconLabel() }}"></span></div>
                                     <div class="text-[14.5px] font-bold text-ink">{{ $p->name }}</div>
                                 </div>
                                 <div class="mt-[3px] text-[12px] text-muted">{{ $p->unitLabel() }}</div>

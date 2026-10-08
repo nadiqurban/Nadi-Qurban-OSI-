@@ -269,3 +269,13 @@ it('sets Jenis Kuantiti (Sebahagian / Ekor) on a product and uses it as the sold
 
     expect(Product::where('name', 'Qurban Kambing Indonesia')->first()?->unit ?? 'ekor')->toBe('ekor');
 });
+
+it('picks the product icon from the animal and Jenis Kuantiti', function () {
+    $make = fn (string $animal, string $unit) => new Product(['animal' => $animal, 'unit' => $unit]);
+
+    expect($make('lembu', 'bahagian')->iconClass())->toBe('nq-mask-lembu-bahagian')
+        ->and($make('lembu', 'bahagian')->iconLabel())->toBe('Sebahagian Lembu')
+        ->and($make('lembu', 'ekor')->iconClass())->toBe('nq-mask-lembu')
+        ->and($make('kambing', 'ekor')->iconClass())->toBe('nq-mask-kambing')
+        ->and($make('unta', 'bahagian')->iconClass())->toBe('nq-mask-unta');
+});

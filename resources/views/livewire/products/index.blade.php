@@ -28,7 +28,7 @@
             @foreach ($this->products as $p)
                 <article wire:key="product-{{ $p->id }}" class="flex min-w-0 flex-col overflow-hidden rounded-[14px] border border-border bg-surface">
                     <div class="relative flex h-[120px] items-center justify-center {{ $p->animal->cardClasses() }}">
-                        <span class="{{ $p->animal->maskClass() }} size-[52px]" role="img" aria-label="{{ $p->animal->label() }}"></span>
+                        <span class="{{ $p->iconClass() }} size-[52px]" role="img" aria-label="{{ $p->iconLabel() }}"></span>
                         <span class="absolute top-3 right-3 rounded-[20px] bg-white px-[11px] py-1 text-[11px] font-bold {{ $p->animal->inkClass() }}">{{ $p->package->name }}</span>
                     </div>
                     <div class="flex flex-1 flex-col gap-1 px-[18px] py-4">

@@ -85,6 +85,17 @@ class Product extends Model
         };
     }
 
+    /** Product icon: Sebahagian Lembu, Lembu, Kambing or Unta (CSS mask class + label). */
+    public function iconClass(): string
+    {
+        return $this->animal === Animal::Cow && $this->unit !== 'ekor' ? 'nq-mask-lembu-bahagian' : $this->animal->maskClass();
+    }
+
+    public function iconLabel(): string
+    {
+        return $this->iconClass() === 'nq-mask-lembu-bahagian' ? 'Sebahagian Lembu' : $this->animal->label();
+    }
+
     /** Stock colour rule: 0 red, < 20 amber, otherwise green. */
     public function stockClass(): string
     {

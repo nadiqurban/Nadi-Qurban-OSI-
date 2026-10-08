@@ -1,6 +1,7 @@
 <?php
 
 use App\Actions\Orders\CreateOrder;
+use App\Actions\Orders\DeleteOrders;
 use App\Actions\Orders\VerifyPayment;
 use App\Enums\OrderStage;
 use App\Enums\OrderStatus;
@@ -13,6 +14,7 @@ use App\Livewire\Orders\Show as OrdersShow;
 use App\Livewire\Payments\Verify;
 use App\Models\Customer;
 use App\Models\Order;
+use App\Models\OrderParticipant;
 use App\Models\Product;
 use App\Models\PromoCode;
 use App\Navigation\Badges\PendingPayments;
@@ -27,6 +29,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use Livewire\Livewire;
 use Maatwebsite\Excel\Facades\Excel;
+use Spatie\Activitylog\Models\Activity;
 use Spatie\LaravelPdf\Facades\Pdf;
 
 beforeEach(function () {
@@ -359,7 +362,7 @@ it('exports orders, customers and payments to Excel', function () {
     Excel::assertDownloaded('Pengesahan-Bayaran-Nadi-Qurban.xlsx');
 });
 
-it('cancels the selected orders with the Batal button (completed ones are kept)', function () {
+it('deletes the selected orders for good with the Batal button (completed ones are kept)', function () {
     $this->seed([SettingsSeeder::class, MasterDataSeeder::class, DemoCatalogSeeder::class, DemoOrderSeeder::class]);
     $open = Order::where('status', OrderStatus::AwaitingPayment)->firstOrFail();
     $done = Order::where('status', OrderStatus::Completed)->firstOrFail();
@@ -370,9 +373,22 @@ it('cancels the selected orders with the Batal button (completed ones are kept)'
         ->call('cancelSelected')
         ->assertHasNoErrors();
 
-    expect($open->fresh()->status)->toBe(OrderStatus::Cancelled)
+    expect(Order::withTrashed()->find($open->id))->toBeNull()
+        ->and(OrderParticipant::where('order_id', $open->id)->exists())->toBeFalse()
         ->and($done->fresh()->status)->toBe(OrderStatus::Completed);
 
     Livewire::actingAs(userWithRoles(RoleName::Finance))->test(Index::class)
         ->set('selected', [$done->id])->call('cancelSelected')->assertForbidden();
+});
+
+it('gives back stock when a verified order is cancelled and deleted', function () {
+    $this->seed([SettingsSeeder::class, MasterDataSeeder::class, DemoCatalogSeeder::class, DemoOrderSeeder::class]);
+    $order = Order::where('status', OrderStatus::InProgress)
+        ->whereHas('payment', fn ($q) => $q->where('status', PaymentStatus::Verified))->firstOrFail();
+    $stock = $order->product->stock;
+
+    app(DeleteOrders::class)->handle([$order->id], superAdmin());
+
+    expect($order->product->fresh()->stock)->toBe($stock + $order->quantity)
+        ->and(Activity::where('event', 'order.deleted')->exists())->toBeTrue();
 });

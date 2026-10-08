@@ -4,6 +4,7 @@ namespace App\Livewire\Orders;
 
 use App\Actions\Crm\Leads;
 use App\Actions\Orders\CreateOrder;
+use App\Actions\Orders\DeleteOrders;
 use App\Actions\Orders\UpdateOrderStatus;
 use App\Actions\Pipeline\IssueCertificates;
 use App\Enums\Animal;
@@ -249,12 +250,13 @@ class Index extends Component
         $this->afterBulk("{$count} tempahan ditanda Diterima dan dihantar ke Pengesahan Bayaran.");
     }
 
-    public function cancelSelected(UpdateOrderStatus $update): void
+    /** "Batal": cancelled orders are deleted for good (no record kept). */
+    public function cancelSelected(DeleteOrders $delete): void
     {
         $this->authorize(Module::Orders->managePermission());
 
-        $count = $update->handle($this->selected, OrderStatus::Cancelled, $this->actor());
-        $this->afterBulk("{$count} tempahan dibatalkan.");
+        $count = $delete->handle(array_map('intval', $this->selected), $this->actor());
+        $this->afterBulk("{$count} tempahan dibatalkan dan dipadam.");
     }
 
     public function setStatus(string $status, UpdateOrderStatus $update): void

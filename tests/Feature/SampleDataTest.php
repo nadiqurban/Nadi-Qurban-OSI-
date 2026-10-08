@@ -183,3 +183,17 @@ it('re-creates a CHIP-paid public booking missing from the database', function (
     $this->actingAs(User::query()->where('email', 'nurfitri@nadiqurban.com')->firstOrFail());
     $this->get('/tempahan/'.$restored->id)->assertOk();
 });
+
+it('gives an order its own customer when two people shared a phone number', function () {
+    $this->seed(DatabaseSeeder::class);
+    $order = Order::query()->with('customer')->firstOrFail();
+    $old = $order->customer;
+
+    $this->artisan('nq:split-customer', ['order' => $order->order_no, 'name' => 'Fauziah Binti Mohd Ashak'])
+        ->expectsOutputToContain('kini di bawah pelanggan Fauziah Binti Mohd Ashak')->assertSuccessful()->run();
+
+    $order->refresh();
+    expect($order->customer->name)->toBe('Fauziah Binti Mohd Ashak')
+        ->and($order->customer->phone)->toBe($old->phone)
+        ->and($old->fresh()->name)->toBe($old->name);
+});

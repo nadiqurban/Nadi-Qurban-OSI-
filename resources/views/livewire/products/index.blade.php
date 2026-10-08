@@ -106,6 +106,11 @@
             <x-ui.field label="Harga (RM)" wire:model="price" placeholder="cth. 3500" inputmode="decimal" />
             <x-ui.field label="Stok" type="number" min="0" wire:model="stock" placeholder="cth. 50" inputmode="numeric" />
             <x-ui.field label="Komisen Ejen (RM)" wire:model="commission" placeholder="cth. 50" inputmode="decimal" />
+            <x-ui.field label="Jenis Kuantiti" as="select" wire:model="unit">
+                @foreach (\App\Models\Product::UNITS as $value => $label)
+                    <option value="{{ $value }}">{{ $label }}</option>
+                @endforeach
+            </x-ui.field>
             <x-ui.field label="Keterangan" as="textarea" rows="2" wire:model="description" placeholder="Butiran produk..." span />
             <div class="col-span-full">
                 <x-ui.checkbox wire:model="isActive" label="Produk aktif (boleh dipilih dalam tempahan)" />

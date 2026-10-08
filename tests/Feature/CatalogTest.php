@@ -240,3 +240,32 @@ it('rejects a commission that is invalid or not below the price', function () {
 
     expect(Product::where('name', 'Aqiqah Kambing Malaysia')->value('commission_sen'))->toBe(0);
 });
+
+it('sets Jenis Kuantiti (Sebahagian / Ekor) on a product and uses it as the sold unit', function () {
+    $uganda = Country::where('name', 'Uganda')->value('id');
+
+    Livewire::actingAs(superAdmin())->test(ProductsIndex::class)
+        ->call('create')
+        ->assertSet('unit', 'bahagian')
+        ->assertSee('Jenis Kuantiti')
+        ->set('animal', 'kambing')
+        ->assertSet('unit', 'ekor')
+        ->set('animal', 'lembu')
+        ->set('unit', 'ekor')
+        ->set('name', 'Lembu Seekor Uganda')
+        ->set('countryId', $uganda)
+        ->set('price', '3500')
+        ->set('stock', '3')
+        ->call('save')
+        ->assertHasNoErrors();
+
+    $p = Product::where('name', 'Lembu Seekor Uganda')->firstOrFail();
+    expect($p->unit)->toBe('ekor')
+        ->and($p->unitLabel())->toBe('1 ekor');
+
+    Livewire::actingAs(superAdmin())->test(ProductsIndex::class)
+        ->call('edit', $p->id)->assertSet('unit', 'ekor')
+        ->set('unit', 'sekotak')->call('save')->assertHasErrors('unit');
+
+    expect(Product::where('name', 'Qurban Kambing Indonesia')->first()?->unit ?? 'ekor')->toBe('ekor');
+});

@@ -52,6 +52,9 @@ class Index extends Component
 
     public string $stock = '';
 
+    /** Jenis Kuantiti: bahagian (Sebahagian) / ekor. */
+    public string $unit = 'bahagian';
+
     /** Komisen Ejen (RM) per unit. */
     public string $commission = '';
 
@@ -137,10 +140,21 @@ class Index extends Component
         $this->countryId = $p->country_id;
         $this->price = number_format($p->price_sen / 100, $p->price_sen % 100 ? 2 : 0, '.', '');
         $this->stock = (string) $p->stock;
+        $this->unit = $p->unit;
         $this->commission = $p->commission_sen ? number_format($p->commission_sen / 100, $p->commission_sen % 100 ? 2 : 0, '.', '') : '';
         $this->description = (string) $p->description;
         $this->isActive = $p->is_active;
         $this->showForm = true;
+    }
+
+    /** Changing the animal suggests its usual Jenis Kuantiti (still editable). */
+    public function updatedAnimal(): void
+    {
+        $animal = Animal::tryFrom($this->animal);
+
+        if ($animal) {
+            $this->unit = Product::defaultUnit($animal);
+        }
     }
 
     public function save(SaveProduct $save): void
@@ -160,6 +174,7 @@ class Index extends Component
                 }
             }],
             'stock' => ['required', 'integer', 'min:0', 'max:1000000'],
+            'unit' => ['required', Rule::in(array_keys(Product::UNITS))],
             'commission' => ['nullable', function (string $attr, mixed $value, \Closure $fail) {
                 $sen = parse_rm(is_scalar($value) ? (string) $value : null);
                 if ($sen === null || $sen < 0) {
@@ -171,7 +186,7 @@ class Index extends Component
             'description' => ['nullable', 'string', 'max:500'],
         ], attributes: [
             'name' => 'nama produk', 'serviceField' => 'servis', 'animal' => 'haiwan', 'packageId' => 'pakej',
-            'countryId' => 'negara', 'price' => 'harga', 'stock' => 'stok', 'commission' => 'komisen ejen', 'description' => 'keterangan',
+            'countryId' => 'negara', 'price' => 'harga', 'stock' => 'stok', 'unit' => 'jenis kuantiti', 'commission' => 'komisen ejen', 'description' => 'keterangan',
         ]);
 
         /** @var User $actor */
@@ -188,6 +203,7 @@ class Index extends Component
                 'price_sen' => (int) parse_rm($this->price),
                 'commission_sen' => trim($this->commission) === '' ? 0 : (int) parse_rm($this->commission),
                 'stock' => (int) $this->stock,
+                'unit' => $this->unit,
                 'description' => trim($this->description) ?: null,
                 'is_active' => $this->isActive,
             ],
@@ -215,6 +231,7 @@ class Index extends Component
         $this->reset('editingId', 'name', 'price', 'stock', 'commission', 'description');
         $this->serviceField = Service::Qurban->value;
         $this->animal = Animal::Cow->value;
+        $this->unit = Product::defaultUnit(Animal::Cow);
         $this->packageId = $this->packages->first()?->id;
         $this->countryId = null;
         $this->isActive = true;

@@ -56,6 +56,7 @@ class DemoCatalogSeeder extends Seeder
                     Animal::Goat => 2000, Animal::Camel => 6000, default => 5000
                 },
                 'stock' => $stock,
+                'unit' => Product::defaultUnit($animal),
                 'description' => $desc,
                 'is_active' => true,
             ]);

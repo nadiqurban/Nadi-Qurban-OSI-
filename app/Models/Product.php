@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $price_sen
  * @property int $commission_sen agent commission per unit
  * @property int $stock
+ * @property string $unit Jenis Kuantiti: bahagian (Sebahagian) / ekor
  * @property string|null $description
  * @property bool $is_active
  * @property-read Package $package
@@ -32,7 +33,7 @@ class Product extends Model
 
     protected $fillable = [
         'code', 'name', 'service', 'animal', 'package_id', 'country_id',
-        'price_sen', 'commission_sen', 'stock', 'description', 'is_active',
+        'price_sen', 'commission_sen', 'stock', 'unit', 'description', 'is_active',
     ];
 
     protected function casts(): array
@@ -65,11 +66,20 @@ class Product extends Model
         return $service->code().'-'.$animal->code().'-'.$package->code;
     }
 
-    /** Unit sold (Tempahan Awam): "1 ekor" (goat), "1/7 bahagian" (shared camel), otherwise "1 bahagian". */
+    /** Jenis Kuantiti options (Produk form). */
+    public const UNITS = ['bahagian' => 'Sebahagian', 'ekor' => 'Ekor'];
+
+    /** Default Jenis Kuantiti for an animal: a goat is sold whole, cows and camels by share. */
+    public static function defaultUnit(Animal $animal): string
+    {
+        return $animal === Animal::Goat ? 'ekor' : 'bahagian';
+    }
+
+    /** Unit sold (Tempahan Awam): "1 ekor", "1/7 bahagian" (shared camel) or "1 bahagian" — from Jenis Kuantiti. */
     public function unitLabel(): string
     {
         return match (true) {
-            $this->animal === Animal::Goat => '1 ekor',
+            ($this->unit ?? self::defaultUnit($this->animal)) === 'ekor' => '1 ekor',
             str_contains((string) $this->description, '1/7') => '1/7 bahagian',
             default => '1 bahagian',
         };

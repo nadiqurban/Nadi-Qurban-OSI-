@@ -139,3 +139,47 @@ it('keeps orders and instalment plans paid through CHIP when emptying', function
     $this->get('/tempahan/'.$order->id)->assertOk();
     $this->get('/ansuran')->assertOk();
 });
+
+it('re-creates a CHIP-paid public booking missing from the database', function () {
+    $this->seed(DatabaseSeeder::class);
+    app()->instance(ChipGateway::class, new FakeChipGateway);
+
+    $product = Product::query()->where('name', 'Qurban Lembu Uganda')->firstOrFail();
+    $order = app(CreatePublicBooking::class)->handle(
+        ['name' => 'Roslan Bin Arifin', 'phone' => '012-3456789', 'email' => 'roslan@example.com', 'address' => 'Jalan 1', 'postcode' => null, 'city' => null, 'state' => 'Selangor'],
+        $product, 2, ['Roslan Bin Arifin', 'Aminah'], null, PaymentMethod::Fpx, null, null,
+    );
+    $tx = app(StartBookingPayment::class)->handle($order);
+    $purchaseId = (string) $tx->purchase_id;
+    [$orderNo, $total, $reference] = [$order->order_no, $order->total_sen, $tx->reference];
+
+    // Lost: the order and its CHIP transaction are gone from the database.
+    $tx->delete();
+    $order->forceDelete();
+    DB::table('sequences')->delete();
+
+    $this->artisan('nq:restore-chip', ['purchase' => [$purchaseId]])
+        ->expectsOutputToContain("{$orderNo} ·")
+        ->expectsOutputToContain('Siap: 1 tempahan dimasukkan semula.')
+        ->assertSuccessful()->run();
+
+    $restored = Order::query()->where('order_no', $orderNo)->firstOrFail();
+
+    expect($restored->total_sen)->toBe($total)
+        ->and($restored->quantity)->toBe(2)
+        ->and($restored->stage)->toBe(OrderStage::PaymentVerified)
+        ->and($restored->country->name)->toBe('Uganda')
+        ->and($restored->customer->name)->toBe('Roslan Bin Arifin')
+        ->and($restored->payment->status)->toBe(PaymentStatus::Verified)
+        ->and($restored->participants()->count())->toBe(2)
+        ->and(PaymentGatewayTransaction::query()->where('purchase_id', $purchaseId)->value('status'))->toBe(PaymentGatewayTransaction::PAID)
+        ->and((int) DB::table('sequences')->where('name', 'order')->value('next_value'))->toBe((int) substr($orderNo, -6) + 1)
+        ->and((int) DB::table('sequences')->where('name', 'gateway-payment')->value('next_value'))->toBe((int) substr($reference, 5) + 1);
+
+    // Running it again changes nothing.
+    $this->artisan('nq:restore-chip', ['purchase' => [$purchaseId]])
+        ->expectsOutputToContain('sudah ada dalam sistem')->assertSuccessful()->run();
+
+    $this->actingAs(User::query()->where('email', 'nurfitri@nadiqurban.com')->firstOrFail());
+    $this->get('/tempahan/'.$restored->id)->assertOk();
+});

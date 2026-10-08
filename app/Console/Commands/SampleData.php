@@ -19,8 +19,8 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  *
  * Real money is never thrown away: every order / instalment plan with a successful CHIP
  * payment is kept with its customer, payment, participants, pipeline records, files and
- * the products / vendors it points to; numbering (sequences) is then kept too so new
- * numbers never collide with them.
+ * the products / vendors it points to. Numbering (sequences) is never reset, so a number
+ * already given to a customer is never handed out again.
  * Always kept: users, roles & permissions, settings, countries & packages, API clients,
  * webhooks and the audit log (immutable).
  */
@@ -111,8 +111,6 @@ class SampleData extends Command
     /** @param  array{orders: Collection<int, int>, plans: Collection<int, int>, customers: Collection<int, int>, products: Collection<int, int>, vendors: Collection<int, int>}  $keep */
     private function clear(array $keep): void
     {
-        $keepsSomething = $keep['orders']->isNotEmpty() || $keep['plans']->isNotEmpty();
-
         // Files first, except those of kept payments / execution reports / plans.
         $keptMedia = [
             Payment::class => DB::table('payments')->whereIn('order_id', $keep['orders'])->pluck('id')->all(),
@@ -151,8 +149,8 @@ class SampleData extends Command
                     $table === 'products' => $query->whereNotIn('id', $keep['products'])->delete(),
                     $table === 'vendors' => $query->whereNotIn('id', $keep['vendors'])->delete(),
                     $table === 'vendor_rank_histories' => $query->whereNotIn('vendor_id', $keep['vendors'])->delete(),
-                    // Kept orders already hold numbers: never restart numbering then.
-                    $table === 'sequences' => $keepsSomething ? 0 : $query->delete(),
+                    // Numbers already given to customers (orders, CHIP references) are never reused.
+                    $table === 'sequences' => 0,
                     default => $query->delete(),
                 };
             }

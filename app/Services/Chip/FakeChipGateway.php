@@ -33,6 +33,8 @@ class FakeChipGateway implements ChipGateway
             'id' => $id,
             'status' => $status,
             'reference' => $body['reference'] ?? null,
+            'client' => $body['client'] ?? [],
+            'created_on' => now()->timestamp,
             'checkout_url' => $body[$status === 'paid' ? 'success_redirect' : 'failure_redirect'] ?? $body['success_redirect'] ?? '/',
             'purchase' => $body['purchase'] ?? [],
             'transaction_data' => ['payment_method' => $body['payment_method_whitelist'][0] ?? 'fpx'],

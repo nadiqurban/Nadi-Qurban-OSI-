@@ -13,14 +13,15 @@
 <div>
 @if (! $started)
     {{-- Skrin alu-aluan --}}
-    <div class="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#383E1B] bg-[url('/images/nadi-qurban-bg-mobile.webp')] bg-cover bg-bottom bg-no-repeat px-5 pt-10 pb-[72px] [text-shadow:0_1px_3px_rgba(0,0,0,.35)] md:bg-[url('/images/nadi-qurban-bg-desktop.webp')]">
+    <div class="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#383E1B] bg-[url('/images/nadi-qurban-bg-mobile.webp')] bg-cover bg-bottom bg-no-repeat px-5 pt-10 pb-[72px] [text-shadow:0_1px_3px_rgba(0,0,0,.35)] md:bg-[url('/images/nadi-qurban-bg-desktop.webp')] max-md:items-start max-md:pt-[max(56px,10svh)]">
+        <div class="pointer-events-none absolute inset-x-0 bottom-0 h-[110px] bg-linear-to-t from-[rgba(20,24,12,.7)] to-transparent"></div>
         <div class="pointer-events-none absolute inset-3 rounded-[22px] border border-[rgba(201,162,39,.22)] md:inset-6"></div>
         <div class="absolute inset-x-0 bottom-[26px] px-5 text-center text-[11.5px] tracking-[.3px] text-white/75">&copy; {{ now()->year }} Nadi Qurban Sdn. Bhd. Hak cipta terpelihara.</div>
         <div class="relative w-full max-w-[440px] text-center">
-            <div class="mx-auto size-[104px] overflow-hidden rounded-[24px] shadow-[0_16px_40px_rgba(0,0,0,.35),0_0_0_4px_rgba(201,162,39,.25)]">
+            <div class="mx-auto size-[88px] overflow-hidden rounded-[20px] md:size-[104px] md:rounded-[24px] shadow-[0_16px_40px_rgba(0,0,0,.35),0_0_0_4px_rgba(201,162,39,.25)]">
                 <img src="{{ asset('images/logo-mark-512.png') }}" alt="Nadi Qurban" class="block size-full scale-[1.22] object-cover">
             </div>
-            <h1 class="mt-[26px] text-[28px] leading-none font-extrabold tracking-[2px] text-white md:text-[32px]">NADI QURBAN</h1>
+            <h1 class="mt-[22px] text-[28px] md:mt-[26px] leading-none font-extrabold tracking-[2px] text-white md:text-[32px]">NADI QURBAN</h1>
             <div class="mt-3 flex items-center justify-center gap-[10px]">
                 <span class="h-px w-7 bg-gold"></span><span class="text-[11.5px] font-bold tracking-[2.5px] text-gold">NADI QURBAN SDN. BHD.</span><span class="h-px w-7 bg-gold"></span>
             </div>
@@ -29,7 +30,7 @@
                 <p class="mt-4 text-[12.5px] text-[#d6d9bd]">Ejen anda: <b class="text-white">{{ $agent->user->name }}</b></p>
             @endif
             <button type="button" wire:click="start"
-                    class="nq-pulse mt-[34px] [text-shadow:none] inline-flex min-h-12 items-center gap-[9px] rounded-[12px] bg-gold px-8 py-[15px] text-[15.5px] font-bold text-white transition-transform hover:-translate-y-0.5 hover:scale-[1.03] hover:bg-[#d4ae35] active:scale-[.97]">
+                    class="nq-pulse mt-[28px] md:mt-[34px] [text-shadow:none] inline-flex min-h-12 items-center gap-[9px] rounded-[12px] bg-gold px-8 py-[15px] text-[15.5px] font-bold text-white transition-transform hover:-translate-y-0.5 hover:scale-[1.03] hover:bg-[#d4ae35] active:scale-[.97]">
                 Mulakan Tempahan <i class="ph ph-arrow-right nq-nudge text-[18px]"></i>
             </button>
         </div>

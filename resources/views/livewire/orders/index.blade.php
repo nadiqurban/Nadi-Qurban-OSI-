@@ -65,6 +65,8 @@
             <x-ui.button size="sm" variant="gold" icon="certificate" wire:click="generateCertificates">Generate Sijil</x-ui.button>
             @if ($canManage)
                 <x-ui.button size="sm" variant="success" icon="fill check-circle" wire:click="markAccepted">Diterima</x-ui.button>
+                <x-ui.button size="sm" variant="danger" icon="x-circle" wire:click="cancelSelected"
+                             wire:confirm="Batalkan {{ count($selected) }} tempahan yang dipilih? Tempahan yang sudah selesai tidak akan diubah.">Batal</x-ui.button>
                 <div x-data="{ open: false }" class="relative" @click.outside="open = false">
                     <x-ui.button size="sm" variant="on-dark" icon="tag" icon-right="caret-down" x-on:click="open = !open">Kemaskini Status</x-ui.button>
                     <div x-cloak x-show="open" x-transition.origin.top.right

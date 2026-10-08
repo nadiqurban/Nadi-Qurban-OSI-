@@ -7,6 +7,7 @@ use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
 use App\Enums\RoleName;
 use App\Events\OrderStageChanged;
+use App\Livewire\Orders\Index;
 use App\Livewire\Orders\Index as OrdersIndex;
 use App\Livewire\Orders\Show as OrdersShow;
 use App\Livewire\Payments\Verify;
@@ -17,6 +18,7 @@ use App\Models\PromoCode;
 use App\Navigation\Badges\PendingPayments;
 use App\Support\ParticipantGroups;
 use Database\Seeders\DemoCatalogSeeder;
+use Database\Seeders\DemoOrderSeeder;
 use Database\Seeders\MasterDataSeeder;
 use Database\Seeders\SettingsSeeder;
 use Illuminate\Http\UploadedFile;
@@ -355,4 +357,22 @@ it('exports orders, customers and payments to Excel', function () {
 
     Livewire::actingAs($admin)->test(Verify::class)->call('export');
     Excel::assertDownloaded('Pengesahan-Bayaran-Nadi-Qurban.xlsx');
+});
+
+it('cancels the selected orders with the Batal button (completed ones are kept)', function () {
+    $this->seed([SettingsSeeder::class, MasterDataSeeder::class, DemoCatalogSeeder::class, DemoOrderSeeder::class]);
+    $open = Order::where('status', OrderStatus::AwaitingPayment)->firstOrFail();
+    $done = Order::where('status', OrderStatus::Completed)->firstOrFail();
+
+    Livewire::actingAs(superAdmin())->test(Index::class)
+        ->assertSee('Batal')
+        ->set('selected', [$open->id, $done->id])
+        ->call('cancelSelected')
+        ->assertHasNoErrors();
+
+    expect($open->fresh()->status)->toBe(OrderStatus::Cancelled)
+        ->and($done->fresh()->status)->toBe(OrderStatus::Completed);
+
+    Livewire::actingAs(userWithRoles(RoleName::Finance))->test(Index::class)
+        ->set('selected', [$done->id])->call('cancelSelected')->assertForbidden();
 });

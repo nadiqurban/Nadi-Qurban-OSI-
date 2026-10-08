@@ -249,6 +249,14 @@ class Index extends Component
         $this->afterBulk("{$count} tempahan ditanda Diterima dan dihantar ke Pengesahan Bayaran.");
     }
 
+    public function cancelSelected(UpdateOrderStatus $update): void
+    {
+        $this->authorize(Module::Orders->managePermission());
+
+        $count = $update->handle($this->selected, OrderStatus::Cancelled, $this->actor());
+        $this->afterBulk("{$count} tempahan dibatalkan.");
+    }
+
     public function setStatus(string $status, UpdateOrderStatus $update): void
     {
         $this->authorize(Module::Orders->managePermission());

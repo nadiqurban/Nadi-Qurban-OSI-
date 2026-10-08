@@ -13,7 +13,7 @@
 <div>
 @if (! $started)
     {{-- Skrin alu-aluan --}}
-    <div class="relative flex min-h-screen items-center justify-center overflow-hidden px-5 pt-10 pb-[72px]" style="background: radial-gradient(ellipse at 50% 35%, #565d2a 0%, #42481c 55%, #33381a 100%);">
+    <div class="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#383E1B] bg-[url('/images/nadi-qurban-bg-mobile.webp')] bg-cover bg-bottom bg-no-repeat px-5 pt-10 pb-[72px] [text-shadow:0_1px_3px_rgba(0,0,0,.35)] md:bg-[url('/images/nadi-qurban-bg-desktop.webp')]">
         <div class="pointer-events-none absolute inset-3 rounded-[22px] border border-[rgba(201,162,39,.22)] md:inset-6"></div>
         <div class="absolute inset-x-0 bottom-[26px] px-5 text-center text-[11.5px] tracking-[.3px] text-white/75">&copy; {{ now()->year }} Nadi Qurban Sdn. Bhd. Hak cipta terpelihara.</div>
         <div class="relative w-full max-w-[440px] text-center">
@@ -29,7 +29,7 @@
                 <p class="mt-4 text-[12.5px] text-[#d6d9bd]">Ejen anda: <b class="text-white">{{ $agent->user->name }}</b></p>
             @endif
             <button type="button" wire:click="start"
-                    class="nq-pulse mt-[34px] inline-flex min-h-12 items-center gap-[9px] rounded-[12px] bg-gold px-8 py-[15px] text-[15.5px] font-bold text-white transition-transform hover:-translate-y-0.5 hover:scale-[1.03] hover:bg-[#d4ae35] active:scale-[.97]">
+                    class="nq-pulse mt-[34px] [text-shadow:none] inline-flex min-h-12 items-center gap-[9px] rounded-[12px] bg-gold px-8 py-[15px] text-[15.5px] font-bold text-white transition-transform hover:-translate-y-0.5 hover:scale-[1.03] hover:bg-[#d4ae35] active:scale-[.97]">
                 Mulakan Tempahan <i class="ph ph-arrow-right nq-nudge text-[18px]"></i>
             </button>
         </div>

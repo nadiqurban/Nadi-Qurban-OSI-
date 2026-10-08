@@ -23,6 +23,13 @@
         @endforeach
     </div>
 
+    {{-- Belum / Telah Disahkan (as in Pengesahan Bayaran) --}}
+    @php $verifyCounts = $this->verifyCounts(); @endphp
+    <x-ui.tabs class="mb-4" wire-model="verify" :active="$verify" :items="[
+        ['key' => 'belum', 'label' => 'Belum Disahkan', 'count' => $verifyCounts['belum']],
+        ['key' => 'telah', 'label' => 'Telah Disahkan', 'count' => $verifyCounts['telah']],
+    ]" />
+
     {{-- Filter card --}}
     <x-ui.filter-bar :has-filters="$this->hasFilters()" reset-action="$wire.clearFilters()"
                      :active-count="collect([$service, $animal, $country, $status])->filter()->count()">

@@ -392,3 +392,20 @@ it('gives back stock when a verified order is cancelled and deleted', function (
     expect($order->product->fresh()->stock)->toBe($stock + $order->quantity)
         ->and(Activity::where('event', 'order.deleted')->exists())->toBeTrue();
 });
+
+it('splits the order list into Belum Disahkan and Telah Disahkan tabs', function () {
+    $this->seed([SettingsSeeder::class, MasterDataSeeder::class, DemoCatalogSeeder::class, DemoOrderSeeder::class]);
+    $pending = Order::whereDoesntHave('payment', fn ($q) => $q->where('status', PaymentStatus::Verified))->firstOrFail();
+    $verified = Order::whereHas('payment', fn ($q) => $q->where('status', PaymentStatus::Verified))->firstOrFail();
+
+    Livewire::actingAs(superAdmin())->test(Index::class)
+        ->set('period', 'semua')
+        ->assertSee('Belum Disahkan')->assertSee('Telah Disahkan')
+        ->assertSee($pending->order_no)->assertDontSee($verified->order_no)
+        ->set('verify', 'telah')
+        ->assertSee($verified->order_no)->assertDontSee($pending->order_no);
+
+    // Opened from search with only verified matches → lands on Telah Disahkan.
+    Livewire::withQueryParams(['q' => $verified->order_no, 'tempoh' => 'semua'])->actingAs(superAdmin())->test(Index::class)
+        ->assertSet('verify', 'telah')->assertSee($verified->order_no);
+});

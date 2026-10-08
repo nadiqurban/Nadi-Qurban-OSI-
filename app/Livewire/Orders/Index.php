@@ -12,6 +12,7 @@ use App\Enums\Courier;
 use App\Enums\Module;
 use App\Enums\OrderStage;
 use App\Enums\OrderStatus;
+use App\Enums\PaymentStatus;
 use App\Enums\Service;
 use App\Exports\CustomersExport;
 use App\Exports\OrdersExport;
@@ -72,6 +73,10 @@ class Index extends Component
     #[Url(as: 'q', except: '')]
     public string $search = '';
 
+    /** Senarai Tempahan tab: belum = payment not verified yet, telah = payment verified. */
+    #[Url(as: 'pengesahan', except: 'belum')]
+    public string $verify = 'belum';
+
     #[Url(except: '')]
     public string $service = '';
 
@@ -111,6 +116,12 @@ class Index extends Component
     {
         $this->form->resetForm();
 
+        // Opened with a search (e.g. from ⌘K) and no tab chosen: show the tab that has the orders.
+        if ($this->search !== '' && ! request()->has('pengesahan')) {
+            $counts = $this->verifyCounts();
+            $this->verify = $counts['belum'] === 0 && $counts['telah'] > 0 ? 'telah' : 'belum';
+        }
+
         $leadId = (int) request()->query('lead');
         $user = auth()->user();
         if ($leadId > 0 && $user?->can(Module::Orders->managePermission()) && $user->can(Module::Crm->viewPermission())) {
@@ -127,7 +138,7 @@ class Index extends Component
 
     public function updated(string $property): void
     {
-        if (in_array($property, ['period', 'from', 'to', 'search', 'service', 'animal', 'country', 'status'], true)) {
+        if (in_array($property, ['period', 'from', 'to', 'search', 'service', 'animal', 'country', 'status', 'verify'], true)) {
             $this->resetPage();
             $this->selected = [];
         }
@@ -137,6 +148,32 @@ class Index extends Component
 
     /** @return Builder<Order> */
     private function filtered(): Builder
+    {
+        return $this->byVerification($this->baseFiltered(), $this->verify);
+    }
+
+    /**
+     * @param  Builder<Order>  $query
+     * @return Builder<Order>
+     */
+    private function byVerification(Builder $query, string $tab): Builder
+    {
+        return $tab === 'telah'
+            ? $query->whereHas('payment', fn ($p) => $p->where('status', PaymentStatus::Verified))
+            : $query->whereDoesntHave('payment', fn ($p) => $p->where('status', PaymentStatus::Verified));
+    }
+
+    /** @return array{belum: int, telah: int} */
+    public function verifyCounts(): array
+    {
+        return [
+            'belum' => $this->byVerification($this->baseFiltered(), 'belum')->count(),
+            'telah' => $this->byVerification($this->baseFiltered(), 'telah')->count(),
+        ];
+    }
+
+    /** @return Builder<Order> */
+    private function baseFiltered(): Builder
     {
         return Order::query()
             ->search($this->search)

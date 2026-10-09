@@ -76,7 +76,7 @@ Route::livewire('/jejak', Tracking::class)->name('tracking');
 // Tempahan Awam (public booking) — own page or an agent's link.
 Route::middleware('throttle:60,1')->group(function () {
     Route::livewire('/tempah', Booking::class)->name('booking');
-    Route::livewire('/tempah/{slug}', Booking::class)->where('slug', '(?!resit$)[a-z0-9-]{1,80}')->name('booking.agent');
+    Route::livewire('/tempah/{slug}', Booking::class)->where('slug', '(?!resit$)[A-Za-z0-9-]{1,80}')->name('booking.agent');
     // Old agent links (/e/nama-ejen) keep working.
     Route::get('/e/{slug}', fn (string $slug) => redirect()->route('booking.agent', ['slug' => $slug] + request()->query(), 301))->where('slug', '[a-z0-9-]{1,80}');
     Route::livewire('/tempah/resit/{token}', BookingReceipt::class)->where('token', '[A-Za-z0-9]{40}')->name('booking.receipt');

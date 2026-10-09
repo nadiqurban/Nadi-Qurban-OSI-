@@ -72,10 +72,10 @@ class Agent extends Model
         return ! $this->user->isSuspended();
     }
 
-    /** Public sales link, e.g. https://www.appnadiqurban.my/tempah/aiman-zulkifli */
+    /** Public sales link by agent code, e.g. https://www.appnadiqurban.my/tempah/NQ001 (old name links still work). */
     public function shareUrl(): string
     {
-        return route('booking.agent', $this->slug);
+        return route('booking.agent', $this->code);
     }
 
     /** "Aiman bin Zulkifli" → "aiman-zulkifli" (first two meaningful words), unique among agents. */

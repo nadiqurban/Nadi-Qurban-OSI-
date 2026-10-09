@@ -110,7 +110,7 @@ it('registers an agent as a login user with role Ejen, a link slug and bank deta
     expect($agent->user->isAgent())->toBeTrue()
         ->and($agent->slug)->toBe('aiman-zulkifli')
         ->and($agent->bank_account_no)->toBe('5623 5782 2681')
-        ->and($agent->shareUrl())->toEndWith('/tempah/aiman-zulkifli')
+        ->and($agent->shareUrl())->toEndWith('/tempah/AZ01')
         ->and(Activity::where('event', 'agent.created')->exists())->toBeTrue();
 
     // Agents are not listed or creatable in Pengguna & Peranan.
@@ -138,7 +138,7 @@ it('logs agents in on Log Masuk Ejen and keeps them inside the portal', function
         ->assertRedirect(route('agent.portal'));
 
     $this->actingAs($agent->user);
-    $this->get('/ejen/portal')->assertOk()->assertSee('Assalamualaikum, Aiman')->assertSee('/tempah/aiman-zulkifli')
+    $this->get('/ejen/portal')->assertOk()->assertSee('Assalamualaikum, Aiman')->assertSee('/tempah/AZ01')
         ->assertDontSee('Pratonton');
     $this->get('/tempahan')->assertRedirect(route('agent.portal'));
 
@@ -315,4 +315,12 @@ it('lets only agents.manage roles change agents', function () {
         ->call('toggleStatus', $agent->id)->assertForbidden();
 
     $this->actingAs(userWithRoles(RoleName::Operations))->get('/pengurusan-ejen')->assertForbidden();
+});
+
+it('opens the booking page from the agent code link and from the old name link', function () {
+    makeAgent();
+
+    $this->get('/tempah/AZ01')->assertOk()->assertSee('Ejen anda')->assertSee('Aiman');
+    $this->get('/tempah/az01')->assertOk()->assertSee('Ejen anda');
+    $this->get('/tempah/aiman-zulkifli')->assertOk()->assertSee('Ejen anda');
 });

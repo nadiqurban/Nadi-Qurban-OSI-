@@ -27,7 +27,7 @@ use Livewire\WithFileUploads;
 
 /**
  * Tempahan Awam (Tempahan Awam.dc.html): welcome → 1 Pilih Pakej → 2 Maklumat →
- * 3 Bayar. /tempah or an agent link /tempah/{slug} (also /tempah?ref=CODE; old /e/{slug} redirects).
+ * 3 Bayar. /tempah or an agent link /tempah/{code} (old /tempah/{name-slug} still works; also /tempah?ref=CODE; old /e/{slug} redirects).
  *
  * @property-read Agent|null $agent
  * @property-read Collection<int, Product> $products
@@ -90,7 +90,7 @@ class Booking extends Component
     public function mount(?string $slug = null): void
     {
         $agent = $slug !== null
-            ? Agent::query()->where('slug', $slug)->first()
+            ? Agent::query()->where('code', mb_strtoupper($slug))->first() ?? Agent::query()->where('slug', $slug)->first()
             : (request()->query('ref') ? Agent::query()->where('code', mb_strtoupper((string) request()->query('ref')))->first() : null);
 
         if ($agent && $agent->user()->where('status', UserStatus::Active)->exists()) {

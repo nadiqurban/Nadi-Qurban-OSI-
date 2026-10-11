@@ -75,6 +75,7 @@ it('keeps a pending agent out of the portal until HQ approves', function () {
 
     Livewire::actingAs(superAdmin())->test(AgentsIndex::class)
         ->assertSee('Pendaftaran Baharu')->assertSee('Menunggu')
+        ->assertSee('Portal Ejen')->assertSeeHtml('href="'.route('agent.login').'"')
         ->call('togglePending')->assertSee('Siti Aminah binti Rahman')
         ->call('approve', $agent->id)
         ->assertSee('Aktif');

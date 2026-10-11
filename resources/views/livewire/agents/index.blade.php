@@ -54,6 +54,10 @@
                class="flex items-center gap-[7px] rounded-[9px] border border-border bg-surface px-[14px] py-[11px] text-[13.5px] font-semibold text-primary max-md:min-h-11 dark:text-[#c9ce93]">
                 <i class="ph ph-arrow-square-out text-[16px]"></i> Buka Borang
             </a>
+            <a href="{{ route('agent.login') }}" target="_blank" rel="noopener"
+               class="flex items-center gap-[7px] rounded-[9px] border border-border bg-surface px-[14px] py-[11px] text-[13.5px] font-semibold text-primary max-md:min-h-11 dark:text-[#c9ce93]">
+                <i class="ph ph-sign-in text-[16px]"></i> Portal Ejen
+            </a>
             @if ($canManage)
                 <x-ui.button icon="user-plus" mobile-block wire:click="create">Tambah Ejen</x-ui.button>
             @endif

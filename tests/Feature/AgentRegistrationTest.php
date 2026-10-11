@@ -115,3 +115,13 @@ it('serves the agent photo to HQ only and needs manage permission to approve', f
     Livewire::actingAs(userWithRoles(RoleName::Sales))->test(AgentsIndex::class)
         ->call('approve', $agent->id)->assertForbidden();
 });
+
+it('opens Log Masuk Ejen for a signed-in staff member instead of bouncing to the dashboard', function () {
+    $this->actingAs(superAdmin())->get('/ejen')->assertOk()
+        ->assertSee('Log Masuk Ejen')->assertSee('Anda sedang log masuk sebagai staf');
+
+    $agent = registerAgent();
+    Livewire::actingAs(superAdmin())->test(AgentsIndex::class)->call('approve', $agent->id);
+
+    $this->actingAs($agent->user->fresh())->get('/ejen')->assertRedirect(route('agent.portal'));
+});

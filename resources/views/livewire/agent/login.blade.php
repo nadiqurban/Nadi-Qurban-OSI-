@@ -11,6 +11,13 @@
         <h1 class="mt-[26px] text-[22px] font-extrabold text-ink">Log Masuk Ejen</h1>
         <p class="mt-1.5 text-[13.5px] text-muted">Urus link jualan, jejak tempahan &amp; komisen anda.</p>
 
+        @if ($staff = $this->staffName())
+            <div class="mt-4 flex items-start gap-2 rounded-[9px] bg-info-soft px-[14px] py-3 text-[12.5px] leading-[1.55] text-info" role="status">
+                <i class="ph ph-info mt-px shrink-0 text-[16px]"></i>
+                <span>Anda sedang log masuk sebagai staf (<b>{{ $staff }}</b>). Log masuk sebagai ejen di sini akan menamatkan sesi staf pada pelayar ini.</span>
+            </div>
+        @endif
+
         @if (session('status') || session('warning'))
             <div class="mt-4 rounded-[9px] bg-bg px-[14px] py-3 text-[12.5px] text-ink-3" role="status">{{ session('status') ?? session('warning') }}</div>
         @endif

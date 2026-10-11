@@ -26,6 +26,22 @@ class Login extends Component
     #[Validate('required|string|max:255', as: 'kata laluan')]
     public string $password = '';
 
+    /** A signed-in agent goes straight to the portal; a signed-in staff member still sees the form. */
+    public function mount(): mixed
+    {
+        $user = auth()->user();
+
+        return $user instanceof User && $user->isAgent() ? $this->redirectRoute('agent.portal') : null;
+    }
+
+    /** Name of the staff member already signed in on this browser (shown as a notice). */
+    public function staffName(): ?string
+    {
+        $user = auth()->user();
+
+        return $user instanceof User && ! $user->isAgent() ? $user->name : null;
+    }
+
     public function login(AttemptLogin $attempt): mixed
     {
         $this->validate();

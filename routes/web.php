@@ -94,9 +94,11 @@ Route::get('/bayar/{token}/resit/{reference}.pdf', [InstallmentDocumentControlle
     ->where(['token' => '[A-Za-z0-9]{32,64}', 'reference' => 'NQPAY[0-9]+'])->middleware('throttle:30,1')->name('installments.portal.receipt');
 Route::post('/webhooks/chip', ChipWebhookController::class)->middleware('throttle:120,1')->name('webhooks.chip');
 
+// Log Masuk Ejen: open even while a staff member is signed in (Pengurusan Ejen › Portal Ejen).
+Route::livewire('/ejen', AgentLogin::class)->name('agent.login');
+
 Route::middleware('guest')->group(function () {
     Route::livewire('/login', Login::class)->name('login');
-    Route::livewire('/ejen', AgentLogin::class)->name('agent.login');
     Route::livewire('/lupa-kata-laluan', ForgotPassword::class)->name('password.request');
     Route::livewire('/reset-kata-laluan/{token}', ResetPassword::class)->name('password.reset');
     Route::livewire('/akaun-dikunci', Locked::class)->name('login.locked');

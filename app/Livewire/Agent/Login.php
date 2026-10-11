@@ -4,6 +4,7 @@ namespace App\Livewire\Agent;
 
 use App\Actions\Auth\AttemptLogin;
 use App\Actions\Auth\LoginResult;
+use App\Models\Agent;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
@@ -44,9 +45,21 @@ class Login extends Component
             LoginResult::Success => $this->redirectRoute('agent.portal'),
             LoginResult::TwoFactorRequired => $this->redirectRoute('two-factor.challenge'),
             LoginResult::Locked => $this->addError('email', 'Akaun dikunci selepas 5 percubaan gagal. Cuba semula selepas 15 minit.'),
-            LoginResult::Suspended => $this->addError('email', 'Akaun ejen anda tidak aktif. Sila hubungi pihak HQ.'),
+            LoginResult::Suspended => $this->addError('email', $this->suspendedMessage()),
             LoginResult::Throttled => $this->addError('email', 'Terlalu banyak cubaan log masuk. Sila cuba sebentar lagi.'),
             LoginResult::Invalid => $this->addError('email', 'Emel atau kata laluan tidak sah.'),
+        };
+    }
+
+    /** A self-registered agent still waiting for (or refused) HQ approval gets told so. */
+    private function suspendedMessage(): string
+    {
+        $agent = Agent::query()->whereHas('user', fn ($q) => $q->where('email', mb_strtolower(trim($this->email))))->first();
+
+        return match (true) {
+            $agent?->isPending() => 'Pendaftaran anda sedang disahkan oleh pegawai kami. Anda akan dimaklumkan selepas akaun diaktifkan.',
+            $agent?->isRejected() => 'Pendaftaran ejen anda tidak diluluskan. Sila hubungi pihak HQ.',
+            default => 'Akaun ejen anda tidak aktif. Sila hubungi pihak HQ.',
         };
     }
 

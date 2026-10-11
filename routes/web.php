@@ -2,6 +2,7 @@
 
 use App\Enums\Courier;
 use App\Http\Controllers\AgentDocumentController;
+use App\Http\Controllers\AgentPhotoController;
 use App\Http\Controllers\AgentProofController;
 use App\Http\Controllers\AuditExportController;
 use App\Http\Controllers\Auth\LogoutController;
@@ -45,6 +46,7 @@ use App\Livewire\Orders\Show as OrdersShow;
 use App\Livewire\Payments\Verify as PaymentsVerify;
 use App\Livewire\Products\Index as ProductsIndex;
 use App\Livewire\Promo\Index as PromoIndex;
+use App\Livewire\Public\AgentRegister;
 use App\Livewire\Public\Booking;
 use App\Livewire\Public\BookingReceipt;
 use App\Livewire\Public\InstallmentPortal;
@@ -82,6 +84,9 @@ Route::middleware('throttle:60,1')->group(function () {
     Route::livewire('/tempah/resit/{token}', BookingReceipt::class)->where('token', '[A-Za-z0-9]{40}')->name('booking.receipt');
     Route::get('/tempah/resit/{token}/resit.pdf', [BookingDocumentController::class, 'receipt'])->where('token', '[A-Za-z0-9]{40}')->name('booking.receipt.pdf');
 });
+
+// Pendaftaran Ejen (public sign-up, approved by HQ in Pengurusan Ejen).
+Route::livewire('/daftar-ejen', AgentRegister::class)->middleware('throttle:30,1')->name('agent.register');
 
 // Public: instalment portal (one permanent token link per plan) + CHIP Collect callback.
 Route::livewire('/bayar/{token}', InstallmentPortal::class)->where('token', '[A-Za-z0-9]{32,64}')->name('installments.portal');
@@ -169,6 +174,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware('can:agents.view')->group(function () {
         Route::livewire('/pengurusan-ejen', AgentsIndex::class)->name('agents.index');
         Route::get('/pengurusan-ejen/invois-komisen.pdf', [AgentDocumentController::class, 'commissionInvoice'])->name('agents.invoice');
+        Route::get('/pengurusan-ejen/{agent}/gambar', AgentPhotoController::class)->name('agents.photo');
     });
     Route::middleware('can:finance.view')->group(function () {
         Route::livewire('/kewangan', FinanceIndex::class)->name('finance.index');

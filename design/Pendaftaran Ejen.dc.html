@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; background:#F6F8F7; color:#1A1D21; -webkit-font-smoothing: antialiased; }
+  a { color:#42481c; text-decoration:none; } a:hover { color:#5a6127; }
+  input, select { font-family: inherit; }
+</style>
+</helmet>
+
+<div style="min-height:100vh; background:#F6F8F7;">
+  <header style="background:#42481c; color:#fff; padding:40px 20px 76px; text-align:center;">
+    <div style="width:72px; height:72px; border-radius:18px; overflow:hidden; margin:0 auto; background:#42481c; box-shadow:0 6px 18px rgba(0,0,0,.18);"><img src="uploads/Untitled design.png" alt="Nadi Qurban" style="width:100%; height:100%; object-fit:cover; display:block; transform:scale(1.08);"></div>
+    <div style="font-size:11px; font-weight:700; letter-spacing:2.5px; color:#C9A227; margin-top:18px;">PROGRAM EJEN</div>
+    <h1 style="font-size:24px; font-weight:800; line-height:1.3; margin-top:6px; letter-spacing:-.2px;">Pendaftaran Ejen<br>Nadi Qurban Sdn Bhd</h1>
+    <p style="font-size:14px; color:#d9dcc4; margin:10px auto 0; line-height:1.6; max-width:420px;">Jadilah Wakil Jualan Sah Nadi Qurban dan bersama kami<br>menyampaikan manfaat ibadah kepada lebih ramai.</p>
+  </header>
+
+  <main style="max-width:680px; margin:-48px auto 0; padding:0 16px 48px;">
+    <sc-if value="{{ notDone }}" hint-placeholder-val="{{ true }}">
+      <section style="background:#fff; border:1px solid #E2E8F0; border-radius:14px; box-shadow:0 6px 24px rgba(16,24,40,.06); padding:24px;">
+        <div style="font-size:11px; font-weight:700; letter-spacing:.5px; color:#42481c; text-transform:uppercase; margin-bottom:12px;">Maklumat Peribadi</div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px;">
+          <div style="grid-column:1 / -1;"><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Nama Penuh *</label><input value="{{ f.name }}" onInput="{{ on.name }}" placeholder="Seperti dalam kad pengenalan" style="width:100%; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Emel *</label><input type="email" value="{{ f.email }}" onInput="{{ on.email }}" placeholder="nama@contoh.com" style="width:100%; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">No. Telefon *</label><input value="{{ f.phone }}" onInput="{{ on.phone }}" placeholder="01X-XXXXXXX" style="width:100%; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Jantina</label><select value="{{ f.gender }}" onChange="{{ on.gender }}" style="width:100%; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none; background:#fff;"><option>Lelaki</option><option>Perempuan</option></select></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Tarikh Lahir</label><input type="date" value="{{ f.dob }}" onInput="{{ on.dob }}" style="width:100%; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Daerah</label><input value="{{ f.district }}" onInput="{{ on.district }}" placeholder="cth. Petaling" style="width:100%; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Negeri</label><select value="{{ f.state }}" onChange="{{ on.state }}" style="width:100%; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none; background:#fff;"><sc-for list="{{ states }}" as="st" hint-placeholder-count="6"><option>{{ st }}</option></sc-for></select></div>
+        </div>
+
+        <div style="font-size:11px; font-weight:700; letter-spacing:.5px; color:#42481c; text-transform:uppercase; margin:22px 0 12px;">Gambar Terkini</div>
+        <div style="display:flex; align-items:center; gap:16px; margin-bottom:0;">
+          <div style="width:88px; height:88px; border-radius:50%; overflow:hidden; flex-shrink:0; background:#F1F5F4; border:2px dashed #CBD5C0; display:flex; align-items:center; justify-content:center;">{{ photoEl }}</div>
+          <div style="flex:1; min-width:0;">
+            <label style="display:inline-flex; align-items:center; gap:8px; background:#42481c; color:#fff; border-radius:9px; padding:10px 15px; font-size:13px; font-weight:600; cursor:pointer;"><i class="ph ph-camera" style="font-size:16px;"></i> {{ photoBtn }}<input type="file" accept="image/jpeg,image/png" onChange="{{ onPhoto }}" style="display:none;"></label>
+            <div style="font-size:11.5px; color:#94A3AC; margin-top:7px; line-height:1.5;">JPG atau PNG. Gambar berukuran pasport, wajah jelas, latar cerah.</div>
+            <sc-if value="{{ hasPhoto }}" hint-placeholder-val="{{ false }}"><div style="display:inline-flex; align-items:center; gap:5px; margin-top:6px; font-size:11px; font-weight:600; color:#16A34A; background:#EAF7EE; border-radius:20px; padding:3px 9px;"><i class="ph ph-check-circle" style="font-size:12px;"></i> Dimampat: {{ photoKb }} KB</div></sc-if>
+          </div>
+        </div>
+
+        <div style="font-size:11px; font-weight:700; letter-spacing:.5px; color:#42481c; text-transform:uppercase; margin:22px 0 12px;">Maklumat Bank (Untuk Bayaran Komisen)</div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px;">
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Bank</label><select value="{{ f.bank }}" onChange="{{ on.bank }}" style="width:100%; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none; background:#fff;"><sc-for list="{{ banks }}" as="b" hint-placeholder-count="6"><option>{{ b }}</option></sc-for></select></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Nama Akaun</label><input value="{{ f.accName }}" onInput="{{ on.accName }}" placeholder="Nama pemegang akaun" style="width:100%; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+          <div style="grid-column:1 / -1;"><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Nombor Akaun</label><input value="{{ f.accNo }}" onInput="{{ on.accNo }}" placeholder="Nombor akaun bank" style="width:100%; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+        </div>
+
+        <div style="font-size:11px; font-weight:700; letter-spacing:.5px; color:#42481c; text-transform:uppercase; margin:22px 0 12px;">Akaun Log Masuk Portal Ejen</div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px;">
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Kata Laluan *</label><input type="password" value="{{ f.pass }}" onInput="{{ on.pass }}" placeholder="Minimum 6 aksara" style="width:100%; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+          <div><label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">Sahkan Kata Laluan *</label><input type="password" value="{{ f.pass2 }}" onInput="{{ on.pass2 }}" placeholder="Taip semula" style="width:100%; font-size:13px; color:#1A1D21; border:1px solid #E2E8F0; border-radius:9px; padding:10px 12px; outline:none;"></div>
+        </div>
+
+        <div onClick="{{ toggleAgree }}" style="display:flex; align-items:flex-start; gap:11px; margin-top:20px; cursor:pointer;">
+          <span style="{{ agreeStyle }}"><sc-if value="{{ agreed }}" hint-placeholder-val="{{ false }}"><i class="ph-fill ph-check" style="font-size:13px; color:#fff;"></i></sc-if></span>
+          <span style="font-size:13px; color:#475569; line-height:1.6;">Saya mengesahkan maklumat di atas adalah benar dan bersetuju dengan terma &amp; syarat program ejen Nadi Qurban Sdn Bhd.</span>
+        </div>
+
+        <sc-if value="{{ hasError }}" hint-placeholder-val="{{ false }}"><div style="display:flex; align-items:center; gap:8px; margin-top:16px; padding:11px 14px; background:#FDECEC; border-radius:9px; font-size:12.5px; font-weight:600; color:#DC2626;"><i class="ph ph-warning-circle" style="font-size:16px;"></i> {{ error }}</div></sc-if>
+
+        <button onClick="{{ submit }}" style="width:100%; margin-top:20px; background:#42481c; color:#fff; border:none; border-radius:10px; padding:14px; font-size:15px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:9px;"><i class="ph ph-paper-plane-tilt" style="font-size:18px;"></i> Hantar Pendaftaran</button>
+        <p style="font-size:12.5px; color:#94A3AC; text-align:center; margin-top:14px;">Sudah berdaftar? <a href="Portal Ejen.dc.html" style="font-weight:600;">Log masuk Portal Ejen</a></p>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{ done }}" hint-placeholder-val="{{ false }}">
+      <section style="background:#fff; border:1px solid #E2E8F0; border-radius:14px; box-shadow:0 6px 24px rgba(16,24,40,.06); padding:36px 26px; text-align:center;">
+        <div style="width:72px; height:72px; border-radius:50%; background:#FEF3E2; display:flex; align-items:center; justify-content:center; margin:0 auto;"><i class="ph-fill ph-hourglass-medium" style="font-size:38px; color:#D97706;"></i></div>
+        <h2 style="font-size:20px; font-weight:800; margin-top:16px;">Pendaftaran Anda Sedang Disahkan</h2>
+        <p style="font-size:14px; color:#64748B; margin-top:8px; line-height:1.6;">Terima kasih, <b style="color:#1A1D21;">{{ doneName }}</b>. Pendaftaran anda sedang disahkan oleh pegawai kami. Anda akan dimaklumkan melalui WhatsApp selepas akaun diaktifkan.</p>
+        <div style="display:inline-flex; align-items:center; gap:7px; margin-top:14px; font-size:12px; font-weight:700; color:#fff; background:#42481c; border-radius:20px; padding:7px 15px;"><span style="width:7px; height:7px; border-radius:50%; background:#C9A227;"></span> Menunggu Pengesahan</div>
+      </section>
+    </sc-if>
+
+    <p style="font-size:11.5px; color:#94A3AC; text-align:center; margin-top:22px;">&copy; 2027 Nadi Qurban Sdn. Bhd. Hak cipta terpelihara.</p>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { f: { gender: 'Lelaki', state: 'Selangor', bank: 'Maybank' }, agreed: false, error: '', done: null };
+  renderVals() {
+    const s = this.state;
+    const set = (o) => this.setState(o);
+    const f = s.f || {};
+    const keys = ['name', 'email', 'phone', 'gender', 'dob', 'district', 'state', 'bank', 'accName', 'accNo', 'pass', 'pass2'];
+    const on = {};
+    keys.forEach(k => { on[k] = (e) => this.setState({ f: Object.assign({}, this.state.f, { [k]: e.target.value }), error: '' }); });
+    const submit = () => {
+      if (!f.name || !f.email || !f.phone) return set({ error: 'Sila isi Nama Penuh, Emel dan No. Telefon.' });
+      if (!/^\S+@\S+\.\S+$/.test(f.email)) return set({ error: 'Format emel tidak sah.' });
+      if (!f.pass || f.pass.length < 6) return set({ error: 'Kata laluan mesti sekurang-kurangnya 6 aksara.' });
+      if (f.pass !== f.pass2) return set({ error: 'Kata laluan tidak sepadan.' });
+      if (!s.agreed) return set({ error: 'Sila tandakan pengesahan terma & syarat.' });
+      let list = [];
+      try { list = JSON.parse(localStorage.getItem('nq_agents') || '[]'); } catch (e) {}
+      if (!Array.isArray(list)) list = [];
+      if (list.some(a => String(a.email).toLowerCase() === f.email.toLowerCase())) return set({ error: 'Emel ini sudah berdaftar.' });
+      const words = f.name.trim().split(/\s+/).filter(w => !/^(bin|binti|bt|b|a\/l|a\/p)$/i.test(w));
+      const ini = (words.length > 1 ? words[0][0] + words[1][0] : (words[0] || 'EJ').slice(0, 2)).toUpperCase();
+      const base = ['AZ01', 'NS02', 'HR03'];
+      const maxNo = base.concat(list.map(a => a.id)).reduce((m, x) => { const n = parseInt(String(x || '').replace(/\D/g, ''), 10); return isNaN(n) ? m : Math.max(m, n); }, 0);
+      const id = ini + String(maxNo + 1).padStart(2, '0');
+      if (!s.photo) return set({ error: 'Sila muat naik gambar terkini.' });
+      const agent = { id, photo: s.photo, name: f.name, email: f.email, phone: f.phone, pass: f.pass, status: 'Menunggu', gender: f.gender, dob: f.dob || '', district: f.district || '', state: f.state, daerah: f.district || '', negeri: f.state, bank: f.bank, accName: f.accName || '', accNo: f.accNo || '', registeredAt: Date.now() };
+      list.push(agent);
+      try { localStorage.setItem('nq_agents', JSON.stringify(list)); } catch (e) {}
+      set({ done: { id, name: f.name } });
+    };
+    return {
+      f, on, submit,
+      photoEl: s.photo ? React.createElement('img', { src: s.photo, alt: 'gambar', style: { width: '100%', height: '100%', objectFit: 'cover', display: 'block' } }) : React.createElement('i', { className: 'ph ph-user', style: { fontSize: '34px', color: '#94A3AC' } }),
+      photoBtn: s.photo ? 'Tukar Gambar' : 'Muat Naik Gambar',
+      hasPhoto: !!s.photo, photoKb: String(s.photoKb || 0),
+      onPhoto: (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const r = new FileReader();
+        r.onload = (ev) => {
+          const img = new Image();
+          img.onload = () => {
+            const S = 320;
+            const side = Math.min(img.width, img.height);
+            const sx = (img.width - side) / 2, sy = (img.height - side) / 2;
+            const c = document.createElement('canvas');
+            c.width = S; c.height = S;
+            const ctx = c.getContext('2d');
+            ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, S, S);
+            ctx.drawImage(img, sx, sy, side, side, 0, 0, S, S);
+            let q = 0.72, out = c.toDataURL('image/jpeg', q);
+            while (out.length > 40000 && q > 0.4) { q -= 0.08; out = c.toDataURL('image/jpeg', q); }
+            this.setState({ photo: out, photoKb: Math.round(out.length * 0.75 / 1024), error: '' });
+          };
+          img.src = ev.target.result;
+        };
+        r.readAsDataURL(file);
+      },
+      states: ['Johor', 'Kedah', 'Kelantan', 'Melaka', 'Negeri Sembilan', 'Pahang', 'Perak', 'Perlis', 'Pulau Pinang', 'Sabah', 'Sarawak', 'Selangor', 'Terengganu', 'W.P. Kuala Lumpur', 'W.P. Labuan', 'W.P. Putrajaya'],
+      banks: ['Maybank', 'CIMB Bank', 'Bank Islam', 'Public Bank', 'RHB Bank', 'Hong Leong Bank', 'AmBank', 'Bank Rakyat', 'BSN', 'Bank Muamalat'],
+      agreed: s.agreed === true,
+      toggleAgree: () => set({ agreed: !s.agreed, error: '' }),
+      agreeStyle: 'width:22px; height:22px; border-radius:6px; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;' + (s.agreed ? 'background:#42481c; border:1px solid #42481c;' : 'background:#fff; border:1.5px solid #94A3AC;'),
+      hasError: !!s.error, error: s.error,
+      done: !!s.done, notDone: !s.done,
+      doneName: s.done ? s.done.name : '', doneId: s.done ? s.done.id : '',
+    };
+  }
+}
+</script>
+</body>
+</html>

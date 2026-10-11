@@ -3,6 +3,7 @@
 namespace App\Livewire\Agents;
 
 use App\Actions\Agents\DeleteAgent;
+use App\Actions\Agents\ReviewAgentRegistration;
 use App\Actions\Agents\SaveAgent;
 use App\Actions\Users\SetUserStatus;
 use App\Enums\Module;
@@ -49,6 +50,10 @@ class Index extends Component
 
     #[Url(as: 'q', except: '')]
     public string $search = '';
+
+    /** "Pendaftaran Baharu" filter: only registrations waiting for HQ. */
+    #[Url(as: 'baharu', except: false)]
+    public bool $onlyPending = false;
 
     public ?int $viewId = null;
 
@@ -99,7 +104,7 @@ class Index extends Component
     #[Computed]
     public function agents(): EloquentCollection
     {
-        return Agent::query()->with('user')->get();
+        return Agent::query()->with(['user', 'media'])->get();
     }
 
     /** @return Collection<int, array{agent: Agent, count: int, sales_sen: int, commission_sen: int}> */
@@ -115,6 +120,7 @@ class Index extends Component
         $q = mb_strtolower(trim($this->search));
 
         return $this->performance
+            ->filter(fn (array $r) => ! $this->onlyPending || $r['agent']->isPending())
             ->filter(fn (array $r) => $q === '' || str_contains(mb_strtolower(implode(' ', [
                 $r['agent']->code, $r['agent']->user->name, $r['agent']->user->email, $r['agent']->user->phone,
             ])), $q))
@@ -272,11 +278,40 @@ class Index extends Component
         unset($this->agents, $this->performance);
     }
 
+    public function togglePending(): void
+    {
+        $this->onlyPending = ! $this->onlyPending;
+    }
+
+    /** Pendaftaran Baharu › Lulus. */
+    public function approve(int $id, ReviewAgentRegistration $review): void
+    {
+        $this->authorize(Module::Agents->managePermission());
+
+        $review->handle(Agent::query()->with('user')->findOrFail($id), true, $this->actor());
+        unset($this->agents, $this->performance);
+        $this->dispatch('toast', message: 'Pendaftaran ejen diluluskan — akaun Portal Ejen kini aktif.');
+    }
+
+    /** Pendaftaran Baharu › Tolak. */
+    public function reject(int $id, ReviewAgentRegistration $review): void
+    {
+        $this->authorize(Module::Agents->managePermission());
+
+        $review->handle(Agent::query()->with('user')->findOrFail($id), false, $this->actor());
+        unset($this->agents, $this->performance);
+    }
+
     public function toggleStatus(int $id, SetUserStatus $setStatus): void
     {
         $this->authorize(Module::Agents->managePermission());
 
         $agent = Agent::query()->with('user')->findOrFail($id);
+
+        if ($agent->registration_status !== null) {
+            return;   // pending / rejected registrations go through Lulus / Tolak
+        }
+
         $setStatus->handle($agent->user, $agent->user->isSuspended() ? UserStatus::Active : UserStatus::Suspended, $this->actor());
         unset($this->agents, $this->performance);
     }
@@ -300,7 +335,7 @@ class Index extends Component
             $r['agent']->code, $r['agent']->user->name, $r['agent']->user->email, $r['agent']->user->phone,
             $r['agent']->gender, $r['agent']->birth_date?->format('d/m/Y'), $r['agent']->district, $r['agent']->state,
             $r['agent']->bank_name, $r['agent']->bank_account_name, $r['agent']->bank_account_no,
-            $r['agent']->isActive() ? 'Aktif' : 'Tidak Aktif', $r['count'],
+            $r['agent']->statusLabel(), $r['count'],
             round($r['sales_sen'] / 100, 2), round($r['commission_sen'] / 100, 2),
         ]);
 
@@ -328,10 +363,12 @@ class Index extends Component
     public function render(): mixed
     {
         $perf = $this->performance;
+        $active = $this->agents->filter->isActive()->count();
 
         return view('livewire.agents.index', [
             'p' => $this->periodFilter(),
             'rows' => $this->rows(),
+            'pendingCount' => $this->agents->filter->isPending()->count(),
             'top' => $perf->take(10),
             'maxSales' => max(1, (int) $perf->max('sales_sen')),
             'totals' => [
@@ -341,8 +378,8 @@ class Index extends Component
             ],
             'stats' => [
                 ['icon' => 'users-three', 'tone' => 'primary', 'value' => (string) $this->agents->count(), 'label' => 'Jumlah Ejen'],
-                ['icon' => 'check-circle', 'tone' => 'success', 'value' => (string) $this->agents->filter->isActive()->count(), 'label' => 'Ejen Aktif'],
-                ['icon' => 'prohibit', 'tone' => 'danger', 'value' => (string) $this->agents->reject->isActive()->count(), 'label' => 'Tidak Aktif'],
+                ['icon' => 'check-circle', 'tone' => 'success', 'value' => (string) $active, 'label' => 'Ejen Aktif'],
+                ['icon' => 'prohibit', 'tone' => 'danger', 'value' => (string) ($this->agents->count() - $active), 'label' => 'Tidak Aktif'],
             ],
         ]);
     }

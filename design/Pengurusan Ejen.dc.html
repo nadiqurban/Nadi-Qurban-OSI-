@@ -78,7 +78,12 @@
           <sc-if value="{{ isRange }}" hint-placeholder-val="{{ false }}"><div style="display:inline-flex; align-items:center; gap:8px; background:#fff; border:1px solid #42481c; border-radius:9px; padding:6px 10px;"><i class="ph ph-calendar-dots" style="font-size:15px; color:#42481c;"></i><span style="font-size:11.5px; color:#94A3AC;">Dari</span><input type="date" value="{{ fromDate }}" onInput="{{ onFromDate }}" style="font-family:inherit; font-size:12.5px; color:#1A1D21; border:none; outline:none; background:transparent;"><span style="font-size:11.5px; color:#94A3AC;">hingga</span><input type="date" value="{{ toDate }}" onInput="{{ onToDate }}" style="font-family:inherit; font-size:12.5px; color:#1A1D21; border:none; outline:none; background:transparent;"></div></sc-if>
           <span style="font-size:12px; font-weight:600; color:#42481c; background:#edeee0; border-radius:20px; padding:5px 12px;">{{ periodNote }}</span>
         </div>
-        <button onClick="{{ openNew }}" style="display:flex; align-items:center; gap:8px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-user-plus" style="font-size:17px;"></i> Tambah Ejen</button>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button onClick="{{ togglePending }}" style="{{ pendBtnStyle }}"><i class="ph ph-hourglass-medium" style="font-size:16px;"></i> Pendaftaran Baharu <span style="{{ pendCountStyle }}">{{ pendingN }}</span></button>
+          <button onClick="{{ copyRegLink }}" style="display:flex; align-items:center; gap:8px; background:#fff; color:#42481c; border:1px solid #42481c; border-radius:9px; padding:11px 16px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="{{ regIcon }}" style="font-size:16px;"></i> {{ regLabel }}</button>
+          <button onClick="{{ openForm }}" style="display:flex; align-items:center; gap:7px; background:#fff; color:#42481c; border:1px solid #E2E8F0; border-radius:9px; padding:11px 14px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-arrow-square-out" style="font-size:16px;"></i> Buka Borang</button>
+          <button onClick="{{ openNew }}" style="display:flex; align-items:center; gap:8px; background:#42481c; color:#fff; border:none; border-radius:9px; padding:11px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;"><i class="ph ph-user-plus" style="font-size:17px;"></i> Tambah Ejen</button>
+        </div>
       </div>
 
       <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:22px;">
@@ -132,7 +137,7 @@
         <sc-for list="{{ rows }}" as="r" hint-placeholder-count="4">
           <div style="display:grid; grid-template-columns:0.7fr 1.4fr 1.6fr 1.1fr 1fr 1fr 0.8fr 1.3fr; gap:14px; padding:14px 20px; border-bottom:1px solid #F1F5F4; align-items:center; font-size:13px;">
             <span style="font-family:monospace; font-weight:700; color:#42481c;">{{ r.id }}</span>
-            <span style="font-weight:600; color:#1A1D21; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0;">{{ r.name }}</span>
+            <span style="display:flex; align-items:center; gap:9px; min-width:0;"><span onClick="{{ r.onPhoto }}" title="Lihat gambar" style="width:32px; height:32px; border-radius:50%; overflow:hidden; flex-shrink:0; background:#edeee0; color:#42481c; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; cursor:pointer;">{{ r.avatarEl }}</span><span style="font-weight:600; color:#1A1D21; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0;">{{ r.name }}</span></span>
             <span style="color:#475569; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ r.email }}</span>
             <span style="color:#475569;">{{ r.phone }}</span>
             <span style="text-align:right; font-weight:600; color:#1A1D21;">{{ r.sales }}</span>
@@ -141,7 +146,7 @@
             <span style="display:flex; justify-content:flex-end; gap:6px;">
               <span onClick="{{ r.onView }}" title="Detail" style="width:30px; height:30px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#42481c;"><i class="ph ph-eye" style="font-size:15px;"></i></span>
               <span onClick="{{ r.onEdit }}" title="Edit" style="width:30px; height:30px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#42481c;"><i class="ph ph-pencil-simple" style="font-size:15px;"></i></span>
-              <span onClick="{{ r.onToggle }}" title="{{ r.toggleTitle }}" style="width:30px; height:30px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:{{ r.toggleColor }};"><i class="{{ r.toggleIcon }}" style="font-size:15px;"></i></span>
+              <sc-if value="{{ r.isPending }}" hint-placeholder-val="{{ false }}"><span onClick="{{ r.onApprove }}" title="Lulus" style="height:30px; padding:0 10px; border-radius:8px; background:#16A34A; color:#fff; display:flex; align-items:center; gap:5px; cursor:pointer; font-size:12px; font-weight:600;"><i class="ph-fill ph-check-circle" style="font-size:14px;"></i> Lulus</span><span onClick="{{ r.onReject }}" title="Tolak" style="width:30px; height:30px; border-radius:8px; border:1px solid #F7CFCF; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#DC2626;"><i class="ph ph-x" style="font-size:15px;"></i></span></sc-if><sc-if value="{{ r.notPending }}" hint-placeholder-val="{{ true }}"><span onClick="{{ r.onToggle }}" title="{{ r.toggleTitle }}" style="width:30px; height:30px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:{{ r.toggleColor }};"><i class="{{ r.toggleIcon }}" style="font-size:15px;"></i></span></sc-if>
               <span onClick="{{ r.onDelete }}" title="Buang" style="width:30px; height:30px; border-radius:8px; border:1px solid #F7CFCF; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#DC2626;"><i class="ph ph-trash" style="font-size:15px;"></i></span>
             </span>
           </div>
@@ -188,11 +193,22 @@
     </div>
   </sc-if>
 
+
+  <sc-if value="{{ showPhoto }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closePhoto }}" style="position:fixed; inset:0; z-index:130; background:rgba(12,14,12,.82); display:flex; align-items:center; justify-content:center; padding:24px;">
+      <div style="background:#fff; border-radius:16px; padding:18px; max-width:420px; width:100%; text-align:center; box-shadow:0 24px 60px rgba(0,0,0,.4);">
+        <div style="width:100%; aspect-ratio:1; border-radius:12px; overflow:hidden; background:#F1F5F4;">{{ pvImgEl }}</div>
+        <div style="font-size:15px; font-weight:700; margin-top:14px;">{{ pvName }}</div>
+        <div style="font-size:12px; color:#94A3AC; font-family:monospace; margin-top:2px;">{{ pvId }} &middot; Gambar Terkini</div>
+        <div style="display:flex; gap:8px; justify-content:center; margin-top:14px;"><a href="{{ pvSrc }}" download="{{ pvFile }}" style="display:inline-flex; align-items:center; gap:6px; background:#42481c; color:#fff; border-radius:8px; padding:9px 14px; font-size:12.5px; font-weight:600;"><i class="ph ph-download-simple" style="font-size:15px;"></i> Muat Turun</a><span onClick="{{ closePhoto }}" style="display:inline-flex; align-items:center; gap:6px; background:#fff; color:#334155; border:1px solid #E2E8F0; border-radius:8px; padding:9px 14px; font-size:12.5px; font-weight:600; cursor:pointer;">Tutup</span></div>
+      </div>
+    </div>
+  </sc-if>
   <sc-if value="{{ showView }}" hint-placeholder-val="{{ false }}">
     <div style="position:fixed; inset:0; z-index:100; background:rgba(20,24,20,.55); display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; padding:32px 16px;">
       <div style="width:100%; max-width:520px; background:#fff; border-radius:14px; box-shadow:0 24px 60px rgba(0,0,0,.3); overflow:hidden;">
         <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 24px; border-bottom:1px solid #E2E8F0;">
-          <div><h2 style="font-size:16px; font-weight:700;">{{ vName }}</h2><p style="font-size:12px; color:#94A3AC; margin-top:2px; font-family:monospace;">{{ vId }} &middot; {{ vStatus }}</p></div>
+          <div style="display:flex; align-items:center; gap:14px;"><span onClick="{{ openVPhoto }}" style="width:64px; height:64px; border-radius:50%; overflow:hidden; flex-shrink:0; background:#edeee0; color:#42481c; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:800; cursor:pointer; border:2px solid #E2E8F0;">{{ vAvatarEl }}</span><div><h2 style="font-size:16px; font-weight:700;">{{ vName }}</h2><p style="font-size:12px; color:#94A3AC; margin-top:2px; font-family:monospace;">{{ vId }} &middot; {{ vStatus }}</p><sc-if value="{{ vNoPhoto }}" hint-placeholder-val="{{ false }}"><p style="font-size:11px; color:#94A3AC; margin-top:3px;">Tiada gambar dimuat naik</p></sc-if></div></div>
           <span onClick="{{ closeView }}" style="width:32px; height:32px; border-radius:8px; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#64748B;"><i class="ph ph-x" style="font-size:16px;"></i></span>
         </div>
         <div style="padding:18px 24px; display:grid; grid-template-columns:1fr 1fr; gap:12px;">
@@ -262,7 +278,12 @@ class Component extends DCLogic {
       try { localStorage.setItem('nq_agents', JSON.stringify(list)); } catch (e) {}
     }
     this.setState({ agents: list });
+    this._reload = () => { try { const L = JSON.parse(localStorage.getItem('nq_agents') || 'null'); if (Array.isArray(L)) this.setState({ agents: L }); } catch (e) {} };
+    window.addEventListener('storage', this._reload);
+    window.addEventListener('focus', this._reload);
+    this._poll = setInterval(this._reload, 4000);
   }
+  componentWillUnmount() { window.removeEventListener('storage', this._reload); window.removeEventListener('focus', this._reload); clearInterval(this._poll); }
   saveList(list) { try { localStorage.setItem('nq_agents', JSON.stringify(list)); } catch (e) {} this.setState({ agents: list }); }
   renderVals() {
     const s = this.state;
@@ -284,12 +305,20 @@ class Component extends DCLogic {
 
     const agents = s.agents || [];
     const q = (s.q || '').trim().toLowerCase();
-    const shown = agents.filter(a => !q || (a.id + ' ' + a.name + ' ' + a.email + ' ' + a.phone).toLowerCase().includes(q));
+    const pendingN = agents.filter(a => a.status === 'Menunggu').length;
+    const shown = agents.filter(a => !s.onlyPending || a.status === 'Menunggu').filter(a => !q || (a.id + ' ' + a.name + ' ' + a.email + ' ' + a.phone).toLowerCase().includes(q));
     const rows = shown.map(a => {
       const on = a.status === 'Aktif';
-      return { id: a.id, name: a.name, email: a.email, phone: a.phone, status: a.status,
+      const pend = a.status === 'Menunggu';
+      const iniTxt = a.name.split(' ').slice(0, 2).map(w => w[0] || '').join('').toUpperCase();
+      return { avatarEl: a.photo ? React.createElement('img', { src: a.photo, alt: a.name, style: { width: '100%', height: '100%', objectFit: 'cover', display: 'block' } }) : iniTxt,
+        onPhoto: () => { if (a.photo) set({ photoView: { src: a.photo, name: a.name, id: a.id } }); else set({ viewId: a.id }); },
+        isPending: pend, notPending: !pend, hasPhoto: !!a.photo, noPhoto: !a.photo, photo: a.photo || '',
+        onApprove: () => this.saveList(agents.map(x => x.id === a.id ? Object.assign({}, x, { status: 'Aktif', approvedAt: Date.now() }) : x)),
+        onReject: () => { if (window.confirm('Tolak pendaftaran ' + a.name + '?')) this.saveList(agents.map(x => x.id === a.id ? Object.assign({}, x, { status: 'Ditolak' }) : x)); },
+        id: a.id, name: a.name, email: a.email, phone: a.phone, status: a.status,
         ini: a.name.split(' ').slice(0, 2).map(w => w[0] || '').join('').toUpperCase(),
-        stStyle: 'font-size:11px; font-weight:600; border-radius:20px; padding:4px 11px;' + (on ? 'background:#EAF7EE; color:#16A34A;' : 'background:#FDECEC; color:#DC2626;'),
+        stStyle: 'font-size:11px; font-weight:600; border-radius:20px; padding:4px 11px;' + (on ? 'background:#EAF7EE; color:#16A34A;' : pend ? 'background:#FEF3E2; color:#D97706;' : 'background:#FDECEC; color:#DC2626;'),
         toggleIcon: on ? 'ph ph-prohibit' : 'ph ph-power', toggleColor: on ? '#D97706' : '#16A34A', toggleTitle: on ? 'Nyahaktif' : 'Aktifkan',
         onView: () => set({ viewId: a.id }),
         onEdit: () => set({ showNew: true, editId: a.id, fId: a.id, fName: a.name, fEmail: a.email, fPhone: a.phone, fPass: a.pass, fErr: '', fGender: a.gender || 'Lelaki', fDob: a.dob || '', fDaerah: a.daerah || '', fNegeri: a.negeri || 'Selangor', fBank: a.bank || 'Maybank', fAccName: a.accName || '', fAccNo: a.accNo || '' }),
@@ -332,6 +361,28 @@ class Component extends DCLogic {
     const maxS = Math.max(1, ...perfRaw.map(p => p.sales));
     const totS = perfRaw.reduce((t, p) => t + p.sales, 0);
     return {
+      pendingN: String(pendingN),
+      openForm: () => { try { const w = window.open('Pendaftaran Ejen.dc.html', '_blank'); if (!w) location.href = 'Pendaftaran Ejen.dc.html'; } catch (e) { location.href = 'Pendaftaran Ejen.dc.html'; } },
+      togglePending: () => set({ onlyPending: !s.onlyPending }),
+      pendBtnStyle: 'display:flex; align-items:center; gap:8px; border-radius:9px; padding:11px 15px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;' + (s.onlyPending ? 'background:#D97706; color:#fff; border:1px solid #D97706;' : 'background:#FEF3E2; color:#D97706; border:1px solid #F5D9A8;'),
+      pendCountStyle: 'font-size:11px; font-weight:800; border-radius:20px; padding:1px 8px;' + (s.onlyPending ? 'background:rgba(255,255,255,.25); color:#fff;' : 'background:#D97706; color:#fff;'),
+      regLabel: s.regCopied ? 'Link Disalin' : 'Salin Link Pendaftaran',
+      regIcon: s.regCopied ? 'ph ph-check' : 'ph ph-link-simple',
+      copyRegLink: () => { const u = 'https://www.appnadiqurban.my/daftar-ejen'; try { navigator.clipboard.writeText(u); } catch (e) {} set({ regCopied: true }); setTimeout(() => this.setState({ regCopied: false }), 1800); },
+      ...(function (self) {
+        const v = s.viewId ? agents.find(x => x.id === s.viewId) : null;
+        const pv = s.photoView;
+        const vIni = v ? v.name.split(' ').slice(0, 2).map(w => w[0] || '').join('').toUpperCase() : '';
+        return {
+          vAvatarEl: v && v.photo ? React.createElement('img', { src: v.photo, alt: v.name, style: { width: '100%', height: '100%', objectFit: 'cover', display: 'block' } }) : vIni,
+          vNoPhoto: !!v && !v.photo,
+          openVPhoto: () => { if (v && v.photo) self.setState({ photoView: { src: v.photo, name: v.name, id: v.id } }); },
+          showPhoto: !!pv,
+          pvImgEl: pv ? React.createElement('img', { src: pv.src, alt: pv.name, style: { width: '100%', height: '100%', objectFit: 'cover', display: 'block' } }) : null,
+          pvName: pv ? pv.name : '', pvId: pv ? pv.id : '', pvSrc: pv ? pv.src : '', pvFile: pv ? ('Gambar-' + pv.id + '.jpg') : '',
+          closePhoto: () => self.setState({ photoView: null }),
+        };
+      })(this),
       nav, rows: rows.map(r => { const p = perfRaw.find(x => x.id === r.id) || { sales: 0, comm: 0 }; return Object.assign({}, r, { sales: money(p.sales), comm: money(p.comm) }); }), empty: shown.length === 0,
       periodTabs: [['all', 'Semua'], ['day', 'Hari'], ['month', 'Bulan'], ['year', 'Tahun'], ['range', 'Julat Tarikh']].map(([k, label]) => ({ label, onClick: () => set({ period: k }), style: 'font-size:12.5px; font-weight:600; border-radius:7px; padding:6px 12px; cursor:pointer;' + (per === k ? 'background:#42481c; color:#fff;' : 'color:#475569;') })),
       refDate: refStr, onRefDate: (e) => set({ refDate: e.target.value, period: per !== 'all' ? per : 'month' }),

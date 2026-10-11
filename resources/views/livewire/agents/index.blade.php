@@ -36,9 +36,28 @@
             <span class="rounded-[20px] bg-primary-soft px-3 py-[5px] text-[12px] font-semibold text-primary dark:text-[#c9ce93]">{{ $p->label() }}</span>
         </div>
 
-        @if ($canManage)
-            <x-ui.button icon="user-plus" mobile-block wire:click="create">Tambah Ejen</x-ui.button>
-        @endif
+        <div class="flex flex-wrap gap-2 max-md:w-full">
+            <button type="button" wire:click="togglePending" aria-pressed="{{ $onlyPending ? 'true' : 'false' }}"
+                    @class(['flex items-center gap-2 rounded-[9px] border px-[15px] py-[11px] text-[13.5px] font-semibold max-md:min-h-11',
+                        'border-warning bg-warning text-white' => $onlyPending,
+                        'border-[#F5D9A8] bg-warning-soft text-warning' => ! $onlyPending])>
+                <i class="ph ph-hourglass-medium text-[16px]"></i> Pendaftaran Baharu
+                <span @class(['rounded-[20px] px-2 py-px text-[11px] font-extrabold', 'bg-white/25 text-white' => $onlyPending, 'bg-warning text-white' => ! $onlyPending])>{{ $pendingCount }}</span>
+            </button>
+            <button type="button" x-data="{ copied: false }"
+                    x-on:click="navigator.clipboard?.writeText(@js(route('agent.register'))); copied = true; setTimeout(() => copied = false, 1800)"
+                    class="flex items-center gap-2 rounded-[9px] border border-primary bg-surface px-4 py-[11px] text-[13.5px] font-semibold text-primary max-md:min-h-11 dark:text-[#c9ce93]">
+                <i class="ph text-[16px]" x-bind:class="copied ? 'ph-check' : 'ph-link-simple'"></i>
+                <span x-text="copied ? 'Link Disalin' : 'Salin Link Pendaftaran'">Salin Link Pendaftaran</span>
+            </button>
+            <a href="{{ route('agent.register') }}" target="_blank" rel="noopener"
+               class="flex items-center gap-[7px] rounded-[9px] border border-border bg-surface px-[14px] py-[11px] text-[13.5px] font-semibold text-primary max-md:min-h-11 dark:text-[#c9ce93]">
+                <i class="ph ph-arrow-square-out text-[16px]"></i> Buka Borang
+            </a>
+            @if ($canManage)
+                <x-ui.button icon="user-plus" mobile-block wire:click="create">Tambah Ejen</x-ui.button>
+            @endif
+        </div>
     </div>
 
     @error('agent')
@@ -119,19 +138,26 @@
         </x-slot:head>
 
         @foreach ($rows as $r)
-            @php $a = $r['agent']; $active = $a->isActive(); @endphp
+            @php $a = $r['agent']; $active = $a->isActive(); $photo = $a->photo(); @endphp
             <x-ui.tr wire:key="agent-{{ $a->id }}">
                 <x-ui.td span class="flex items-center justify-between gap-2 md:block">
                     <span class="font-mono font-bold text-primary dark:text-[#c9ce93]">{{ $a->code }}</span>
-                    <span @class(['rounded-[20px] px-[11px] py-1 text-[11px] font-semibold md:hidden', 'bg-success-soft text-success' => $active, 'bg-danger-soft text-danger' => ! $active])>{{ $active ? 'Aktif' : 'Tidak Aktif' }}</span>
+                    <span class="rounded-[20px] px-[11px] py-1 text-[11px] font-semibold md:hidden {{ $a->statusClasses() }}">{{ $a->statusLabel() }}</span>
                 </x-ui.td>
-                <x-ui.td span class="truncate font-semibold text-ink">{{ $a->user->name }}</x-ui.td>
+                <x-ui.td span class="flex min-w-0 items-center gap-[9px]">
+                    <button type="button" title="Lihat gambar" aria-label="Lihat gambar {{ $a->user->name }}"
+                            @if ($photo) x-on:click="$dispatch('agent-photo', {{ \Illuminate\Support\Js::from(['src' => route('agents.photo', $a), 'download' => route('agents.photo', ['agent' => $a, 'muat-turun' => 1]), 'name' => $a->user->name, 'code' => $a->code]) }})" @else wire:click="view({{ $a->id }})" @endif
+                            class="flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary-soft text-[11px] font-bold text-primary dark:text-[#c9ce93]">
+                        @if ($photo)<img src="{{ route('agents.photo', $a) }}" alt="{{ $a->user->name }}" loading="lazy" class="block size-full object-cover">@else{{ $a->initials() }}@endif
+                    </button>
+                    <span class="truncate font-semibold text-ink">{{ $a->user->name }}</span>
+                </x-ui.td>
                 <x-ui.td label="Emel" class="truncate text-ink-3">{{ $a->user->email }}</x-ui.td>
                 <x-ui.td label="No. Telefon" class="text-ink-3">{{ $a->user->phone ?? '-' }}</x-ui.td>
                 <x-ui.td label="Jualan (RM)" align="right" class="font-semibold text-ink">{{ rm($r['sales_sen'], true) }}</x-ui.td>
                 <x-ui.td label="Komisen (RM)" align="right" class="font-bold text-gold-ink">{{ rm($r['commission_sen'], true) }}</x-ui.td>
                 <x-ui.td align="center" mobile="hide">
-                    <span @class(['inline-block rounded-[20px] px-[11px] py-1 text-[11px] font-semibold', 'bg-success-soft text-success' => $active, 'bg-danger-soft text-danger' => ! $active])>{{ $active ? 'Aktif' : 'Tidak Aktif' }}</span>
+                    <span class="inline-block rounded-[20px] px-[11px] py-1 text-[11px] font-semibold {{ $a->statusClasses() }}">{{ $a->statusLabel() }}</span>
                 </x-ui.td>
                 <x-ui.td align="right" span class="flex gap-1.5 md:justify-end">
                     <button type="button" wire:click="view({{ $a->id }})" title="Detail" aria-label="Detail {{ $a->user->name }}"
@@ -139,8 +165,15 @@
                     @if ($canManage)
                         <button type="button" wire:click="edit({{ $a->id }})" title="Edit" aria-label="Edit {{ $a->user->name }}"
                                 class="flex size-11 items-center justify-center rounded-[8px] border border-border text-primary md:size-[30px]"><i class="ph ph-pencil-simple text-[15px]"></i></button>
-                        <button type="button" wire:click="toggleStatus({{ $a->id }})" title="{{ $active ? 'Nyahaktif' : 'Aktifkan' }}" aria-label="{{ $active ? 'Nyahaktif' : 'Aktifkan' }} {{ $a->user->name }}"
-                                @class(['flex size-11 items-center justify-center rounded-[8px] border border-border md:size-[30px]', 'text-warning' => $active, 'text-success' => ! $active])><i class="ph {{ $active ? 'ph-prohibit' : 'ph-power' }} text-[15px]"></i></button>
+                        @if ($a->isPending())
+                            <button type="button" wire:click="approve({{ $a->id }})" title="Lulus" aria-label="Lulus {{ $a->user->name }}"
+                                    class="flex h-11 items-center gap-[5px] rounded-[8px] bg-success px-[10px] text-[12px] font-semibold text-white md:h-[30px]"><i class="ph-fill ph-check-circle text-[14px]"></i> Lulus</button>
+                            <button type="button" wire:click="reject({{ $a->id }})" wire:confirm="Tolak pendaftaran {{ $a->user->name }}?" title="Tolak" aria-label="Tolak {{ $a->user->name }}"
+                                    class="flex size-11 items-center justify-center rounded-[8px] border border-[#F7CFCF] text-danger md:size-[30px]"><i class="ph ph-x text-[15px]"></i></button>
+                        @elseif (! $a->isRejected())
+                            <button type="button" wire:click="toggleStatus({{ $a->id }})" title="{{ $active ? 'Nyahaktif' : 'Aktifkan' }}" aria-label="{{ $active ? 'Nyahaktif' : 'Aktifkan' }} {{ $a->user->name }}"
+                                    @class(['flex size-11 items-center justify-center rounded-[8px] border border-border md:size-[30px]', 'text-warning' => $active, 'text-success' => ! $active])><i class="ph {{ $active ? 'ph-prohibit' : 'ph-power' }} text-[15px]"></i></button>
+                        @endif
                         <button type="button" wire:click="delete({{ $a->id }})" wire:confirm="Buang ejen {{ $a->user->name }}?" title="Buang" aria-label="Buang {{ $a->user->name }}"
                                 class="flex size-11 items-center justify-center rounded-[8px] border border-[#F7CFCF] text-danger md:size-[30px]"><i class="ph ph-trash text-[15px]"></i></button>
                     @endif
@@ -150,7 +183,7 @@
 
         @if ($rows->isEmpty())
             <x-slot:empty>
-                <x-ui.empty-state icon="identification-badge" title="Tiada ejen dijumpai." />
+                <x-ui.empty-state icon="identification-badge" :title="$onlyPending ? 'Tiada pendaftaran baharu.' : 'Tiada ejen dijumpai.'" />
             </x-slot:empty>
         @endif
     </x-ui.data-table>
@@ -169,8 +202,21 @@
 
     {{-- Detail ejen --}}
     @php $v = $this->viewing; $vp = $v ? $this->performance->firstWhere('agent.id', $v->id) : null; @endphp
-    <x-ui.modal wire:model="showView" :title="$v?->user->name" :subtitle="$v ? $v->code.' · '.($v->isActive() ? 'Aktif' : 'Tidak Aktif') : null" icon="identification-badge" max-width="520px" :footer-border="false">
+    <x-ui.modal wire:model="showView" :title="$v?->user->name" :subtitle="$v ? $v->code.' · '.$v->statusLabel() : null" icon="identification-badge" max-width="520px" :footer-border="false">
         @if ($v)
+            @php $vPhoto = $v->photo(); @endphp
+            <div class="mb-4 flex items-center gap-[14px]">
+                <button type="button" @if ($vPhoto) x-on:click="$dispatch('agent-photo', {{ \Illuminate\Support\Js::from(['src' => route('agents.photo', $v), 'download' => route('agents.photo', ['agent' => $v, 'muat-turun' => 1]), 'name' => $v->user->name, 'code' => $v->code]) }})" @endif
+                        aria-label="Gambar {{ $v->user->name }}"
+                        class="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-border bg-primary-soft text-[18px] font-extrabold text-primary dark:text-[#c9ce93]">
+                    @if ($vPhoto)<img src="{{ route('agents.photo', $v) }}" alt="{{ $v->user->name }}" class="block size-full object-cover">@else{{ $v->initials() }}@endif
+                </button>
+                <div class="min-w-0">
+                    <div class="truncate text-[15px] font-bold text-ink">{{ $v->user->name }}</div>
+                    <div class="mt-0.5 font-mono text-[12px] text-faint">{{ $v->code }} &middot; {{ $v->statusLabel() }}</div>
+                    @unless ($vPhoto)<div class="mt-[3px] text-[11px] text-faint">Tiada gambar dimuat naik</div>@endunless
+                </div>
+            </div>
             <div class="grid grid-cols-2 gap-3">
                 <div class="rounded-[10px] bg-primary px-[14px] py-3 text-white"><div class="text-[11px] text-[#d6d9bd]">Jualan</div><div class="mt-[3px] text-[17px] font-extrabold">{{ rm($vp['sales_sen'] ?? 0, true) }}</div></div>
                 <div class="rounded-[10px] border border-[#EBDDAF] bg-[#FCFBF5] px-[14px] py-3"><div class="text-[11px] text-gold-ink">Komisen</div><div class="mt-[3px] text-[17px] font-extrabold text-gold-ink">{{ rm($vp['commission_sen'] ?? 0, true) }}</div></div>
@@ -195,11 +241,31 @@
         @endif
         <x-slot:footer>
             <x-ui.button variant="secondary" x-on:click="open = false">Tutup</x-ui.button>
-            @if ($canManage && $v)
+            @if ($canManage && $v && $v->isPending())
+                <x-ui.button variant="danger" icon="x" wire:click="reject({{ $v->id }})" wire:confirm="Tolak pendaftaran {{ $v->user->name }}?">Tolak</x-ui.button>
+                <x-ui.button variant="success" icon="check-circle" wire:click="approve({{ $v->id }})">Lulus</x-ui.button>
+            @elseif ($canManage && $v)
                 <x-ui.button icon="pencil-simple" wire:click="edit({{ $v->id }})">Edit</x-ui.button>
             @endif
         </x-slot:footer>
     </x-ui.modal>
+
+    {{-- Gambar Terkini (lightbox + Muat Turun) --}}
+    <div x-data="{ pv: null }" x-on:agent-photo.window="pv = $event.detail" x-on:keydown.escape.window="pv = null">
+        <template x-if="pv">
+            <div class="fixed inset-0 z-[130] flex items-center justify-center bg-[rgba(12,14,12,.82)] p-6" x-on:click.self="pv = null" role="dialog" aria-modal="true" aria-label="Gambar ejen">
+                <div class="w-full max-w-[420px] rounded-[16px] bg-surface p-[18px] text-center shadow-[0_24px_60px_rgba(0,0,0,.4)]">
+                    <div class="aspect-square w-full overflow-hidden rounded-[12px] bg-divider"><img x-bind:src="pv.src" x-bind:alt="pv.name" class="block size-full object-cover"></div>
+                    <div class="mt-[14px] text-[15px] font-bold text-ink" x-text="pv.name"></div>
+                    <div class="mt-0.5 font-mono text-[12px] text-faint"><span x-text="pv.code"></span> &middot; Gambar Terkini</div>
+                    <div class="mt-[14px] flex justify-center gap-2">
+                        <a x-bind:href="pv.download" class="inline-flex items-center gap-1.5 rounded-[8px] bg-primary px-[14px] py-[9px] text-[12.5px] font-semibold text-white max-md:min-h-11"><i class="ph ph-download-simple text-[15px]"></i> Muat Turun</a>
+                        <button type="button" x-on:click="pv = null" class="inline-flex items-center gap-1.5 rounded-[8px] border border-border bg-surface px-[14px] py-[9px] text-[12.5px] font-semibold text-ink-2 max-md:min-h-11">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
 
     {{-- Tambah / Edit Ejen --}}
     @if ($canManage)

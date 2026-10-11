@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 /**
  * Sales agent (Pengurusan Ejen.dc.html): a User with role "Ejen" + this profile.
@@ -23,10 +26,19 @@ use Illuminate\Support\Str;
  * @property string|null $bank_name
  * @property string|null $bank_account_name
  * @property string|null $bank_account_no
+ * @property string|null $registration_status null = approved, "menunggu" (Pendaftaran Baharu) or "ditolak"
  * @property-read User $user
  */
-class Agent extends Model
+class Agent extends Model implements HasMedia
 {
+    use InteractsWithMedia;
+
+    public const PENDING = 'menunggu';
+
+    public const REJECTED = 'ditolak';
+
+    public const PHOTO_MIMES = ['image/jpeg', 'image/png'];
+
     public const GENDERS = ['Lelaki', 'Perempuan'];
 
     public const STATES = [
@@ -41,7 +53,7 @@ class Agent extends Model
 
     protected $fillable = [
         'user_id', 'code', 'slug', 'gender', 'birth_date', 'district', 'state',
-        'bank_name', 'bank_account_name', 'bank_account_no',
+        'bank_name', 'bank_account_name', 'bank_account_no', 'registration_status',
     ];
 
     protected function casts(): array
@@ -67,9 +79,78 @@ class Agent extends Model
         return $this->hasMany(AgentClick::class);
     }
 
+    public function registerMediaCollections(): void
+    {
+        // Gambar Terkini (passport style, 320×320 JPEG) — private disk, served to HQ only.
+        $this->addMediaCollection('photo')->singleFile()->useDisk('local')->acceptsMimeTypes(self::PHOTO_MIMES);
+    }
+
+    public function photo(): ?Media
+    {
+        return $this->getFirstMedia('photo');
+    }
+
+    public function isPending(): bool
+    {
+        return $this->registration_status === self::PENDING;
+    }
+
+    public function isRejected(): bool
+    {
+        return $this->registration_status === self::REJECTED;
+    }
+
     public function isActive(): bool
     {
-        return ! $this->user->isSuspended();
+        return $this->registration_status === null && ! $this->user->isSuspended();
+    }
+
+    /** Status label + tone for Pengurusan Ejen: Aktif / Tidak Aktif / Menunggu / Ditolak. */
+    public function statusLabel(): string
+    {
+        return match (true) {
+            $this->isPending() => 'Menunggu',
+            $this->isRejected() => 'Ditolak',
+            $this->isActive() => 'Aktif',
+            default => 'Tidak Aktif',
+        };
+    }
+
+    public function statusClasses(): string
+    {
+        return match (true) {
+            $this->isPending() => 'bg-warning-soft text-warning',
+            $this->isActive() => 'bg-success-soft text-success',
+            default => 'bg-danger-soft text-danger',
+        };
+    }
+
+    /** "Aiman Zulkifli" → "AZ" (avatar without a photo). */
+    public function initials(): string
+    {
+        return collect(explode(' ', $this->user->name))->filter()->take(2)
+            ->map(fn (string $w) => mb_strtoupper(mb_substr($w, 0, 1)))->implode('');
+    }
+
+    /**
+     * Next free agent code for a self-registration: initials of the first two meaningful
+     * words + the next running number (Pendaftaran Ejen.dc.html), e.g. "Siti Aminah" → "SA04".
+     */
+    public static function nextCode(string $name): string
+    {
+        $words = collect(explode(' ', Str::of($name)->ascii()->upper()->replaceMatches('/[^A-Z ]+/', ' ')->squish()->toString()))
+            ->reject(fn (string $w) => in_array($w, ['BIN', 'BINTI', 'BT', 'B', 'AL', 'AP'], true))->values();
+        $initials = $words->count() > 1 ? $words[0][0].$words[1][0] : mb_substr((string) ($words[0] ?? 'EJ'), 0, 2);
+        $initials = str_pad($initials, 2, 'J');
+
+        $n = (int) self::query()->pluck('code')
+            ->map(fn (string $c) => (int) preg_replace('/\D+/', '', $c))->max();
+
+        do {
+            $code = $initials.str_pad((string) ++$n, 2, '0', STR_PAD_LEFT);
+        } while (self::query()->where('code', $code)->exists());
+
+        return $code;
     }
 
     /** Public sales link by agent code, e.g. https://www.appnadiqurban.my/tempah/NQ001 (old name links still work). */
